@@ -1,0 +1,8 @@
+#ignore everything
+*
+
+# except for these (more exceptions are added as needed)
+!.gitignore
+!README.md
+!*.cs
+!Bison.CLI.csproj
