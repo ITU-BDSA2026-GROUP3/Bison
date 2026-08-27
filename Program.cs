@@ -6,7 +6,6 @@ namespace Bison.CLI
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Environment.UserName);
             if(args.Length > 0)
             {
                 switch(args[0])
@@ -15,7 +14,12 @@ namespace Bison.CLI
                         ReadFromCSV();
 
                         break;
-
+                    case "observe":
+                        if (args.Length > 1)
+                        {
+                            WriteToCSV(args[1]);
+                        }
+                        break;
                     default:
                         Console.WriteLine("command not recognized");
                         break;
@@ -31,6 +35,13 @@ namespace Bison.CLI
                 Console.WriteLine(streamreader.ReadLine());
             }
             streamreader.Close();
+        }
+
+        private static void WriteToCSV(string observation)
+        {
+            StreamWriter streamWriter = File.AppendText("bison_observe_cli_db.csv");
+            streamWriter.WriteLine(Environment.UserName + "," + observation + "," + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            streamWriter.Close();
         }
 
     }
