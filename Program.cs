@@ -32,8 +32,22 @@ namespace Bison.CLI
             StreamReader streamreader = new StreamReader("bison_observe_cli_db.csv");
             while (streamreader.EndOfStream == false)
             {
-                Console.WriteLine(streamreader.ReadLine());
-            }
+                //Edit here
+                String line = streamreader.ReadLine();
+
+                int firstComma = line.IndexOf(',');
+                int lastComma = line.LastIndexOf(',');
+
+                string username = line.Substring(0, firstComma);
+                string observation = line.Substring(firstComma + 1, lastComma - firstComma - 1);
+                string unixTimestampStr = line.Substring(lastComma + 1);
+
+                long unixTimestamp = long.Parse(unixTimestampStr);
+                DateTimeOffset date = DateTimeOffset.FromUnixTimeSeconds(unixTimestamp).ToLocalTime();
+                string formattedDate = date.ToString("MM/dd/yy HH:mm:ss");
+                
+                Console.WriteLine($"{username} @ {formattedDate}: {observation}");            
+                }
             streamreader.Close();
         }
 
