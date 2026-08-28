@@ -30,6 +30,9 @@ namespace Bison.CLI
         private static void ReadFromCSV()
         {
             StreamReader streamreader = new StreamReader("bison_observe_cli_db.csv");
+
+            streamreader.ReadLine();
+
             while (streamreader.EndOfStream == false)
             {
                 //Edit here
