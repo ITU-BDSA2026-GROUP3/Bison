@@ -9,6 +9,15 @@ namespace SimpleDB
     {
         public IEnumerable<T> Read(int? limit = null)
         { 
+            bool fileExists = File.Exists("bison_observe_cli_db.csv");
+
+            if (!fileExists)
+            {
+                Console.WriteLine("No prior observations have been made.");
+                Console.WriteLine("Please create an observation before reading.");
+                return new List<T>();
+            }
+
             using var reader = new StreamReader("bison_observe_cli_db.csv");
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
