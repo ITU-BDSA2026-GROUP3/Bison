@@ -1,4 +1,5 @@
-﻿using System.IO;
+using System.CommandLine;
+using System.IO;
 using System.Globalization;
 using CsvHelper;
 
@@ -7,27 +8,36 @@ namespace Bison.CLI
     public record Cheep(string Author, string Message, long Timestamp);
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            if(args.Length > 0)
-            {
-                switch(args[0])
-                {
-                    case "read":
-                        ReadFromCSV();
+            RootCommand rootCommand = new("Bison CLI for recording and reading observations.");
 
-                        break;
-                    case "observe":
-                        if (args.Length > 1)
-                        {
-                            WriteToCSV(args[1]);
-                        }
-                        break;
-                    default:
-                        Console.WriteLine("command not recognized");
-                        break;
-                }
-            }
+            Command readCommand = new("read","Read all recorded observations.");
+
+            readCommand.SetAction(_ =>
+            {
+                ReadFromCSV();
+            });
+
+            Argument<string> observationArgument = new("observation")
+            {
+                Description = "The observation to record."
+            };
+
+            Command observeCommand = new("observe", "Record a new observation.");
+
+            observeCommand.Arguments.Add(observationArgument);
+
+            observeCommand.SetAction(parseResult =>
+            {
+                string observation = parseResult.GetRequiredValue(observationArgument);
+                WriteToCSV(observation);
+            });
+
+            rootCommand.Subcommands.Add(readCommand);
+            rootCommand.Subcommands.Add(observeCommand);
+
+            return rootCommand.Parse(args).Invoke();
         }
 
        private static void ReadFromCSV()
