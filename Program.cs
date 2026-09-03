@@ -32,7 +32,7 @@ namespace Bison.CLI
 
        private static void ReadFromCSV()
         {
-            using var read = new StreamReader("bison_observe_cliv_db.csv");
+            using var reader = new StreamReader("bison_observe_cliv_db.csv");
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
             var cheeps = csv.GetRecord<Cheep>();
@@ -49,11 +49,28 @@ namespace Bison.CLI
 
         }
 
+        //WriteToCsv now uses CsvLibrary
         private static void WriteToCSV(string observation)
         {
-            StreamWriter streamWriter = File.AppendText("bison_observe_cli_db.csv");
-            streamWriter.WriteLine(Environment.UserName + "," + observation + "," + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-            streamWriter.Close();
+            var cheep = new Cheep(
+                Environment.UserName,
+                observation, 
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+            );
+
+            bool fileExists = File.Exists("bison_observe_cli_db.csv");
+
+            using var write = new StreamWriter("bison_observe_cli_db.csv", append: true);
+            using var csv = new CsvWriter(WriterException, CultureInfo.InvariantCulture);
+
+            if(!fileExists)
+            {
+                csv.WriteHeader<Cheep>();
+                csv.NextRecord();
+            }
+
+
+
         }
 
     }
