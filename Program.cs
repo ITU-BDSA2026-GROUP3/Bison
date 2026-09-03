@@ -40,10 +40,13 @@ namespace Bison.CLI
             foreach(var cheep in cheeps)
             {
                 DateTimeOffset date = DateTimeOffset.FromUnixTimeSeconds(cheep.Timestamp).ToLocalTime();
+
+                string formattedDate = date.ToString("MM/dd/yy HH:mm:ss");
+
+                Console.WriteLine($"{cheep.Author} @ {formattedDate}: {cheep.Message}");
             }
 
 
-            
         }
 
         private static void WriteToCSV(string observation)
