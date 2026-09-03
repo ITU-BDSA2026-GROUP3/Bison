@@ -69,6 +69,9 @@ namespace Bison.CLI
                 csv.NextRecord();
             }
 
+            csv.WriteRecord(cheep);
+            csv.NextRecord();
+
 
 
         }
