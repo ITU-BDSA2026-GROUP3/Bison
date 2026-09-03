@@ -1,22 +1,26 @@
-using System.CommandLine;
+﻿using System.CommandLine;
 using System.IO;
 using System.Globalization;
 using CsvHelper;
+using SimpleDB;
 
 namespace Bison.CLI
 {
     public record Cheep(string Author, string Message, long Timestamp);
     class Program
     {
+        
         static int Main(string[] args)
         {
+            IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>();
+
             RootCommand rootCommand = new("Bison CLI for recording and reading observations.");
 
             Command readCommand = new("read","Read all recorded observations.");
 
             readCommand.SetAction(_ =>
             {
-                ReadFromCSV();
+                ReadFromCSV(database);
             });
 
             Argument<string> observationArgument = new("observation")
@@ -31,7 +35,7 @@ namespace Bison.CLI
             observeCommand.SetAction(parseResult =>
             {
                 string observation = parseResult.GetRequiredValue(observationArgument);
-                WriteToCSV(observation);
+                WriteToCSV(database, observation);
             });
 
             rootCommand.Subcommands.Add(readCommand);
@@ -40,12 +44,9 @@ namespace Bison.CLI
             return rootCommand.Parse(args).Invoke();
         }
 
-       private static void ReadFromCSV()
+       private static void ReadFromCSV(IDatabaseRepository<Cheep> database)
         {
-            using var reader = new StreamReader("bison_observe_cli_db.csv");
-            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-
-            var cheeps = csv.GetRecords<Cheep>();
+            IEnumerable<Cheep> cheeps = database.Read();
 
             foreach(var cheep in cheeps)
             {
@@ -55,12 +56,10 @@ namespace Bison.CLI
 
                 Console.WriteLine($"{cheep.Author} @ {formattedDate}: {cheep.Message}");
             }
-
-
         }
 
         //WriteToCsv now uses CsvLibrary
-        private static void WriteToCSV(string observation)
+        private static void WriteToCSV(IDatabaseRepository<Cheep> database, string observation)
         {
             var cheep = new Cheep(
                 Environment.UserName,
@@ -68,23 +67,7 @@ namespace Bison.CLI
                 DateTimeOffset.UtcNow.ToUnixTimeSeconds()
             );
 
-            bool fileExists = File.Exists("bison_observe_cli_db.csv");
-
-            using var writer = new StreamWriter("bison_observe_cli_db.csv", append: true);
-            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-
-            if(!fileExists)
-            {
-                csv.WriteHeader<Cheep>();
-                csv.NextRecord();
-            }
-
-            csv.WriteRecord(cheep);
-            csv.NextRecord();
-
-
-
+            database.Store(cheep);
         }
-
     }
 }
