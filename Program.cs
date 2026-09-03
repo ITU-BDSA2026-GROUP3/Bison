@@ -37,6 +37,11 @@ namespace Bison.CLI
             rootCommand.Subcommands.Add(readCommand);
             rootCommand.Subcommands.Add(observeCommand);
 
+            List<Cheep> list = new List<Cheep>();
+            list.Add(new Cheep("bing","bong",7));
+            list.Add(new Cheep("kling", "klong", 5));
+            list.Add(new Cheep("ging", "gong", 3));
+            UserInterface.PrintObservations(list);
             return rootCommand.Parse(args).Invoke();
         }
 
@@ -47,14 +52,7 @@ namespace Bison.CLI
 
             var cheeps = csv.GetRecords<Cheep>();
 
-            foreach(var cheep in cheeps)
-            {
-                DateTimeOffset date = DateTimeOffset.FromUnixTimeSeconds(cheep.Timestamp).ToLocalTime();
-
-                string formattedDate = date.ToString("MM/dd/yy HH:mm:ss");
-
-                Console.WriteLine($"{cheep.Author} @ {formattedDate}: {cheep.Message}");
-            }
+            UserInterface.PrintObservations(cheeps);
 
 
         }
