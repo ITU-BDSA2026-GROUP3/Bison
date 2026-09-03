@@ -6,7 +6,7 @@ using SimpleDB;
 
 namespace Bison.CLI
 {
-    public record Cheep(string Author, string Message, long Timestamp);
+    public record Cheep(string Author, string Observation, long Timestamp);
     class Program
     {
         
@@ -54,7 +54,7 @@ namespace Bison.CLI
 
                 string formattedDate = date.ToString("MM/dd/yy HH:mm:ss");
 
-                Console.WriteLine($"{cheep.Author} @ {formattedDate}: {cheep.Message}");
+                Console.WriteLine($"{cheep.Author} @ {formattedDate}: {cheep.Observation}");
             }
         }
 
