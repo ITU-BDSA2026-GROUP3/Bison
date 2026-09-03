@@ -6,3 +6,4 @@
 !README.md
 !*.cs
 !Bison.CLI.csproj
+!Client
