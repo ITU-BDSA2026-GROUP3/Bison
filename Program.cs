@@ -32,7 +32,7 @@ namespace Bison.CLI
 
        private static void ReadFromCSV()
         {
-            using var reader = new StreamReader("bison_observe_cliv_db.csv");
+            using var reader = new StreamReader("bison_observe_cli_db.csv");
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
             var cheeps = csv.GetRecords<Cheep>();
