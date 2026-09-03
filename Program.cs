@@ -1,7 +1,10 @@
 ﻿using System.IO;
+using System.Globalization;
+using CsvHelper;
 
 namespace Bison.CLI
 {
+    public record Cheep(string Author, string Message, long Timestamp);
     class Program
     {
         static void Main(string[] args)
@@ -27,31 +30,20 @@ namespace Bison.CLI
             }
         }
 
-        private static void ReadFromCSV()
+       private static void ReadFromCSV()
         {
-            StreamReader streamreader = new StreamReader("bison_observe_cli_db.csv");
+            using var read = new StreamReader("bison_observe_cliv_db.csv");
+            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
-            streamreader.ReadLine();
+            var cheeps = csv.GetRecord<Cheep>();
 
-            while (streamreader.EndOfStream == false)
+            foreach(var cheep in cheeps)
             {
-                //Edit here
-                String line = streamreader.ReadLine();
+                DateTimeOffset date = DateTimeOffset.FromUnixTimeSeconds(cheep.Timestamp).ToLocalTime();
+            }
 
-                int firstComma = line.IndexOf(',');
-                int lastComma = line.LastIndexOf(',');
 
-                string username = line.Substring(0, firstComma);
-                string observation = line.Substring(firstComma + 1, lastComma - firstComma - 1);
-                string unixTimestampStr = line.Substring(lastComma + 1);
-
-                long unixTimestamp = long.Parse(unixTimestampStr);
-                DateTimeOffset date = DateTimeOffset.FromUnixTimeSeconds(unixTimestamp).ToLocalTime();
-                string formattedDate = date.ToString("MM/dd/yy HH:mm:ss");
-                
-                Console.WriteLine($"{username} @ {formattedDate}: {observation}");            
-                }
-            streamreader.Close();
+            
         }
 
         private static void WriteToCSV(string observation)
