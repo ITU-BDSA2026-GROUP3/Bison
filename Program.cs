@@ -35,7 +35,7 @@ namespace Bison.CLI
             using var reader = new StreamReader("bison_observe_cliv_db.csv");
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
-            var cheeps = csv.GetRecord<Cheep>();
+            var cheeps = csv.GetRecords<Cheep>();
 
             foreach(var cheep in cheeps)
             {
@@ -60,8 +60,8 @@ namespace Bison.CLI
 
             bool fileExists = File.Exists("bison_observe_cli_db.csv");
 
-            using var write = new StreamWriter("bison_observe_cli_db.csv", append: true);
-            using var csv = new CsvWriter(WriterException, CultureInfo.InvariantCulture);
+            using var writer = new StreamWriter("bison_observe_cli_db.csv", append: true);
+            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
             if(!fileExists)
             {
