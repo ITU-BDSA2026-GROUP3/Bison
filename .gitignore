@@ -6,3 +6,5 @@
 !README.md
 !*.cs
 !Bison.CLI.csproj
+!SimpleDB
+!SimpleDB.csproj
