@@ -9,7 +9,7 @@ namespace SimpleDB
     {
         public IEnumerable<T> Read(int? limit = null)
         { 
-            bool fileExists = File.Exists("bison_observe_cli_db.csv");
+            bool fileExists = File.Exists(Path.Combine(AppContext.BaseDirectory, "../../../data/bison_observe_cli_db.csv"));
 
             if (!fileExists)
             {
@@ -18,7 +18,7 @@ namespace SimpleDB
                 return new List<T>();
             }
 
-            using var reader = new StreamReader("bison_observe_cli_db.csv");
+            using var reader = new StreamReader(Path.Combine(AppContext.BaseDirectory, "../../../data/bison_observe_cli_db.csv"));
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
             var cheeps = csv.GetRecords<T>().ToList();
@@ -28,9 +28,9 @@ namespace SimpleDB
         }
         public void Store(T record)
         {
-            bool fileExists = File.Exists("bison_observe_cli_db.csv");
+            bool fileExists = File.Exists(Path.Combine(AppContext.BaseDirectory, "../../../data/bison_observe_cli_db.csv"));
 
-            using var writer = new StreamWriter("bison_observe_cli_db.csv", append: true);
+            using var writer = new StreamWriter(Path.Combine(AppContext.BaseDirectory, "../../../data/bison_observe_cli_db.csv"), append: true);
             using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
             if(!fileExists)
