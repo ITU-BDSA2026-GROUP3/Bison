@@ -48,14 +48,9 @@ namespace Bison.CLI
         {
             IEnumerable<Cheep> cheeps = database.Read();
 
-            foreach(var cheep in cheeps)
-            {
-                DateTimeOffset date = DateTimeOffset.FromUnixTimeSeconds(cheep.Timestamp).ToLocalTime();
+            UserInterface.PrintObservations(cheeps);
 
-                string formattedDate = date.ToString("MM/dd/yy HH:mm:ss");
 
-                Console.WriteLine($"{cheep.Author} @ {formattedDate}: {cheep.Observation}");
-            }
         }
 
         //WriteToCsv now uses CsvLibrary
