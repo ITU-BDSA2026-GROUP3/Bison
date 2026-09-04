@@ -21,7 +21,7 @@ public static class UserInterface
     {
         foreach (CommentRec comment in comments)
         {
-            Console.WriteLine(comment);
+            Console.WriteLine(comment.Comment);
         }
     }
 
