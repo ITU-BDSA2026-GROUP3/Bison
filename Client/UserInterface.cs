@@ -13,7 +13,7 @@ public static class UserInterface
 
             string formattedDate = date.ToString("MM/dd/yy HH:mm:ss");
 
-            Console.WriteLine($"{cheep.Author} @ {formattedDate}: {cheep.Message}");
+            Console.WriteLine($"{cheep.Author} @ {formattedDate}: {cheep.Observation}");
         }
 
     }
