@@ -7,3 +7,5 @@
 !*.cs
 !Bison.CLI.csproj
 !Client
+!SimpleDB
+!SimpleDB.csproj
