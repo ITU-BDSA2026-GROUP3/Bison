@@ -5,15 +5,15 @@ using System.Collections.Generic;
 
 public static class UserInterface
 {
-    public static void PrintObservations(IEnumerable<Cheep> obs)
+    public static void PrintObservations(IEnumerable<ObservationRec> obs)
     {
-        foreach (Cheep cheep in obs)
+        foreach (ObservationRec observation in obs)
         {
-            DateTimeOffset date = DateTimeOffset.FromUnixTimeSeconds(cheep.Timestamp).ToLocalTime();
+            DateTimeOffset date = DateTimeOffset.FromUnixTimeSeconds(observation.Timestamp).ToLocalTime();
 
             string formattedDate = date.ToString("MM/dd/yy HH:mm:ss");
 
-            Console.WriteLine($"{cheep.Author} @ {formattedDate}: {cheep.Observation}");
+            Console.WriteLine($"{observation.Author} @ {formattedDate}: {observation.Observation}");
         }
 
     }

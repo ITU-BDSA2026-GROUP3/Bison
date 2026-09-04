@@ -6,13 +6,15 @@ using SimpleDB;
 
 namespace Bison.CLI
 {
-    public record Cheep(string Author, string Observation, long Timestamp);
+    public record ObservationRec(long obsID, string Author, string Observation, long Timestamp);
+    public record CommentRec(long obsID, string Comment);
     class Program
     {
         
         static int Main(string[] args)
         {
-            IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>();
+            IDatabaseRepository<ObservationRec> observationDatabase = new CSVDatabase<ObservationRec>();
+            IDatabaseRepository<CommentRec> commentDatabase = new CSVDatabase<CommentRec>();
 
             RootCommand rootCommand = new("Bison CLI for recording and reading observations.");
 
@@ -20,7 +22,8 @@ namespace Bison.CLI
 
             readCommand.SetAction(_ =>
             {
-                ReadFromCSV(database);
+
+                ReadFromCSV(observationDatabase);
             });
 
             Argument<string> observationArgument = new("observation")
@@ -35,7 +38,7 @@ namespace Bison.CLI
             observeCommand.SetAction(parseResult =>
             {
                 string observation = parseResult.GetRequiredValue(observationArgument);
-                WriteToCSV(database, observation);
+                WriteToCSV(observationDatabase, observation);
             });
 
             rootCommand.Subcommands.Add(readCommand);
@@ -44,9 +47,9 @@ namespace Bison.CLI
             return rootCommand.Parse(args).Invoke();
         }
 
-       private static void ReadFromCSV(IDatabaseRepository<Cheep> database)
+       private static void ReadFromCSV(IDatabaseRepository<ObservationRec> database)
         {
-            IEnumerable<Cheep> cheeps = database.Read();
+            IEnumerable<ObservationRec> cheeps = database.Read();
 
             UserInterface.PrintObservations(cheeps);
 
@@ -54,9 +57,10 @@ namespace Bison.CLI
         }
 
         //WriteToCsv now uses CsvLibrary
-        private static void WriteToCSV(IDatabaseRepository<Cheep> database, string observation)
+        private static void WriteToCSV(IDatabaseRepository<ObservationRec> database, string observation)
         {
-            var cheep = new Cheep(
+            var cheep = new ObservationRec(
+                0, // placeholder
                 Environment.UserName,
                 observation, 
                 DateTimeOffset.UtcNow.ToUnixTimeSeconds()
