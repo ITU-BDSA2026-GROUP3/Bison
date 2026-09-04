@@ -7,9 +7,15 @@ namespace SimpleDB
 {
     public sealed class CSVDatabase<T> : IDatabaseRepository<T> //Implements the IDatabaseRepository. Sealed means no class can inherit from CDVDatabase
     {
+        string CSVfilePath;
+        public CSVDatabase(string CSVfileName)
+        {
+            CSVfilePath = Path.Combine(AppContext.BaseDirectory, $"../../../data/{CSVfileName}.csv");
+        }
+        
         public IEnumerable<T> Read(int? limit = null)
         { 
-            bool fileExists = File.Exists(Path.Combine(AppContext.BaseDirectory, "../../../data/bison_observe_cli_db.csv"));
+            bool fileExists = File.Exists(CSVfilePath);
 
             if (!fileExists)
             {
@@ -18,7 +24,7 @@ namespace SimpleDB
                 return new List<T>();
             }
 
-            using var reader = new StreamReader(Path.Combine(AppContext.BaseDirectory, "../../../data/bison_observe_cli_db.csv"));
+            using var reader = new StreamReader(CSVfilePath);
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
 
             var cheeps = csv.GetRecords<T>().ToList();
@@ -28,9 +34,9 @@ namespace SimpleDB
         }
         public void Store(T record)
         {
-            bool fileExists = File.Exists(Path.Combine(AppContext.BaseDirectory, "../../../data/bison_observe_cli_db.csv"));
+            bool fileExists = File.Exists(CSVfilePath);
 
-            using var writer = new StreamWriter(Path.Combine(AppContext.BaseDirectory, "../../../data/bison_observe_cli_db.csv"), append: true);
+            using var writer = new StreamWriter(CSVfilePath, append: true);
             using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
             if(!fileExists)

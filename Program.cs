@@ -16,9 +16,9 @@ namespace Bison.CLI
 
             int IDcounter = 0; // temp solution
             IDatabaseRepository<ObservationRec> observationDatabase =
-                new CSVDatabase<ObservationRec>();
+                new CSVDatabase<ObservationRec>("bison_observe_cli_db");
             IDatabaseRepository<CommentRec> commentDatabase =
-                new CSVDatabase<CommentRec>();
+                new CSVDatabase<CommentRec>("bison_comment_cli_db");
 
             RootCommand rootCommand = new("Bison CLI for recording and reading observations.");
 
