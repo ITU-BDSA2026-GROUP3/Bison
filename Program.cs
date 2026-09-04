@@ -51,11 +51,11 @@ namespace Bison.CLI
                 Description = "The id of the observation"
             };
 
-            Command DiscussionCommand = new("discussion", "Read all comments for an observation.");
+            Command discussionCommand = new("discussion", "Read all comments for an observation.");
 
-            DiscussionCommand.Arguments.Add(idArgument);
+            discussionCommand.Arguments.Add(idArgument);
 
-            DiscussionCommand.SetAction(parseResult =>
+            discussionCommand.SetAction(parseResult =>
             {
                 long id = parseResult.GetRequiredValue(idArgument);
 
@@ -84,6 +84,7 @@ namespace Bison.CLI
 
             rootCommand.Subcommands.Add(readCommand);
             rootCommand.Subcommands.Add(observeCommand);
+            rootCommand.Subcommands.Add(discussionCommand);
             rootCommand.Subcommands.Add(commentCommand);
 
             return rootCommand.Parse(args).Invoke();
