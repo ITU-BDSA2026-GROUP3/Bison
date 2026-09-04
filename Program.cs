@@ -78,7 +78,14 @@ namespace Bison.CLI
             {
                 string comment = parseResult.GetRequiredValue(commentArgument);
                 long id = parseResult.GetRequiredValue(idArgument);
-                commentDatabase.Store(new CommentRec(id,comment));
+                foreach(ObservationRec obs in observationDatabase.Read()) // ensures an observation with that id exists before adding comment
+                {
+                    if(obs.obsID == id)
+                    {
+                        commentDatabase.Store(new CommentRec(id, comment));
+                        break;
+                    }
+                }
             });
 
 
