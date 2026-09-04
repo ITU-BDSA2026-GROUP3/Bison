@@ -37,11 +37,6 @@ namespace Bison.CLI
             rootCommand.Subcommands.Add(readCommand);
             rootCommand.Subcommands.Add(observeCommand);
 
-            List<Cheep> list = new List<Cheep>();
-            list.Add(new Cheep("bing","bong",7));
-            list.Add(new Cheep("kling", "klong", 5));
-            list.Add(new Cheep("ging", "gong", 3));
-            UserInterface.PrintObservations(list);
             return rootCommand.Parse(args).Invoke();
         }
 
