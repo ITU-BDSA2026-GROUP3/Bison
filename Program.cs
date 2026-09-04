@@ -6,13 +6,19 @@ using SimpleDB;
 
 namespace Bison.CLI
 {
-    public record Cheep(string Author, string Observation, long Timestamp);
+    public record ObservationRec(long obsID, string Author, string Observation, long Timestamp);
+    public record CommentRec(long obsID, string Comment);
     class Program
     {
         
         static int Main(string[] args)
         {
-            IDatabaseRepository<Cheep> database = new CSVDatabase<Cheep>();
+
+            int IDcounter = 0; // temp solution
+            IDatabaseRepository<ObservationRec> observationDatabase =
+                new CSVDatabase<ObservationRec>("bison_observe_cli_db");
+            IDatabaseRepository<CommentRec> commentDatabase =
+                new CSVDatabase<CommentRec>("bison_comment_cli_db");
 
             RootCommand rootCommand = new("Bison CLI for recording and reading observations.");
 
@@ -20,7 +26,8 @@ namespace Bison.CLI
 
             readCommand.SetAction(_ =>
             {
-                ReadFromCSV(database);
+
+                ReadFromCSV(observationDatabase);
             });
 
             Argument<string> observationArgument = new("observation")
@@ -35,18 +42,64 @@ namespace Bison.CLI
             observeCommand.SetAction(parseResult =>
             {
                 string observation = parseResult.GetRequiredValue(observationArgument);
-                WriteToCSV(database, observation);
+                WriteToCSV(observationDatabase, observation,IDcounter);
             });
+
+
+            Argument<long> idArgument = new("id")
+            {
+                Description = "The id of the observation"
+            };
+
+            Command discussionCommand = new("discussion", "Read all comments for an observation.");
+
+            discussionCommand.Arguments.Add(idArgument);
+
+            discussionCommand.SetAction(parseResult =>
+            {
+                long id = parseResult.GetRequiredValue(idArgument);
+
+                UserInterface.PrintComments(
+                    commentDatabase.Read()
+                        .Where(comment => comment.obsID == id));
+            });
+
+            Argument<string> commentArgument = new("comment")
+            {
+                Description = "The comment to record."
+            };
+
+            Command commentCommand = new("comment", "Add a comment to an observation.");
+
+            commentCommand.Arguments.Add(commentArgument);
+            commentCommand.Arguments.Add(idArgument);
+
+            commentCommand.SetAction(parseResult =>
+            {
+                string comment = parseResult.GetRequiredValue(commentArgument);
+                long id = parseResult.GetRequiredValue(idArgument);
+                foreach(ObservationRec obs in observationDatabase.Read()) // ensures an observation with that id exists before adding comment
+                {
+                    if(obs.obsID == id)
+                    {
+                        commentDatabase.Store(new CommentRec(id, comment));
+                        break;
+                    }
+                }
+            });
+
 
             rootCommand.Subcommands.Add(readCommand);
             rootCommand.Subcommands.Add(observeCommand);
+            rootCommand.Subcommands.Add(discussionCommand);
+            rootCommand.Subcommands.Add(commentCommand);
 
             return rootCommand.Parse(args).Invoke();
         }
 
-       private static void ReadFromCSV(IDatabaseRepository<Cheep> database)
+       private static void ReadFromCSV(IDatabaseRepository<ObservationRec> database)
         {
-            IEnumerable<Cheep> cheeps = database.Read();
+            IEnumerable<ObservationRec> cheeps = database.Read();
 
             UserInterface.PrintObservations(cheeps);
 
@@ -54,9 +107,10 @@ namespace Bison.CLI
         }
 
         //WriteToCsv now uses CsvLibrary
-        private static void WriteToCSV(IDatabaseRepository<Cheep> database, string observation)
+        private static void WriteToCSV(IDatabaseRepository<ObservationRec> database, string observation, long id)
         {
-            var cheep = new Cheep(
+            var cheep = new ObservationRec(
+                id,
                 Environment.UserName,
                 observation, 
                 DateTimeOffset.UtcNow.ToUnixTimeSeconds()
