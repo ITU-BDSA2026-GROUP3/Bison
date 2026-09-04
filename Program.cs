@@ -13,6 +13,8 @@ namespace Bison.CLI
         
         static int Main(string[] args)
         {
+
+            int IDcounter = 0; // temp solution
             IDatabaseRepository<ObservationRec> observationDatabase = new CSVDatabase<ObservationRec>();
             IDatabaseRepository<CommentRec> commentDatabase = new CSVDatabase<CommentRec>();
 
@@ -41,8 +43,32 @@ namespace Bison.CLI
                 WriteToCSV(observationDatabase, observation);
             });
 
+            Argument<string> commentArgument = new("comment")
+            {
+                Description = "The comment to record."
+            };
+
+            Argument<long> idArgument = new("id")
+            {
+                Description = "The id of the observation to comment."
+            };
+
+            Command commentCommand = new("comment", "Add a comment to an observation");
+
+            commentCommand.Arguments.Add(commentArgument);
+            commentCommand.Arguments.Add(idArgument);
+
+            commentCommand.SetAction(parseResult =>
+            {
+                string comment = parseResult.GetRequiredValue(commentArgument);
+                long id = parseResult.GetRequiredValue(idArgument);
+                commentDatabase.Store(new CommentRec(id,comment));
+            });
+
+
             rootCommand.Subcommands.Add(readCommand);
             rootCommand.Subcommands.Add(observeCommand);
+            rootCommand.Subcommands.Add(commentCommand);
 
             return rootCommand.Parse(args).Invoke();
         }
