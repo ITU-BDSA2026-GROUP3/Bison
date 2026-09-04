@@ -15,7 +15,14 @@ public static class UserInterface
 
             Console.WriteLine($"{observation.Author} @ {formattedDate}: {observation.Observation}");
         }
+    }
 
+    public static void PrintComments(IEnumerable<CommentRec> comments)
+    {
+        foreach (CommentRec comment in comments)
+        {
+            Console.WriteLine(comment);
+        }
     }
 
 }

@@ -43,17 +43,29 @@ namespace Bison.CLI
                 WriteToCSV(observationDatabase, observation);
             });
 
+
+            Argument<long> idArgument = new("id")
+            {
+                Description = "The id of the observation"
+            };
+
+            Command DiscussionCommand = new("discussion", "Read all comments for an observation.");
+
+            DiscussionCommand.Arguments.Add(idArgument);
+
+            DiscussionCommand.SetAction(parseResult =>
+            {
+                long id = parseResult.GetRequiredValue(idArgument);
+
+                //UserInterface.PrintComments();
+            });
+
             Argument<string> commentArgument = new("comment")
             {
                 Description = "The comment to record."
             };
 
-            Argument<long> idArgument = new("id")
-            {
-                Description = "The id of the observation to comment."
-            };
-
-            Command commentCommand = new("comment", "Add a comment to an observation");
+            Command commentCommand = new("comment", "Add a comment to an observation.");
 
             commentCommand.Arguments.Add(commentArgument);
             commentCommand.Arguments.Add(idArgument);
