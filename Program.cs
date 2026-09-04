@@ -59,7 +59,9 @@ namespace Bison.CLI
             {
                 long id = parseResult.GetRequiredValue(idArgument);
 
-                //UserInterface.PrintComments();
+                UserInterface.PrintComments(
+                    commentDatabase.Read()
+                        .Where(comment => comment.obsID == id));
             });
 
             Argument<string> commentArgument = new("comment")
