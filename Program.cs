@@ -42,7 +42,7 @@ namespace Bison.CLI
             observeCommand.SetAction(parseResult =>
             {
                 string observation = parseResult.GetRequiredValue(observationArgument);
-                WriteToCSV(observationDatabase, observation);
+                WriteToCSV(observationDatabase, observation,IDcounter);
             });
 
 
@@ -107,10 +107,10 @@ namespace Bison.CLI
         }
 
         //WriteToCsv now uses CsvLibrary
-        private static void WriteToCSV(IDatabaseRepository<ObservationRec> database, string observation)
+        private static void WriteToCSV(IDatabaseRepository<ObservationRec> database, string observation, long id)
         {
             var cheep = new ObservationRec(
-                0, // placeholder
+                id,
                 Environment.UserName,
                 observation, 
                 DateTimeOffset.UtcNow.ToUnixTimeSeconds()
