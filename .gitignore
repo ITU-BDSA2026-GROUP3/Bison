@@ -9,3 +9,5 @@
 !Client
 !SimpleDB
 !SimpleDB.csproj
+!data
+!data/*.csv
