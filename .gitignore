@@ -15,5 +15,6 @@
 !Client
 !SimpleDB
 !SimpleDB.csproj
+!Directory.build.props
 !data
 !data/*.csv
