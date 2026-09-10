@@ -19,8 +19,6 @@ namespace SimpleDB
 
             if (!fileExists)
             {
-                Console.WriteLine("No prior observations have been made.");
-                Console.WriteLine("Please create an observation before reading.");
                 return new List<T>();
             }
 
