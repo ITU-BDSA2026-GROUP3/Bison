@@ -22,14 +22,3 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Publish Windows 
-      run: dotnet publish -c Release -r win-x64 --self-contained true -o publish/win
-    - name: Publish Linux
-      run: dotnet publish -c Release -r linux-x64 --self-contained true -o publish/linux
-    - name: Publish macOS
-      run: dotnet publish -c Release -r osx-x64 --self-contained true -o publish/mac
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-       name: builds
-       path: publish/
