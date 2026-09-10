@@ -11,3 +11,5 @@
 !SimpleDB.csproj
 !data
 !data/*.csv
+!.github/
+!.github/**
