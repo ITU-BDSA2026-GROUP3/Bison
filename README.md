@@ -1,4 +1,2 @@
 # Bison.CLI
-# test
-
 
