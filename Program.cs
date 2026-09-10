@@ -13,12 +13,15 @@ namespace Bison.CLI
         
         static int Main(string[] args)
         {
-
-            int IDcounter = 0; // temp solution
+            string observationFileName = "bison_observe_cli_db";
+            string commentFileName = "bison_comment_cli_db";
+            
             IDatabaseRepository<ObservationRec> observationDatabase =
-                new CSVDatabase<ObservationRec>("bison_observe_cli_db");
+                new CSVDatabase<ObservationRec>(observationFileName);
             IDatabaseRepository<CommentRec> commentDatabase =
-                new CSVDatabase<CommentRec>("bison_comment_cli_db");
+                new CSVDatabase<CommentRec>(commentFileName);
+
+            long IDcounter = GetIDSuccesor(observationDatabase); // temp solution
 
             RootCommand rootCommand = new("Bison CLI for recording and reading observations.");
 
@@ -117,6 +120,17 @@ namespace Bison.CLI
             );
 
             database.Store(cheep);
+        }
+
+        private static long GetIDSuccesor(IDatabaseRepository<ObservationRec> database)
+        {
+            var cheeps = database.Read();
+            if(cheeps.Count() == 0) return 0;
+
+            var cheep = cheeps.LastOrDefault();
+
+            if(cheep == null) return 0;
+            return cheep.obsID+1;
         }
     }
 }

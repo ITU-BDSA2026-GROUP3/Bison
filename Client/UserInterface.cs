@@ -7,6 +7,12 @@ public static class UserInterface
 {
     public static void PrintObservations(IEnumerable<ObservationRec> obs)
     {
+        if(obs.Count() == 0)
+        {
+            Console.WriteLine("No prior observations have been made.");
+            Console.WriteLine("Please create an observation before reading.");
+            return;
+        }
         foreach (ObservationRec observation in obs)
         {
             DateTimeOffset date = DateTimeOffset.FromUnixTimeSeconds(observation.Timestamp).ToLocalTime();
