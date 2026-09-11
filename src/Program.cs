@@ -15,10 +15,13 @@ namespace Bison.CLI
 
         const string observationTableName = "bison_observe_cli_db";
 
-        const string commentTableName = "bison_observe_cli_db";
+        const string commentTableName = "bison_comment_cli_db";
         static int Main(string[] args)
         {
-            CSVDatabase.Instance.DirectoryPath = "/data"; // lazy solution to set directory path
+            CSVDatabase.Instance.DirectoryPath = Path.Combine(AppContext.BaseDirectory, "data"); // lazy solution to set directory path"
+
+            database.CreateTable<ObservationRec>(observationTableName);
+            database.CreateTable<CommentRec>(commentTableName);
 
             long IDcounter = GetIDSuccesor(); // temp solution
 
