@@ -10,50 +10,67 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-dotnet@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore Bison.sln
 
       - name: Build
-        run: dotnet build -c Release --no-restore
+        run: dotnet build Bison.sln -c Release --no-restore
 
       - name: Test
-        run: dotnet test -c Release --no-build
+        run: dotnet test Bison.sln -c Release --no-build
 
       - name: Publish Windows
         run: |
-          dotnet publish -c Release -r win-x64 \
+          dotnet publish src/Bison.CLI.csproj \
+            -c Release \
+            -r win-x64 \
+            --no-build \
             --self-contained false \
             -p:PublishSingleFile=true \
             -o publish/win
 
       - name: Publish Linux
         run: |
-          dotnet publish -c Release -r linux-x64 \
+          dotnet publish src/Bison.CLI.csproj \
+            -c Release \
+            -r linux-x64 \
+            --no-build \
             --self-contained false \
             -p:PublishSingleFile=true \
             -o publish/linux
 
       - name: Publish macOS
         run: |
-          dotnet publish -c Release -r osx-x64 \
+          dotnet publish src/Bison.CLI.csproj \
+            -c Release \
+            -r osx-x64 \
+            --no-build \
             --self-contained false \
             -p:PublishSingleFile=true \
             -o publish/mac
 
       - name: Zip Windows
-        run: cd publish/win && zip -r ../../bison-win-x64.zip .
+        run: |
+          cd publish/win
+          zip -r ../../bison-win-x64.zip .
 
       - name: Zip Linux
-        run: cd publish/linux && zip -r ../../bison-linux-x64.zip .
+        run: |
+          cd publish/linux
+          zip -r ../../bison-linux-x64.zip .
 
       - name: Zip macOS
-        run: cd publish/mac && zip -r ../../bison-osx-x64.zip .
+        run: |
+          cd publish/mac
+          zip -r ../../bison-osx-x64.zip .
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
