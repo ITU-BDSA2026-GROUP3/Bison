@@ -5,10 +5,17 @@
 !.gitignore
 !README.md
 !*.cs
+!*.sln
 !Bison.CLI.csproj
+!src
+!src/**
+**/bin/
+**/obj/
+!test
 !Client
 !SimpleDB
 !SimpleDB.csproj
+!Directory.build.props
 !data
 !data/*.csv
 !.github/
