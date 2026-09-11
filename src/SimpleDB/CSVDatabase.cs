@@ -41,7 +41,7 @@ namespace SimpleDB
         {
         }
 
-        public void CreateTable<T>(string TableName, T value)
+        public void CreateTable<T>(string TableName)
         {
             Table<T> table = new Table<T>(TableName,DirectoryPath);
             TableLookup.Add(TableName, table);
@@ -49,9 +49,9 @@ namespace SimpleDB
 
 
         
-        public IEnumerable Read(string TableName, int? limit = null)
+        public IEnumerable<T> Read<T>(string TableName, int? limit = null)
         {
-            return TableLookup[TableName].Read();
+            return TableLookup[TableName].Read<T>();
 
         }
         public void Store<T> (string TableName, T record)
@@ -78,7 +78,7 @@ namespace SimpleDB
                 }
             }
 
-            internal abstract IEnumerable Read(int? limit = null);
+            internal abstract IEnumerable<T> Read<T>(int? limit = null);
             internal abstract void Store<T>(T record);
 
         }
@@ -91,7 +91,7 @@ namespace SimpleDB
                 CSVFilePath = Path.Combine(dirPath, $"/{TableName}.csv");
             }
 
-            internal override IEnumerable Read(int? limit = null)
+            internal override IEnumerable<T> Read<T>(int? limit = null)
             {
                 bool fileExists = File.Exists(CSVFilePath);
 
