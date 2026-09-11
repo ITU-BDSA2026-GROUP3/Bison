@@ -18,8 +18,14 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Restore
-        run: dotnet restore Bison.sln
+      - name: Restore Windows
+        run: dotnet restore src/Bison.CLI.csproj -r win-x64
+
+      - name: Restore Linux
+        run: dotnet restore src/Bison.CLI.csproj -r linux-x64
+
+      - name: Restore macOS
+        run: dotnet restore src/Bison.CLI.csproj -r osx-x64
 
       - name: Build
         run: dotnet build Bison.sln -c Release --no-restore
