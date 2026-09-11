@@ -43,7 +43,7 @@ namespace SimpleDB
 
         public void CreateTable<T>(string TableName)
         {
-            Table<T> table = new Table<T>(TableName,DirectoryPath);
+            Table<T> table = new Table<T>(TableName, DirectoryPath);
             TableLookup.Add(TableName, table);
         }
 
@@ -70,8 +70,8 @@ namespace SimpleDB
 
                 set
                 {
-                    if (!File.Exists(value))
-                    { // creates directory if it doesn't exist yet
+                    if(!File.Exists(value))
+                    { // creates file if it doesn't exist yet
                         File.Create(value);
                     }
                     csvFilePath = value;
@@ -88,7 +88,8 @@ namespace SimpleDB
             internal Table(string tName, string dirPath)
             {
                 TableName = tName;
-                CSVFilePath = Path.Combine(dirPath, $"/{TableName}.csv");
+                CSVFilePath = dirPath + $"\\{TableName}.csv";
+                
             }
 
             internal override IEnumerable<T> Read<T>(int? limit = null)
