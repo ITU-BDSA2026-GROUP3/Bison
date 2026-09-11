@@ -2,49 +2,128 @@
 using System.IO;
 using System.Globalization;
 using CsvHelper;
+using System.Collections;
 
 namespace SimpleDB
 {
-    public sealed class CSVDatabase<T> : IDatabaseRepository<T> //Implements the IDatabaseRepository. Sealed means no class can inherit from CDVDatabase
+    public sealed class CSVDatabase : IDatabaseRepository //Implements the IDatabaseRepository. Sealed means no class can inherit from CDVDatabase
     {
-        string CSVfilePath;
-        public CSVDatabase(string CSVfileName)
-        {
-            CSVfilePath = Path.Combine(AppContext.BaseDirectory, $"../../../data/{CSVfileName}.csv");
-        }
-        
-        public IEnumerable<T> Read(int? limit = null)
-        { 
-            bool fileExists = File.Exists(CSVfilePath);
+        private static CSVDatabase instance = null;
 
-            if (!fileExists)
+        public static CSVDatabase Instance
+        {
+            get
             {
-                return new List<T>();
+                if (instance == null)
+                {
+                    instance = new CSVDatabase();
+                }
+                return instance;
+            }
+        }
+
+
+        private string directoryPath;
+        public string DirectoryPath{
+            get { return directoryPath; }
+
+            set
+            { if (!Path.Exists(value)){ // creates directory if it doesn't exist yet
+                    Directory.CreateDirectory(value);
+                }
+                directoryPath = value;
+            }
+        }
+        private Dictionary<string, Table> TableLookup = new Dictionary<string, Table>();
+
+
+        private CSVDatabase()
+        {
+        }
+
+        public void CreateTable<T>(string TableName, T value)
+        {
+            Table<T> table = new Table<T>(TableName,DirectoryPath);
+            TableLookup.Add(TableName, table);
+        }
+
+
+        
+        public IEnumerable Read(string TableName, int? limit = null)
+        {
+            return TableLookup[TableName].Read();
+
+        }
+        public void Store<T> (string TableName, T record)
+        {
+            TableLookup[TableName].Store(record);
+        }
+
+        internal abstract class Table
+        {
+            internal string TableName;
+
+            internal string csvFilePath = "";
+            public string CSVFilePath
+            {
+                get { return csvFilePath; }
+
+                set
+                {
+                    if (!File.Exists(value))
+                    { // creates directory if it doesn't exist yet
+                        File.Create(value);
+                    }
+                    csvFilePath = value;
+                }
             }
 
-            using var reader = new StreamReader(CSVfilePath);
-            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-
-            var cheeps = csv.GetRecords<T>().ToList();
-
-            return cheeps;
+            internal abstract IEnumerable Read(int? limit = null);
+            internal abstract void Store<T>(T record);
 
         }
-        public void Store(T record)
+
+        internal class Table<T> : Table
         {
-            bool fileExists = File.Exists(CSVfilePath);
-
-            using var writer = new StreamWriter(CSVfilePath, append: true);
-            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-
-            if(!fileExists)
+            internal Table(string tName, string dirPath)
             {
-                csv.WriteHeader<T>();
+                TableName = tName;
+                CSVFilePath = Path.Combine(dirPath, $"/{TableName}.csv");
+            }
+
+            internal override IEnumerable Read(int? limit = null)
+            {
+                bool fileExists = File.Exists(CSVFilePath);
+
+                if (!fileExists)
+                {
+                    return new List<T>();
+                }
+
+                using var reader = new StreamReader(CSVFilePath);
+                using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+
+                var cheeps = csv.GetRecords<T>().ToList();
+
+                return cheeps;
+            }
+
+            internal override void Store<T>(T record)
+            {
+                bool fileExists = File.Exists(CSVFilePath);
+
+                using var writer = new StreamWriter(CSVFilePath, append: true);
+                using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+
+                if (!fileExists)
+                {
+                    csv.WriteHeader<T>();
+                    csv.NextRecord();
+                }
+
+                csv.WriteRecord(record);
                 csv.NextRecord();
             }
-
-            csv.WriteRecord(record);
-            csv.NextRecord();
         }
     }
 }

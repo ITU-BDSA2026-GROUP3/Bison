@@ -1,8 +1,10 @@
+using System.Collections;
+
 namespace SimpleDB
 {
-    public interface IDatabaseRepository<T>
+    public interface IDatabaseRepository
     {
-        public IEnumerable<T> Read(int? limit = null);
-        public void Store(T record);
+        public IEnumerable Read(string tableName,int? limit = null);
+        public void Store<T>(string tableName,T record);
     }
 }

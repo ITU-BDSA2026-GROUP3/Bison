@@ -6,8 +6,9 @@ using SimpleDB;
 
 namespace Bison.CLI
 {
-    public record ObservationRec(long obsID, string Author, string Observation, long Timestamp);
-    public record CommentRec(long obsID, string Comment);
+    public abstract record rec();
+    public record ObservationRec(long obsID, string Author, string Observation, long Timestamp) : rec;
+    public record CommentRec(long obsID, string Comment) : rec;
     class Program
     {
         
