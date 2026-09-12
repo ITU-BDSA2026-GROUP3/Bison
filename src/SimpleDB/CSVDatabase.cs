@@ -106,17 +106,17 @@ namespace SimpleDB
 
                 var cheeps = csv.GetRecords<T>().ToList();
 
+                reader.Close();
                 return cheeps;
             }
 
             internal override void Store<T>(T record)
             {
-                bool fileExists = File.Exists(CSVFilePath);
-
+                bool hasHeader = ValidateHeader();
                 using var writer = new StreamWriter(CSVFilePath, append: true);
                 using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
-                if (!fileExists)
+                if (hasHeader)
                 {
                     csv.WriteHeader<T>();
                     csv.NextRecord();
@@ -124,6 +124,26 @@ namespace SimpleDB
 
                 csv.WriteRecord(record);
                 csv.NextRecord();
+                writer.Close();
+            }
+            private bool ValidateHeader()
+            {
+                using var reader = new StreamReader(CSVFilePath);
+                using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+                try
+                {
+                    csv.ReadHeader(); // seems to always throw an exception even if there is a header
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+                finally
+                {
+                    reader.Close();
+                }
+
             }
         }
     }
