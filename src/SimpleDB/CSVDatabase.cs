@@ -116,7 +116,7 @@ namespace SimpleDB
                 using var writer = new StreamWriter(CSVFilePath, append: true);
                 using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
 
-                if (hasHeader)
+                if (!hasHeader)
                 {
                     csv.WriteHeader<T>();
                     csv.NextRecord();
