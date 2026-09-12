@@ -124,7 +124,7 @@ namespace SimpleDB
 
                 csv.WriteRecord(record);
                 csv.NextRecord();
-                writer.Close();
+
             }
             private bool ValidateHeader()
             {
@@ -132,6 +132,7 @@ namespace SimpleDB
                 using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
                 try
                 {
+                    csv.Read();
                     csv.ReadHeader(); // seems to always throw an exception even if there is a header
                     return true;
                 }
