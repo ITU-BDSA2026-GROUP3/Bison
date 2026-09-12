@@ -20,6 +20,6 @@
 !data/*.csv
 !.github/
 !.github/**
-
+!.editorconfig
 !test/
 !test/**
