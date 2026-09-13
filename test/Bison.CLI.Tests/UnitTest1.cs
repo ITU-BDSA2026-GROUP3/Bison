@@ -40,8 +40,10 @@ public class UnitTest1 : IDisposable
     [Fact]
     public void CommentOnExistingDiscussion()
     {
-        observedb.Store(new ObservationRec(0, "Tester", "Let's have a discussion", 2));
-        commentdb.Store(new CommentRec(0, "Good chat fellow chap"));
+        var rootCommands = Program.getRootCommands(observedb, commentdb, 0);
+
+        rootCommands.Parse(new[] {"observe", "hello testing observe"}).Invoke();
+        rootCommands.Parse(new[] {"comment", "hello testing comment", "0"}).Invoke();
 
         var cheeps = commentdb.Read();
 
@@ -53,7 +55,9 @@ public class UnitTest1 : IDisposable
     [Fact]
     public void CantCommentOnNonExistingObservations()
     {
-        commentdb.Store(new CommentRec(0, "Im devilish and trying to comment on a discussion that doesnt exist >:)"));
+        var rootCommands = Program.getRootCommands(observedb, commentdb, 0);
+        
+        rootCommands.Parse(new[] {"comment", "I'm EVIL and commenting on an empty observation >:)", "666"}).Invoke();
 
         var cheeps = commentdb.Read();
 
