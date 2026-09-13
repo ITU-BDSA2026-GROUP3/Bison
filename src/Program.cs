@@ -23,6 +23,13 @@ namespace Bison.CLI
 
             long IDcounter = GetIDSuccesor(observationDatabase); // temp solution
 
+            RootCommand rootCommand = getRootCommands(observationDatabase, commentDatabase, IDcounter);
+
+            return rootCommand.Parse(args).Invoke();
+        }
+
+        public static RootCommand getRootCommands(IDatabaseRepository<ObservationRec> observationDatabase, IDatabaseRepository<CommentRec> commentDatabase, long IDcounter)
+        {
             RootCommand rootCommand = new("Bison CLI for recording and reading observations.");
 
             Command readCommand = new("read","Read all recorded observations.");
@@ -97,7 +104,7 @@ namespace Bison.CLI
             rootCommand.Subcommands.Add(discussionCommand);
             rootCommand.Subcommands.Add(commentCommand);
 
-            return rootCommand.Parse(args).Invoke();
+            return rootCommand;
         }
 
        private static void ReadFromCSV(IDatabaseRepository<ObservationRec> database)
