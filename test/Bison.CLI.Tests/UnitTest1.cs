@@ -66,6 +66,28 @@ public class UnitTest1 : IDisposable
         Assert.Null(comment);
     }
 
+    [Fact]
+    public void MultipleCommentsOnOneObservation()
+    {
+        var rootCommands = Program.getRootCommands(observedb, commentdb, 0);
+
+        rootCommands.Parse(new[] {"observe", "i observe"}).Invoke();
+        rootCommands.Parse(new[] {"comment", "i comment", "0"}).Invoke();
+        rootCommands.Parse(new[] {"comment", "me 2", "0"}).Invoke();
+        rootCommands.Parse(new[] {"comment", "me 3", "0"}).Invoke();
+
+        var cheeps = commentdb.Read();
+
+        var commentCounter = 0;
+
+        foreach(CommentRec cheep in cheeps)
+        {
+            if(cheep.obsID == 0) commentCounter++;
+        }
+
+        Assert.Equal(3, commentCounter);
+    }
+
     public void Dispose()
     {
         if (File.Exists(obsFilePath))
