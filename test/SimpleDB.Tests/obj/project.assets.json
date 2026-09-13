@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
     "net8.0": {
       "coverlet.collector/6.0.0": {
@@ -5666,19 +5666,19 @@
     ]
   },
   "packageFolders": {
-    "/home/jonas/.nuget/packages/": {}
+    "C:\\Users\\emilk\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/jonas/Documents/Analysis, Design and Software Architecture/project/Bison/test/SimpleDB.Tests/SimpleDB.Tests.csproj",
+      "projectUniqueName": "C:\\Users\\emilk\\Programming\\Projects\\GitHub\\Bison\\test\\SimpleDB.Tests\\SimpleDB.Tests.csproj",
       "projectName": "SimpleDB.Tests",
-      "projectPath": "/home/jonas/Documents/Analysis, Design and Software Architecture/project/Bison/test/SimpleDB.Tests/SimpleDB.Tests.csproj",
-      "packagesPath": "/home/jonas/.nuget/packages/",
-      "outputPath": "/home/jonas/Documents/Analysis, Design and Software Architecture/project/Bison/test/SimpleDB.Tests/obj/",
+      "projectPath": "C:\\Users\\emilk\\Programming\\Projects\\GitHub\\Bison\\test\\SimpleDB.Tests\\SimpleDB.Tests.csproj",
+      "packagesPath": "C:\\Users\\emilk\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\emilk\\Programming\\Projects\\GitHub\\Bison\\test\\SimpleDB.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/jonas/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\emilk\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -5688,10 +5688,11 @@
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/home/jonas/Documents/Analysis, Design and Software Architecture/project/Bison/src/SimpleDB/SimpleDB.csproj": {
-              "projectPath": "/home/jonas/Documents/Analysis, Design and Software Architecture/project/Bison/src/SimpleDB/SimpleDB.csproj"
+            "C:\\Users\\emilk\\Programming\\Projects\\GitHub\\Bison\\src\\SimpleDB\\SimpleDB.csproj": {
+              "projectPath": "C:\\Users\\emilk\\Programming\\Projects\\GitHub\\Bison\\src\\SimpleDB\\SimpleDB.csproj"
             }
           }
         }
@@ -5705,10 +5706,12 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "10.0.300"
     },
     "frameworks": {
       "net8.0": {
+        "framework": "net8.0",
         "targetAlias": "net8.0",
         "dependencies": {
           "Microsoft.NET.Test.Sdk": {
@@ -5739,12 +5742,26 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.27, 8.0.27]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.27, 8.0.27]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.27, 8.0.27]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/snap/dotnet-sdk/256/sdk/8.0.407/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

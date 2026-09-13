@@ -8,7 +8,7 @@ namespace Bison.CLI
 {
     public record ObservationRec(long obsID, string Author, string Observation, long Timestamp);
     public record CommentRec(long obsID, string Comment);
-    class Program
+    public class Program
     {
         
         static int Main(string[] args)
@@ -122,7 +122,7 @@ namespace Bison.CLI
             database.Store(cheep);
         }
 
-        private static long GetIDSuccesor(IDatabaseRepository<ObservationRec> database)
+        public static long GetIDSuccesor(IDatabaseRepository<ObservationRec> database)
         {
             var cheeps = database.Read();
             if(cheeps.Count() == 0) return 0;
