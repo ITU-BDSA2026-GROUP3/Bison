@@ -1,27 +1,29 @@
-﻿using System.CommandLine;
-using System.IO;
+﻿using SimpleDB;
+using System.CommandLine;
 using System.Globalization;
-using CsvHelper;
-using SimpleDB;
+using System.IO;
+using System.Xml.Linq;
 
 namespace Bison.CLI
 {
-    public record ObservationRec(long obsID, string Author, string Observation, long Timestamp);
-    public record CommentRec(long obsID, string Comment);
+    public abstract record rec();
+    public record ObservationRec(long obsID, string Author, string Observation, long Timestamp) : rec;
+    public record CommentRec(long obsID, string Comment) : rec;
     class Program
     {
-        
+        static readonly IDatabaseRepository database = CSVDatabase.Instance;
+
+        const string observationTableName = "bison_observe_cli_db";
+
+        const string commentTableName = "bison_comment_cli_db";
         static int Main(string[] args)
         {
-            string observationFileName = "bison_observe_cli_db";
-            string commentFileName = "bison_comment_cli_db";
-            
-            IDatabaseRepository<ObservationRec> observationDatabase =
-                new CSVDatabase<ObservationRec>(observationFileName);
-            IDatabaseRepository<CommentRec> commentDatabase =
-                new CSVDatabase<CommentRec>(commentFileName);
+            CSVDatabase.Instance.DirectoryPath = Path.Combine(AppContext.BaseDirectory, "data"); // lazy solution to set directory path"
 
-            long IDcounter = GetIDSuccesor(observationDatabase); // temp solution
+            database.CreateTable<ObservationRec>(observationTableName);
+            database.CreateTable<CommentRec>(commentTableName);
+
+            long IDcounter = GetIDSuccesor(); // temp solution
 
             RootCommand rootCommand = new("Bison CLI for recording and reading observations.");
 
@@ -29,8 +31,7 @@ namespace Bison.CLI
 
             readCommand.SetAction(_ =>
             {
-
-                ReadFromCSV(observationDatabase);
+                ReadObservations();
             });
 
             Argument<string> observationArgument = new("observation")
@@ -45,7 +46,7 @@ namespace Bison.CLI
             observeCommand.SetAction(parseResult =>
             {
                 string observation = parseResult.GetRequiredValue(observationArgument);
-                WriteToCSV(observationDatabase, observation,IDcounter);
+                WriteObservation(observation,IDcounter);
             });
 
 
@@ -60,11 +61,7 @@ namespace Bison.CLI
 
             discussionCommand.SetAction(parseResult =>
             {
-                long id = parseResult.GetRequiredValue(idArgument);
-
-                UserInterface.PrintComments(
-                    commentDatabase.Read()
-                        .Where(comment => comment.obsID == id));
+                ReadComments(parseResult.GetRequiredValue(idArgument));
             });
 
             Argument<string> commentArgument = new("comment")
@@ -81,14 +78,8 @@ namespace Bison.CLI
             {
                 string comment = parseResult.GetRequiredValue(commentArgument);
                 long id = parseResult.GetRequiredValue(idArgument);
-                foreach(ObservationRec obs in observationDatabase.Read()) // ensures an observation with that id exists before adding comment
-                {
-                    if(obs.obsID == id)
-                    {
-                        commentDatabase.Store(new CommentRec(id, comment));
-                        break;
-                    }
-                }
+                WriteComment(comment, id);
+     
             });
 
 
@@ -100,17 +91,16 @@ namespace Bison.CLI
             return rootCommand.Parse(args).Invoke();
         }
 
-       private static void ReadFromCSV(IDatabaseRepository<ObservationRec> database)
+       private static void ReadObservations()
         {
-            IEnumerable<ObservationRec> cheeps = database.Read();
+            IEnumerable<ObservationRec> cheeps = database.Read<ObservationRec>(observationTableName);
 
             UserInterface.PrintObservations(cheeps);
 
 
         }
 
-        //WriteToCsv now uses CsvLibrary
-        private static void WriteToCSV(IDatabaseRepository<ObservationRec> database, string observation, long id)
+        private static void WriteObservation(string observation, long id)
         {
             var cheep = new ObservationRec(
                 id,
@@ -119,12 +109,31 @@ namespace Bison.CLI
                 DateTimeOffset.UtcNow.ToUnixTimeSeconds()
             );
 
-            database.Store(cheep);
+            database.Store<ObservationRec>(observationTableName,cheep);
         }
 
-        private static long GetIDSuccesor(IDatabaseRepository<ObservationRec> database)
+        private static void ReadComments(long id)
         {
-            var cheeps = database.Read();
+            UserInterface.PrintComments(
+                    database.Read<CommentRec>(commentTableName)
+                        .Where(comment => comment.obsID == id));
+        }
+
+        private static void WriteComment(string comment, long id)
+        {
+            foreach (ObservationRec obs in database.Read<ObservationRec>(observationTableName)) // ensures an observation with that id exists before adding comment
+            {
+                if (obs.obsID == id)
+                {
+                    database.Store<CommentRec>(commentTableName, new CommentRec(id, comment));
+                    break;
+                }
+            }
+        }
+
+        private static long GetIDSuccesor()
+        {
+            var cheeps = database.Read<ObservationRec>(observationTableName);
             if(cheeps.Count() == 0) return 0;
 
             var cheep = cheeps.LastOrDefault();
