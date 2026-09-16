@@ -5,6 +5,7 @@ using CsvHelper;
 namespace Bison.CLI
 {
     public record Cheep(string Author, string Message, long Timestamp);
+     public record Comment(string Author, string Message, long Timestamp);
     class Program
     {
         static void Main(string[] args)
