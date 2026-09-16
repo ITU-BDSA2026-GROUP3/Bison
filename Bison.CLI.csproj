@@ -1,10 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+<<<<<<< HEAD
+=======
+    <BaseOutputPath>$(MSBuildThisFileDirectory)..\bin\</BaseOutputPath>
+>>>>>>> e784818 (The new parameter Location is added to the program and it works correctly,is tested, some syntax fixes done)
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+<<<<<<< HEAD
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,3 +17,21 @@
   </ItemGroup>
 
 </Project>
+=======
+
+    <RuntimeIdentifiers>
+      win-x64;linux-x64;osx-x64
+    </RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="SimpleDB\SimpleDB.csproj" />
+    <PackageReference Include="System.CommandLine" Version="2.0.11" />
+    <PackageReference Include="CsvHelper" Version="33.1.0" />
+    <Compile Remove="SimpleDB\**" />
+    <EmbeddedResource Remove="SimpleDB\**" />
+    <None Remove="SimpleDB\**" />
+  </ItemGroup>
+
+</Project>
+>>>>>>> e784818 (The new parameter Location is added to the program and it works correctly,is tested, some syntax fixes done)
