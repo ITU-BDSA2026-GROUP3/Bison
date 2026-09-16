@@ -19,7 +19,7 @@ public static class UserInterface
 
             string formattedDate = date.ToString("MM/dd/yy HH:mm:ss");
 
-            Console.WriteLine($"{observation.Author} @ {formattedDate}: {observation.Observation}");
+            Console.WriteLine($"{observation.Author} @ {formattedDate}: {observation.Observation} @ {observation.Location}");
         }
     }
 
