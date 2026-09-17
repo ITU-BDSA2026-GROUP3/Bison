@@ -11,17 +11,20 @@ database.CreateTable<ObservationRec>(observationTableName);
 database.CreateTable<CommentRec>(commentTableName);
 
 var app = builder.Build();
+app.MapGet("/observations", () => database.Read<ObservationRec>("bison_observe_cli_db"));
 
-app.MapPost("/comment/{id:long}", (long id, CommentRequest request) =>
+app.MapGet("/comments", (long id) => database.Read<CommentRec>("bison_commet_cli_db")); // needs to only include comments that match key
+
+app.MapPost("/comment", (CommentRec commentRec) =>
 {
-    if (string.IsNullOrWhiteSpace(request.Comment))
-        return Results.BadRequest("Comment cannot be empty.");
-    bool exists = database.Read<ObservationRec>(observationTableName).Any(obs => obs.obsID == id);
-
-    if (!exists)
-        return Results.NotFound();
-
-    database.Store(commentTableName, new CommentRec(id, request.Comment));
+    foreach (ObservationRec obs in database.Read<ObservationRec>(observationTableName)) // ensures an observation with that id exists before adding comment
+    {
+        if (obs.obsID == commentRec.obsID)
+        {
+            database.Store<CommentRec>("bison_commet_cli_db", commentRec);
+            break;
+        }
+    }
     return Results.Ok();
 });
 
@@ -38,4 +41,3 @@ app.Run();
 
 public record ObservationRec(long obsID, string Author, string Observation, long Timestamp);
 public record CommentRec(long obsID, string Comment);
-public record CommentRequest(string Comment);
