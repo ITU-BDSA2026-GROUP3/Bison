@@ -1,16 +1,20 @@
 using SimpleDB;
 
 var builder = WebApplication.CreateBuilder(args);
-IDatabaseRepository database = CSVDatabase.Instance;
+builder.Services.AddSingleton<IDatabaseRepository,CSVDatabase>();
+
 const string observationTableName = "bison_observe_cli_db";
 const string commentTableName = "bison_comment_cli_db";
 
-CSVDatabase.Instance.DirectoryPath = Path.GetFullPath(
+
+var app = builder.Build();
+IDatabaseRepository? database = app.Services.GetService<IDatabaseRepository>();
+
+database.DirectoryPath = Path.GetFullPath(
     Path.Combine(AppContext.BaseDirectory, "../../../../../data"));
 database.CreateTable<ObservationRec>(observationTableName);
 database.CreateTable<CommentRec>(commentTableName);
 
-var app = builder.Build();
 app.MapGet("/observations", () => database.Read<ObservationRec>("bison_observe_cli_db"));
 
 app.MapGet("/comments", (long id) => database.Read<CommentRec>("bison_commet_cli_db")); // needs to only include comments that match key
@@ -38,6 +42,9 @@ app.MapPost("/observation", (ObservationRec observation) =>
 });
 
 app.Run();
+
+
+
 
 public record ObservationRec(long obsID, string Author, string Observation, long Timestamp);
 public record CommentRec(long obsID, string Comment);

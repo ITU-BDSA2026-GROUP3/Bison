@@ -37,10 +37,6 @@ namespace SimpleDB
         private Dictionary<string, Table> TableLookup = new Dictionary<string, Table>();
 
 
-        private CSVDatabase()
-        {
-        }
-
         public void CreateTable<T>(string TableName)
         {
             Table<T> table = new Table<T>(TableName, DirectoryPath);
