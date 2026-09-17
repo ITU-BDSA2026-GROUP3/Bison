@@ -17,7 +17,7 @@ database.CreateTable<CommentRec>(commentTableName);
 
 app.MapGet("/observations", () => database.Read<ObservationRec>(observationTableName));
 
-app.MapGet("/comments", (long id) => database.Read<CommentRec>(commentTableName)); // needs to only include comments that match key
+app.MapGet("/comments", (long id) => database.Read<CommentRec>(commentTableName).Where(comment => comment.obsID == id)); // needs to only include comments that match key
 
 app.MapPost("/comment", (CommentRec commentRec) =>
 {
