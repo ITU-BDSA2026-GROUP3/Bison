@@ -12,14 +12,25 @@ database.CreateTable<CommentRec>(commentTableName);
 
 var app = builder.Build();
 
-app.MapPost("/observations/{id:long}/comments", (long id, CommentRequest request) =>
+app.MapPost("/comment/{id:long}", (long id, CommentRequest request) =>
 {
+    if (string.IsNullOrWhiteSpace(request.Comment))
+        return Results.BadRequest("Comment cannot be empty.");
     bool exists = database.Read<ObservationRec>(observationTableName).Any(obs => obs.obsID == id);
 
     if (!exists)
         return Results.NotFound();
 
     database.Store(commentTableName, new CommentRec(id, request.Comment));
+    return Results.Ok();
+});
+
+app.MapPost("/observation", (ObservationRec observation) =>
+{
+    if (string.IsNullOrWhiteSpace(observation.Author) || string.IsNullOrWhiteSpace(observation.Observation))
+        return Results.BadRequest("Author and Observation cannot be empty.");
+
+    database.Store(observationTableName, observation);
     return Results.Ok();
 });
 
