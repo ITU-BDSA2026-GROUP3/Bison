@@ -88,7 +88,7 @@ namespace SimpleDB
             internal Table(string tName, string dirPath)
             {
                 TableName = tName;
-                CSVFilePath = dirPath + $"\\{TableName}.csv";
+                CSVFilePath = Path.Combine(dirPath, $"{TableName}.csv");
                 
             }
 
