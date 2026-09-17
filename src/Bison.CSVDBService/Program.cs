@@ -15,9 +15,9 @@ database.DirectoryPath = Path.GetFullPath(
 database.CreateTable<ObservationRec>(observationTableName);
 database.CreateTable<CommentRec>(commentTableName);
 
-app.MapGet("/observations", () => database.Read<ObservationRec>("bison_observe_cli_db"));
+app.MapGet("/observations", () => database.Read<ObservationRec>(observationTableName));
 
-app.MapGet("/comments", (long id) => database.Read<CommentRec>("bison_commet_cli_db")); // needs to only include comments that match key
+app.MapGet("/comments", (long id) => database.Read<CommentRec>(commentTableName)); // needs to only include comments that match key
 
 app.MapPost("/comment", (CommentRec commentRec) =>
 {
@@ -25,7 +25,7 @@ app.MapPost("/comment", (CommentRec commentRec) =>
     {
         if (obs.obsID == commentRec.obsID)
         {
-            database.Store<CommentRec>("bison_commet_cli_db", commentRec);
+            database.Store<CommentRec>(commentTableName, commentRec);
             break;
         }
     }
