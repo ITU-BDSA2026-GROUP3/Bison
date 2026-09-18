@@ -5,11 +5,12 @@ using System.IO;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Xml.Linq;
+using Bison.Taxonomy;
 
 namespace Bison.CLI
 {
     public abstract record rec();
-    public record ObservationRec(long obsID, string Author, string Observation, long Timestamp) : rec;
+    public record ObservationRec(long obsID, string Author, string Observation, string Location, long Timestamp) : rec;
     public record CommentRec(long obsID, string Comment) : rec;
     class Program
     {
@@ -19,6 +20,10 @@ namespace Bison.CLI
 
             bool IDcounterRead = false;
             long IDcounter = 0; // temp solution
+            var taxa = TaxonomyCsvLoader.Load();
+            ITaxonomyRepository taxonomyRepository = new TaxonomyRepository(taxa);
+
+            long IDcounter = GetIDSuccesor(); // temp solution
 
             RootCommand rootCommand = new("Bison CLI for recording and reading observations.");
 
@@ -34,9 +39,15 @@ namespace Bison.CLI
                 Description = "The observation to record."
             };
 
+            Argument<string>  locationArgument = new("location")
+            {
+                Description = "The location where the observation was made."
+            };
+
             Command observeCommand = new("observe", "Record a new observation.");
 
             observeCommand.Arguments.Add(observationArgument);
+            observeCommand.Arguments.Add(locationArgument);
 
             observeCommand.SetAction(async parseResult =>
             {
@@ -46,7 +57,9 @@ namespace Bison.CLI
                     IDcounterRead = true;
                 }
                 string observation = parseResult.GetRequiredValue(observationArgument);
-                await WriteObservationAsync(observation, IDcounter);
+                string location = parseResult.GetRequiredValue(locationArgument);
+
+                await WriteObservationAsync(observation,location, IDcounter);
             });
 
 
@@ -103,12 +116,13 @@ namespace Bison.CLI
 
         }
 
-        private static async Task WriteObservationAsync(string observation, long id)
+        private static async Task WriteObservationAsync(string observation, string location, long id)
         {
             var cheep = new ObservationRec(
                 id,
                 Environment.UserName,
-                observation,
+                observation, 
+                location,
                 DateTimeOffset.UtcNow.ToUnixTimeSeconds()
             );
             using HttpClient client = new();

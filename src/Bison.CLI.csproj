@@ -24,4 +24,8 @@
     <None Remove="SimpleDB\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\joined.csv" />
+  </ItemGroup>
+
 </Project>
