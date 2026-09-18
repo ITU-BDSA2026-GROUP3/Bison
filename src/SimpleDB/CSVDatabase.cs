@@ -37,10 +37,6 @@ namespace SimpleDB
         private Dictionary<string, Table> TableLookup = new Dictionary<string, Table>();
 
 
-        private CSVDatabase()
-        {
-        }
-
         public void CreateTable<T>(string TableName)
         {
             Table<T> table = new Table<T>(TableName, DirectoryPath);
@@ -88,7 +84,7 @@ namespace SimpleDB
             internal Table(string tName, string dirPath)
             {
                 TableName = tName;
-                CSVFilePath = dirPath + $"\\{TableName}.csv";
+                CSVFilePath = Path.Combine(dirPath, $"{TableName}.csv");
                 
             }
 

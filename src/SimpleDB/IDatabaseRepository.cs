@@ -5,6 +5,7 @@ namespace SimpleDB
 {
     public interface IDatabaseRepository
     {
+        public string DirectoryPath { get; set; }
         public IEnumerable<T> Read<T>(string tableName,int? limit = null);
         public void Store<T>(string tableName,T record);
 
