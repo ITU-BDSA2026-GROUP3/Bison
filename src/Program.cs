@@ -7,7 +7,7 @@ using System.Xml.Linq;
 namespace Bison.CLI
 {
     public abstract record rec();
-    public record ObservationRec(long obsID, string Author, string Observation, long Timestamp) : rec;
+    public record ObservationRec(long obsID, string Author, string Observation, string Location, long Timestamp) : rec;
     public record CommentRec(long obsID, string Comment) : rec;
     class Program
     {
@@ -39,14 +39,22 @@ namespace Bison.CLI
                 Description = "The observation to record."
             };
 
+            Argument<string>  locationArgument = new("location")
+            {
+                Description = "The location where the observation was made."
+            };
+
             Command observeCommand = new("observe", "Record a new observation.");
 
             observeCommand.Arguments.Add(observationArgument);
+            observeCommand.Arguments.Add(locationArgument);
 
             observeCommand.SetAction(parseResult =>
             {
                 string observation = parseResult.GetRequiredValue(observationArgument);
-                WriteObservation(observation,IDcounter);
+                string location = parseResult.GetRequiredValue(locationArgument);
+
+                WriteObservation(observation,location,IDcounter);
             });
 
 
@@ -100,12 +108,13 @@ namespace Bison.CLI
 
         }
 
-        private static void WriteObservation(string observation, long id)
+        private static void WriteObservation(string observation,string location, long id)
         {
             var cheep = new ObservationRec(
                 id,
                 Environment.UserName,
                 observation, 
+                location,
                 DateTimeOffset.UtcNow.ToUnixTimeSeconds()
             );
 
