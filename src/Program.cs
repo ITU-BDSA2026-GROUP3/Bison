@@ -17,7 +17,6 @@ namespace Bison.CLI
         static int Main(string[] args)
         {
 
-
             var taxa = TaxonomyCsvLoader.Load();
             ITaxonomyRepository taxonomyRepository = new TaxonomyRepository(taxa);
 
