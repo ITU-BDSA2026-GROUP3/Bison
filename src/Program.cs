@@ -3,6 +3,7 @@ using System.CommandLine;
 using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
+using Bison.Taxonomy;
 
 namespace Bison.CLI
 {
@@ -22,6 +23,9 @@ namespace Bison.CLI
 
             database.CreateTable<ObservationRec>(observationTableName);
             database.CreateTable<CommentRec>(commentTableName);
+
+            var taxa = TaxonomyCsvLoader.Load();
+            ITaxonomyRepository taxonomyRepository = new TaxonomyRepository(taxa);
 
             long IDcounter = GetIDSuccesor(); // temp solution
 
