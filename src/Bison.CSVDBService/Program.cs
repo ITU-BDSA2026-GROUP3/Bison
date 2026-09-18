@@ -41,7 +41,7 @@ app.MapPost("/observation", (ObservationRec observation) =>
     return Results.Ok();
 });
 
-app.Run();
+app.Run("http://localhost:5000");
 
 
 
