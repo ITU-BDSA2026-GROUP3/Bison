@@ -5,13 +5,16 @@ namespace SimpleDB.Tests;
 public class UnitTest1 : IDisposable
 {
     private string filePath;
-    private IDatabaseRepository<testRecord> testdb;
+    private string tablename;
+    private IDatabaseRepository testdb;
     private record testRecord(long id, string Author, string Observation, long time);
 
     public UnitTest1()
     {
-        filePath = Path.Combine(AppContext.BaseDirectory,"../../../data/testDB.csv");
-        testdb = new CSVDatabase<testRecord>("testDB");
+        testdb = CSVDatabase.Instance;
+        CSVDatabase.Instance.DirectoryPath = Path.Combine(AppContext.BaseDirectory, "../../../data");
+        tablename = "test table";
+        filePath = Path.Combine(AppContext.BaseDirectory, $"../../../data/{tablename}.csv");
     }
 
     [Fact]
@@ -21,7 +24,8 @@ public class UnitTest1 : IDisposable
 
         var record = new testRecord(0, "me", "i saw a dog", 123);
 
-        testdb.Store(record);
+        testdb.CreateTable<testRecord>(tablename);
+        testdb.Store(tablename, record);
 
         Assert.True(File.Exists(filePath));
     }
@@ -29,7 +33,8 @@ public class UnitTest1 : IDisposable
     [Fact]
     public void ReadFromEmptyDatabase()
     {
-        var records = testdb.Read();
+        testdb.CreateTable<testRecord>(tablename);
+        var records = testdb.Read<testRecord>(tablename);
 
         Assert.Empty(records);
     }
@@ -39,9 +44,10 @@ public class UnitTest1 : IDisposable
     {
         var record = new testRecord(0, "me", "i saw a Villads", 321);
 
-        testdb.Store(record);
+        testdb.CreateTable<testRecord>(tablename);
+        testdb.Store<testRecord>(tablename, record);
 
-        var records = testdb.Read();
+        var records = testdb.Read<testRecord>(tablename);
 
         Assert.Single(records);
 
