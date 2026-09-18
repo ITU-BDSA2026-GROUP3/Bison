@@ -119,7 +119,7 @@ namespace Bison.CLI
             database.Store<ObservationRec>(observationTableName,cheep);
         }
 
-        private static void ReadComments(long id)
+        public static long GetIDSuccesor(IDatabaseRepository<ObservationRec> database)
         {
             UserInterface.PrintComments(
                     database.Read<CommentRec>(commentTableName)
