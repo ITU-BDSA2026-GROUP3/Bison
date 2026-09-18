@@ -2,6 +2,8 @@
 using System.CommandLine;
 using System.Globalization;
 using System.IO;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Xml.Linq;
 
 namespace Bison.CLI
@@ -11,23 +13,20 @@ namespace Bison.CLI
     public record CommentRec(long obsID, string Comment) : rec;
     class Program
     {
-
+        static string baseURL = "http://localhost:5000"; //default is 5000
         static int Main(string[] args)
         {
-            CSVDatabase.Instance.DirectoryPath = Path.Combine(AppContext.BaseDirectory, "data"); // lazy solution to set directory path"
 
-            database.CreateTable<ObservationRec>(observationTableName);
-            database.CreateTable<CommentRec>(commentTableName);
-
-            long IDcounter = GetIDSuccesor(); // temp solution
+            bool IDcounterRead = false;
+            long IDcounter = 0; // temp solution
 
             RootCommand rootCommand = new("Bison CLI for recording and reading observations.");
 
-            Command readCommand = new("read","Read all recorded observations.");
+            Command readCommand = new("read", "Read all recorded observations.");
 
-            readCommand.SetAction(_ =>
+            readCommand.SetAction(async _ =>
             {
-                ReadObservations();
+                await ReadObservationsAsync();
             });
 
             Argument<string> observationArgument = new("observation")
@@ -39,10 +38,15 @@ namespace Bison.CLI
 
             observeCommand.Arguments.Add(observationArgument);
 
-            observeCommand.SetAction(parseResult =>
+            observeCommand.SetAction(async parseResult =>
             {
+                if (!IDcounterRead)
+                {
+                    IDcounter = await GetIDSuccesor();
+                    IDcounterRead = true;
+                }
                 string observation = parseResult.GetRequiredValue(observationArgument);
-                WriteObservation(observation,IDcounter);
+                await WriteObservationAsync(observation, IDcounter);
             });
 
 
@@ -55,9 +59,9 @@ namespace Bison.CLI
 
             discussionCommand.Arguments.Add(idArgument);
 
-            discussionCommand.SetAction(parseResult =>
+            discussionCommand.SetAction(async parseResult =>
             {
-                ReadComments(parseResult.GetRequiredValue(idArgument));
+                await ReadComments(parseResult.GetRequiredValue(idArgument));
             });
 
             Argument<string> commentArgument = new("comment")
@@ -70,12 +74,12 @@ namespace Bison.CLI
             commentCommand.Arguments.Add(commentArgument);
             commentCommand.Arguments.Add(idArgument);
 
-            commentCommand.SetAction(parseResult =>
+            commentCommand.SetAction(async parseResult =>
             {
                 string comment = parseResult.GetRequiredValue(commentArgument);
                 long id = parseResult.GetRequiredValue(idArgument);
-                WriteComment(comment, id);
-     
+                await WriteComment(comment, id);
+
             });
 
 
@@ -87,55 +91,59 @@ namespace Bison.CLI
             return rootCommand.Parse(args).Invoke();
         }
 
-       private static void ReadObservations()
+        private static async Task ReadObservationsAsync()
         {
-            IEnumerable<ObservationRec> cheeps = database.Read<ObservationRec>(observationTableName);
+            using HttpClient client = new();
+            client.BaseAddress = new Uri(baseURL);
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            UserInterface.PrintObservations(cheeps);
+            UserInterface.PrintObservations(await client.GetFromJsonAsync<IEnumerable<ObservationRec>>($"observations"));
 
 
         }
 
-        private static void WriteObservation(string observation, long id)
+        private static async Task WriteObservationAsync(string observation, long id)
         {
             var cheep = new ObservationRec(
                 id,
                 Environment.UserName,
-                observation, 
+                observation,
                 DateTimeOffset.UtcNow.ToUnixTimeSeconds()
             );
+            using HttpClient client = new();
+            client.BaseAddress = new Uri(baseURL);
+            await client.PostAsJsonAsync("observation", cheep);
 
-            database.Store<ObservationRec>(observationTableName,cheep);
         }
 
-        private static void ReadComments(long id)
+        private static async Task ReadComments(long id)
         {
-            UserInterface.PrintComments(
-                    database.Read<CommentRec>(commentTableName)
-                        .Where(comment => comment.obsID == id));
+            using HttpClient client = new();
+            client.BaseAddress = new Uri(baseURL);
+
+            UserInterface.PrintComments(await client.GetFromJsonAsync<IEnumerable<CommentRec>>($"comments?id={id}"));
         }
 
-        private static void WriteComment(string comment, long id)
+        private static async Task WriteComment(string comment, long id)
         {
-            foreach (ObservationRec obs in database.Read<ObservationRec>(observationTableName)) // ensures an observation with that id exists before adding comment
-            {
-                if (obs.obsID == id)
-                {
-                    database.Store<CommentRec>(commentTableName, new CommentRec(id, comment));
-                    break;
-                }
-            }
+            using HttpClient client = new();
+            client.BaseAddress = new Uri(baseURL);
+            await client.PostAsJsonAsync("comment", new CommentRec(id, comment));
         }
 
-        private static long GetIDSuccesor()
+        private static async Task<long> GetIDSuccesor()
         {
-            var cheeps = database.Read<ObservationRec>(observationTableName);
-            if(cheeps.Count() == 0) return 0;
+            using HttpClient client = new();
+            client.BaseAddress = new Uri(baseURL);
+
+            var cheeps = await client.GetFromJsonAsync<IEnumerable<ObservationRec>>("observations");
+            if (cheeps.Count() == 0) return 0;
 
             var cheep = cheeps.LastOrDefault();
 
-            if(cheep == null) return 0;
-            return cheep.obsID+1;
+            if (cheep == null) return 0;
+            return cheep.obsID + 1;
         }
     }
 }

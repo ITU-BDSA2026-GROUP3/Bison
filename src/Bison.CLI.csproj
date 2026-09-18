@@ -16,8 +16,11 @@
     <ProjectReference Include="SimpleDB\SimpleDB.csproj" />
     <PackageReference Include="System.CommandLine" Version="2.0.11" />
     <PackageReference Include="CsvHelper" Version="33.1.0" />
+    <Compile Remove="Bison.CSVDBService\**" />
     <Compile Remove="SimpleDB\**" />
+    <EmbeddedResource Remove="Bison.CSVDBService\**" />
     <EmbeddedResource Remove="SimpleDB\**" />
+    <None Remove="Bison.CSVDBService\**" />
     <None Remove="SimpleDB\**" />
   </ItemGroup>
 
