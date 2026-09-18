@@ -9,8 +9,12 @@
 !Bison.CLI.csproj
 !src
 !src/**
+!test/
+!test/**
 **/bin/
 **/obj/
+.vs/
+TestResults/
 !test
 !Client
 !SimpleDB
@@ -20,6 +24,3 @@
 !data/*.csv
 !.github/
 !.github/**
-
-!test/
-!test/**
