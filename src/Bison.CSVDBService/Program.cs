@@ -46,5 +46,5 @@ app.Run("http://localhost:5000");
 
 
 
-public record ObservationRec(long obsID, string Author, string Observation, long Timestamp);
+public record ObservationRec(long obsID, string Author, string Observation, string Location, long Timestamp);
 public record CommentRec(long obsID, string Comment);

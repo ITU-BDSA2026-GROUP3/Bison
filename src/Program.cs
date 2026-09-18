@@ -1,5 +1,4 @@
-﻿using SimpleDB;
-using System.CommandLine;
+﻿using System.CommandLine;
 using System.Globalization;
 using System.IO;
 using System.Net.Http.Headers;
@@ -59,7 +58,7 @@ namespace Bison.CLI
                 string observation = parseResult.GetRequiredValue(observationArgument);
                 string location = parseResult.GetRequiredValue(locationArgument);
 
-                await WriteObservationAsync(observation, IDcounter);
+                await WriteObservationAsync(observation,location, IDcounter);
             });
 
 
