@@ -49,7 +49,7 @@ app.MapPost("/proposal", (ProposalRec proposalRec) =>
         .Read<ObservationRec>(observationTableName)
         .Any(obs => obs.obsID == proposalRec.obsID);
 
-        bool taxonExists = taxonomyRepository.getByID(proposalRec.taxonID) is not null;
+        bool taxonExists = taxonomyRepository.GetById(proposalRec.taxonID) is not null;
 
         //Treat the invalid observation/taxon like an invalid commenct target:
         //meaning do not store the proposal
