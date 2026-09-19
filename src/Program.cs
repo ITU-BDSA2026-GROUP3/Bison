@@ -4,7 +4,6 @@ using System.IO;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Xml.Linq;
-//using Bison.Taxonomy;
 
 
 namespace Bison.CLI
@@ -19,10 +18,6 @@ namespace Bison.CLI
         static string baseURL = "http://localhost:5000"; //default is 5000
         static int Main(string[] args)
         {
-
-            //Not needed, but it is here just in case
-            /*var taxa = TaxonomyCsvLoader.Load();
-            ITaxonomyRepository taxonomyRepository = new TaxonomyRepository(taxa);*/
 
 
 
