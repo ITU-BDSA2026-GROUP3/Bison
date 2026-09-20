@@ -23,6 +23,13 @@ namespace Bison.CLI
             bool IDcounterRead = false;
             long IDcounter = 0; // temp solution
 
+            RootCommand rootCommand = getRootCommands(IDcounter, IDcounterRead);
+
+            return rootCommand.Parse(args).Invoke();
+        }
+
+        public static RootCommand getRootCommands(long IDcounter, bool IDcounterRead)
+        {
             RootCommand rootCommand = new("Bison CLI for recording and reading observations.");
 
             Command readCommand = new("read", "Read all recorded observations.");
@@ -99,7 +106,7 @@ namespace Bison.CLI
             rootCommand.Subcommands.Add(discussionCommand);
             rootCommand.Subcommands.Add(commentCommand);
 
-            return rootCommand.Parse(args).Invoke();
+            return rootCommand;
         }
 
         private static async Task ReadObservationsAsync()
@@ -144,7 +151,7 @@ namespace Bison.CLI
             await client.PostAsJsonAsync("comment", new CommentRec(id, comment));
         }
 
-        private static async Task<long> GetIDSuccesor()
+        public static async Task<long> GetIDSuccesor()
         {
             using HttpClient client = new();
             client.BaseAddress = new Uri(baseURL);

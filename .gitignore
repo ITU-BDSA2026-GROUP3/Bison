@@ -21,5 +21,10 @@
 !.github/
 !.github/**
 
+!.editorconfig
 !test/
 !test/**
+.Tests
+
+[Bb]in/
+[Oo]bj/
