@@ -39,8 +39,11 @@ namespace SimpleDB
 
         public void CreateTable<T>(string TableName)
         {
-            Table<T> table = new Table<T>(TableName, DirectoryPath);
-            TableLookup.Add(TableName, table);
+            if (!TableLookup.ContainsKey(TableName))
+            {
+                Table<T> table = new Table<T>(TableName, DirectoryPath);
+                TableLookup.Add(TableName, table);
+            }
         }
 
 
@@ -68,7 +71,7 @@ namespace SimpleDB
                 {
                     if(!File.Exists(value))
                     { // creates file if it doesn't exist yet
-                        File.Create(value);
+                        using (File.Create(value)) {};
                     }
                     csvFilePath = value;
                 }
@@ -128,7 +131,7 @@ namespace SimpleDB
                 using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
                 try
                 {
-                    csv.Read();
+                    if(!csv.Read()) return false;
                     csv.ReadHeader(); // seems to always throw an exception even if there is a header
                     return true;
                 }

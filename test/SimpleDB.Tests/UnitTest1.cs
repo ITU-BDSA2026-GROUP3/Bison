@@ -2,7 +2,8 @@ using Microsoft.VisualStudio.TestPlatform.TestHost;
 
 namespace SimpleDB.Tests;
 
-public class UnitTest1 : IDisposable
+[Collection("Sequential Tests")]
+public class UnitTest1 : IDisposable, IClassFixture<DatabaseFixture>
 {
     private string filePath;
     private string tablename;
@@ -64,7 +65,27 @@ public class UnitTest1 : IDisposable
     {
         if (File.Exists(filePath))
         {
-            File.Delete(filePath);
+            File.WriteAllText(filePath, string.Empty);
+        }
+    }
+}
+
+public class DatabaseFixture : IDisposable
+{
+    public string FilePath { get; }
+
+    public DatabaseFixture()
+    {
+        string tablename = "test table";
+        FilePath = Path.Combine(AppContext.BaseDirectory, $"../../../data/{tablename}.csv");
+    }
+
+    public void Dispose()
+    {
+        // Sletter filen helt fra harddisken, når ALLE tests i klassen er færdige
+        if (File.Exists(FilePath))
+        {
+            File.Delete(FilePath);
         }
     }
 }
