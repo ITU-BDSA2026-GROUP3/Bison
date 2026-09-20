@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bison.CLI.csproj" />
+    <ProjectReference Include="..\..\src\Bison.CSVDBService\Bison.CSVDBService.csproj" />
   </ItemGroup>
 
 </Project>

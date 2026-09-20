@@ -11,7 +11,7 @@ namespace Bison.CLI
     public abstract record rec();
     public record ObservationRec(long obsID, string Author, string Observation, string Location, long Timestamp) : rec;
     public record CommentRec(long obsID, string Comment) : rec;
-    class Program
+    public class Program
     {
         static string baseURL = "http://localhost:5000"; //default is 5000
         static int Main(string[] args)
