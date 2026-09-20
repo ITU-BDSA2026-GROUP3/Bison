@@ -1,3 +1,9 @@
 obsID,Author,Observation,Location,Timestamp
 0,wayg,Duck,Amager,1789044837
 1,WaygT,A duck,Farum,1789780579
+1789915262156,ProposalTest,Test observation,Test location,1789915262
+1789915264329,ProposalTest,Test observation,Test location,1789915264
+1789915266462,ProposalTest,Test observation,Test location,1789915266
+1789915491652,ProposalTest,Test observation,Test location,1789915491
+1789915493813,ProposalTest,Test observation,Test location,1789915493
+1789915495949,ProposalTest,Test observation,Test location,1789915495
