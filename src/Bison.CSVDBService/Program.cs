@@ -8,23 +8,30 @@ namespace Bison.CSVDBService
 
     public class Program
     {
-        const string observationTableName = "bison_observe_cli_db";
-        const string commentTableName = "bison_comment_cli_db";
+        const string baseObservationTableName = "bison_observe_cli_db";
+        const string baseCommentTableName = "bison_comment_cli_db";
 
-        public void Main(String[] args)
+        static string observationTableName = "";
+        static string commentTableName = "";
+
+        public static void Main(String[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddSingleton<IDatabaseRepository,CSVDatabase>();
             
-            var app = getApp(builder);
+            
+            var app = getApp(builder, args);
 
             app.Run("http://localhost:5000");
         }
 
-        public WebApplication getApp(WebApplicationBuilder builder)
+        public static WebApplication getApp(WebApplicationBuilder builder, string[] args)
         {
             var app = builder.Build();
             IDatabaseRepository? database = app.Services.GetService<IDatabaseRepository>();
+
+            observationTableName = (args.Count() == 0) ? baseObservationTableName : args[0].ToLower().Equals("test") ? "test_observe_cli_db" : baseObservationTableName;
+            commentTableName = (args.Count() == 0) ? baseCommentTableName : args[0].ToLower().Equals("test") ? "test_comment_cli_db" : baseCommentTableName;
 
             database.DirectoryPath = Path.GetFullPath(
                 Path.Combine(AppContext.BaseDirectory, "../../../../../data"));
