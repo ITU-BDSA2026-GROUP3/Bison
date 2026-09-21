@@ -140,7 +140,21 @@ namespace Bison.CLI
         {
             using HttpClient client = new();
             client.BaseAddress = new Uri(baseURL);
+            
+            var records = await client.GetFromJsonAsync<IEnumerable<ObservationRec>>("observations");
 
+            ObservationRec obs = null;
+
+            foreach(ObservationRec rec in records)
+            {
+                if(rec.obsID == id)
+                {
+                    obs = rec;
+                    break;
+                }
+            }
+
+            UserInterface.PrintObservation(obs);
             UserInterface.PrintComments(await client.GetFromJsonAsync<IEnumerable<CommentRec>>($"comments?id={id}"));
         }
 
