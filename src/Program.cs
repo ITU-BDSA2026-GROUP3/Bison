@@ -4,21 +4,22 @@ using System.IO;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Xml.Linq;
-using Bison.Taxonomy;
+
 
 namespace Bison.CLI
 {
     public abstract record rec();
     public record ObservationRec(long obsID, string Author, string Observation, string Location, long Timestamp) : rec;
     public record CommentRec(long obsID, string Comment) : rec;
-    public class Program
+    public record ProposalRec(long obsID, string taxonID): rec;
+
+    class Program
     {
         static string baseURL = "http://localhost:5000"; //default is 5000
         static int Main(string[] args)
         {
 
-            var taxa = TaxonomyCsvLoader.Load();
-            ITaxonomyRepository taxonomyRepository = new TaxonomyRepository(taxa);
+
 
             bool IDcounterRead = false;
             long IDcounter = 0; // temp solution
@@ -100,11 +101,44 @@ namespace Bison.CLI
 
             });
 
+            Argument<long> proposalIdArgument = new("id")
+            {
+                Description = "The id of the observation"
+            };
+
+            Argument<string> taxonIdArgument = new("taxonID")
+            {
+                Description = "The taxon ID being proposed."
+            };
+
+            Command proposalCommand = new ("propose", "Propose a taxon for an observation.");
+
+            proposalCommand.Arguments.Add(proposalIdArgument);
+            proposalCommand.Arguments.Add(taxonIdArgument);
+
+                
+            proposalCommand.SetAction(async parseResult =>
+            {
+                long id = parseResult.GetRequiredValue(proposalIdArgument);
+                string taxonID = parseResult.GetRequiredValue(taxonIdArgument);
+
+                await WriteProposalAsync(id, taxonID);
+            });
+
+            Command proposalsCommand = new("proposals","Read all taxon proposals.");
+
+            proposalsCommand.SetAction(async _ =>
+            {
+                await ReadProposalsAsync();
+                
+            });
 
             rootCommand.Subcommands.Add(readCommand);
             rootCommand.Subcommands.Add(observeCommand);
             rootCommand.Subcommands.Add(discussionCommand);
             rootCommand.Subcommands.Add(commentCommand);
+            rootCommand.Subcommands.Add(proposalCommand);
+            rootCommand.Subcommands.Add(proposalsCommand);
 
             return rootCommand;
         }
@@ -165,7 +199,33 @@ namespace Bison.CLI
             await client.PostAsJsonAsync("comment", new CommentRec(id, comment));
         }
 
-        public static async Task<long> GetIDSuccesor()
+        //here the new methods
+
+        private static async Task WriteProposalAsync(long id, string taxonID)
+        {
+            using HttpClient client = new();
+            client.BaseAddress = new Uri(baseURL);
+
+            await client.PostAsJsonAsync("proposal", new ProposalRec(id, taxonID));
+
+        }
+
+        private static async Task ReadProposalsAsync()
+        {
+            using HttpClient client = new();
+            client.BaseAddress = new Uri(baseURL);
+
+            var proposals = await client.GetFromJsonAsync<IEnumerable<ProposalRec>>(
+                "proposals");
+
+                foreach (ProposalRec proposal in proposals ?? Enumerable.Empty<ProposalRec>())
+            {
+                Console.WriteLine($"Observation {proposal.obsID}: taxon {proposal.taxonID}");
+                
+            }
+        }
+
+        private static async Task<long> GetIDSuccesor()
         {
             using HttpClient client = new();
             client.BaseAddress = new Uri(baseURL);

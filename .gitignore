@@ -9,8 +9,10 @@
 !Bison.CLI.csproj
 !src
 !src/**
-**/bin/
-**/obj/
+!test/
+!test/**
+.vs/
+TestResults/
 !test
 !Client
 !SimpleDB
