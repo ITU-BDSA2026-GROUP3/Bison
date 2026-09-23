@@ -17,8 +17,12 @@ public class FuzzEndToEndTests : IDisposable, IClassFixture<WebAppFixture>
     private string name;
     private List<long> validIDs;
 
+    private const string validTaxonID = "MSTSNM:Arter:3e4e67e4-f785-ea11-aa77-501ac539d1ea";
+    private const string badUglyStupidNotValidTaxonID = "This is NOT a valid ID and should NEVER work >:)";
+
     private List<(ObservationRec,string)> expectedObservations;
     private List<(CommentRec,string)> expectedComments;
+    private List<(ProposalRec,string)> expectedProposals;
 
     Random random = new Random();
 
@@ -36,6 +40,7 @@ public class FuzzEndToEndTests : IDisposable, IClassFixture<WebAppFixture>
 
         expectedObservations = new List<(ObservationRec,string)>();
         expectedComments = new List<(CommentRec,string)>();
+        expectedProposals = new List<(ProposalRec, string)>();
 
         ResetCSVFiles();
     }
@@ -97,7 +102,7 @@ public class FuzzEndToEndTests : IDisposable, IClassFixture<WebAppFixture>
     private async Task FuzzComment()
     {
         string comment = "Cool Observation dude";
-        long obsID = (random.Next(10) == 0 || validIDs.Count == 0) ? random.NextInt64(long.MinValue, long.MaxValue) : validIDs[random.Next(validIDs.Count)];
+        long obsID = (random.Next(10) == 0 || validIDs.Count() == 0) ? random.NextInt64(long.MinValue, long.MaxValue) : validIDs[random.Next(validIDs.Count)];
 
         int mutations = random.Next(5, 50);
 
@@ -117,7 +122,17 @@ public class FuzzEndToEndTests : IDisposable, IClassFixture<WebAppFixture>
 
     private async Task FuzzProposal()
     {
-        
+        string taxonID = (random.Next(2) == 0) ? validTaxonID : badUglyStupidNotValidTaxonID;
+        long obsID = (random.Next(10) == 0 || validIDs.Count() == 0) ? random.NextInt64(long.MinValue, long.MaxValue) : validIDs[random.Next(validIDs.Count())];
+
+        var rootCommands = Program.getRootCommands(0,false);
+
+        int exitcode = await rootCommands.Parse(new[] {"propose", obsID.ToString(), taxonID}).InvokeAsync();
+
+        if(exitcode == 0)
+        {
+            expectedProposals.Add((new ProposalRec(obsID, taxonID), $"propose {obsID} {taxonID}"));
+        }
     }
 
     private async Task ValidateOracle()
@@ -163,6 +178,8 @@ public class FuzzEndToEndTests : IDisposable, IClassFixture<WebAppFixture>
             
             await ValidateComments(expected.obsID);
         }
+
+        await ValidateProposals();
     }
 
     private async Task ValidateComments(long ID)
@@ -195,6 +212,41 @@ public class FuzzEndToEndTests : IDisposable, IClassFixture<WebAppFixture>
                 Console.WriteLine($"Command: {expectedCommentsForObs[j].Item2}");
 
                 Console.WriteLine($"Expected '{expectedComment.Comment}', Actual '{actualComment.Comment}'");
+            }
+        }
+    }
+
+    private async Task ValidateProposals()
+    {
+        var rawProposalsForObs = await client.GetFromJsonAsync<IEnumerable<ProposalRec>>($"proposals");
+        List<ProposalRec> actualProposals = rawProposalsForObs.ToList();
+
+        var sortedExpectedProposals = expectedProposals.OrderBy(e => e.Item1.obsID).ToList();
+
+        Console.WriteLine("----- VALIDATING PROPOSALS");
+
+        if(sortedExpectedProposals.Count() != actualProposals.Count()){
+            Console.WriteLine($"[ERROR] Expected Proposals Count doesn't match Actual Proposals Count. Expected {expectedProposals.Count()}, Actual {actualProposals.Count()}");
+        }
+
+        int comparedItems = Math.Min(sortedExpectedProposals.Count(), actualProposals.Count());
+
+        for(int i=0; i<comparedItems; i++)
+        {
+            ProposalRec expected = sortedExpectedProposals[i].Item1;
+            ProposalRec actual = actualProposals[i];
+
+            if(!expected.taxonID.Equals(actual.taxonID) || expected.obsID != actual.obsID)
+            {
+                Console.WriteLine("[ERROR] Expected Proposal doens't match Actual Proposal.");
+
+                Console.WriteLine($"Command: {sortedExpectedProposals[i].Item2}");
+
+                Console.WriteLine($"Expected TaxonID: '{expected.taxonID}'");
+                Console.WriteLine($"Expected ObservationID: '{expected.obsID}'");
+
+                Console.WriteLine($"Actual TaxonID: '{actual.taxonID}'");
+                Console.WriteLine($"Actual ObservationID: '{actual.obsID}'");
             }
         }
     }

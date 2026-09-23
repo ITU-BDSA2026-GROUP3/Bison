@@ -13,7 +13,7 @@ namespace Bison.CLI
     public record CommentRec(long obsID, string Comment) : rec;
     public record ProposalRec(long obsID, string taxonID): rec;
 
-    class Program
+    public class Program
     {
         static string baseURL = "http://localhost:5000"; //default is 5000
         static int Main(string[] args)
@@ -225,7 +225,7 @@ namespace Bison.CLI
             }
         }
 
-        private static async Task<long> GetIDSuccesor()
+        public static async Task<long> GetIDSuccesor()
         {
             using HttpClient client = new();
             client.BaseAddress = new Uri(baseURL);

@@ -12,6 +12,7 @@ public class WebAppFixture : IAsyncLifetime
 
     public string obsFilePath;
     public string comFilePath;
+    public string propFilePath;
 
     public async Task InitializeAsync()
     {
@@ -27,6 +28,7 @@ public class WebAppFixture : IAsyncLifetime
 
         obsFilePath = Path.Combine(AppContext.BaseDirectory,"../../../../../data/test_observe_cli_db.csv");
         comFilePath = Path.Combine(AppContext.BaseDirectory,"../../../../../data/test_comment_cli_db.csv");
+        propFilePath = Path.Combine(AppContext.BaseDirectory,"../../../../../data/test_proposal_cli_db.csv");
     }
 
     public async Task DisposeAsync()
@@ -45,6 +47,10 @@ public class WebAppFixture : IAsyncLifetime
         if (File.Exists(comFilePath))
         {
             File.Delete(comFilePath);
+        }
+        if (File.Exists(propFilePath))
+        {
+            File.Delete(propFilePath);
         }
     }
 }

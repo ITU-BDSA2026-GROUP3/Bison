@@ -2,6 +2,7 @@ using Bison.Taxonomy;
 
 namespace Bison.CLI.Tests;
 
+[Collection("Sequential Tests")]
 public class TaxonomyRepositoryTests
 {
     private readonly ITaxonomyRepository repository;
