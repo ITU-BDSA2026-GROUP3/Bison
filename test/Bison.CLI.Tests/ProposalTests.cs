@@ -2,13 +2,14 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Json;
 using Bison.CLI;
+using Microsoft.AspNetCore.Builder;
 
 
 
 
 namespace Bison.CLI.Tests;
-
-public class ProposalTests : IAsyncLifetime
+[Collection("Sequential Tests")]
+public class ProposalTests : IClassFixture<WebAppFixture>
 {
     private const string BaseUrl = "http://localhost:5000";
 
@@ -17,44 +18,12 @@ public class ProposalTests : IAsyncLifetime
     private const string InvalidTaxonId = "This-Taxon-ID-does-not-exit";
 
     private HttpClient client = null!;
-    private Process? serverProcess;
+    private WebApplication app;
 
-    public async Task InitializeAsync()
+    public ProposalTests(WebAppFixture fixture)
     {
-        client = new HttpClient
-        {
-            BaseAddress = new Uri(BaseUrl)
-        };
-
-        string solutionDirectory = FindSolutionDirectory();
-
-        string projectPath = Path.Combine(solutionDirectory,"src","Bison.CSVDBService","Bison.CSVDBService.csproj");
-
-        serverProcess = Process.Start(new ProcessStartInfo
-        {
-            FileName = "dotnet",
-            Arguments = $"run --project \"{projectPath}\"",
-            WorkingDirectory = solutionDirectory,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        });
-
-        await WaitForServerAsync();
-        
-    }
-
-
-    public async Task DisposeAsync()
-    {
-        client.Dispose();
-
-        if(serverProcess is not null && !serverProcess.HasExited)
-        {
-            serverProcess.Kill(entireProcessTree:true);
-            await serverProcess.WaitForExitAsync();
-        }
-
-        serverProcess?.Dispose();
+        client = fixture.Client;
+        app = fixture.App;
     }
 
     [Fact]
@@ -66,11 +35,11 @@ public class ProposalTests : IAsyncLifetime
 
         ProposalRec proposal = new(observationId, ValidTaxonId);
 
-        HttpResponseMessage response = await System.Net.Http.Json.HttpClientJsonExtensions.PostAsJsonAsync(client,"proposal", proposal);
+        HttpResponseMessage response = await client.PostAsJsonAsync("proposal", proposal);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-List<ProposalRec> proposals = await GetProposalsAsync();
+        List<ProposalRec> proposals = await GetProposalsAsync();
         Assert.Contains(
             proposals, p => p.obsID == observationId && p.taxonID == ValidTaxonId);
 
@@ -85,7 +54,7 @@ public async Task InvalidTaxonIsNotStored()
 
     ProposalRec proposal = new(observationId, InvalidTaxonId);
 
-    HttpResponseMessage response = await System.Net.Http.Json.HttpClientJsonExtensions.PostAsJsonAsync(client,"proposal", proposal);
+    HttpResponseMessage response = await client.PostAsJsonAsync("proposal", proposal);
 
     Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -101,7 +70,7 @@ public async Task invalidObservationIsNotStored()
 
     ProposalRec proposal = new (observationId, ValidTaxonId);
 
-    HttpResponseMessage respone = await System.Net.Http.Json.HttpClientJsonExtensions.PostAsJsonAsync(client,"proposal", proposal);
+    HttpResponseMessage respone = await client.PostAsJsonAsync("proposal", proposal);
 
     Assert.Equal(HttpStatusCode.OK, respone.StatusCode);
 
@@ -109,32 +78,30 @@ public async Task invalidObservationIsNotStored()
 
     Assert.DoesNotContain(proposals, p => p.obsID == observationId && p.taxonID == ValidTaxonId);
 
-}
+    }
 
-[Fact]
-public async Task GetProposalsReturnsStoredProposal()
-{
-    long observationId = CreateTestId();
+    [Fact]
+    public async Task GetProposalsReturnsStoredProposal()
+    {
+        long observationId = CreateTestId();
 
-    await CreateObservationAsync(observationId);
+        await CreateObservationAsync(observationId);
 
-    ProposalRec proposal = new(observationId,ValidTaxonId);
+        ProposalRec proposal = new(observationId,ValidTaxonId);
 
-    await System.Net.Http.Json.HttpClientJsonExtensions.PostAsJsonAsync(client,"proposal", proposal);
+        await client.PostAsJsonAsync("proposal", proposal);
 
-    List<ProposalRec> proposals = await GetProposalsAsync();
+        List<ProposalRec> proposals = await GetProposalsAsync();
 
-    Assert.Contains(proposals, p => p.obsID == observationId && p.taxonID == ValidTaxonId);
-}
+        Assert.Contains(proposals, p => p.obsID == observationId && p.taxonID == ValidTaxonId);
+    }
 
-public async Task CreateObservationAsync(long observationId)
+    
+    private async Task CreateObservationAsync(long observationId)
     {
         ObservationRec observation = new(observationId,"ProposalTest","Test observation", "Test location", DateTimeOffset.UtcNow.ToUnixTimeSeconds());
 
-        HttpResponseMessage response = await  System.Net.Http.Json.HttpClientJsonExtensions.PostAsJsonAsync(client,"observation", observation);
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-    
+        HttpResponseMessage response = await  client.PostAsJsonAsync("observation", observation);
     }
 
     private async Task<List<ProposalRec>> GetProposalsAsync()

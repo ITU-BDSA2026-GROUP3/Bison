@@ -11,8 +11,6 @@
 !src/**
 !test/
 !test/**
-**/bin/
-**/obj/
 .vs/
 TestResults/
 !test
@@ -24,3 +22,11 @@ TestResults/
 !data/*.csv
 !.github/
 !.github/**
+
+!.editorconfig
+!test/
+!test/**
+.Tests
+
+[Bb]in/
+[Oo]bj/

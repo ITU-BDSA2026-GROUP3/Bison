@@ -13,7 +13,7 @@ namespace Bison.CLI
     public record CommentRec(long obsID, string Comment) : rec;
     public record ProposalRec(long obsID, string taxonID): rec;
 
-    class Program
+    public class Program
     {
         static string baseURL = "http://localhost:5000"; //default is 5000
         static int Main(string[] args)
@@ -24,6 +24,13 @@ namespace Bison.CLI
             bool IDcounterRead = false;
             long IDcounter = 0; // temp solution
 
+            RootCommand rootCommand = getRootCommands(IDcounter, IDcounterRead);
+
+            return rootCommand.Parse(args).Invoke();
+        }
+
+        public static RootCommand getRootCommands(long IDcounter, bool IDcounterRead)
+        {
             RootCommand rootCommand = new("Bison CLI for recording and reading observations.");
 
             Command readCommand = new("read", "Read all recorded observations.");
@@ -133,7 +140,7 @@ namespace Bison.CLI
             rootCommand.Subcommands.Add(proposalCommand);
             rootCommand.Subcommands.Add(proposalsCommand);
 
-            return rootCommand.Parse(args).Invoke();
+            return rootCommand;
         }
 
         private static async Task ReadObservationsAsync()
@@ -167,7 +174,21 @@ namespace Bison.CLI
         {
             using HttpClient client = new();
             client.BaseAddress = new Uri(baseURL);
+            
+            var records = await client.GetFromJsonAsync<IEnumerable<ObservationRec>>("observations");
 
+            ObservationRec obs = null;
+
+            foreach(ObservationRec rec in records)
+            {
+                if(rec.obsID == id)
+                {
+                    obs = rec;
+                    break;
+                }
+            }
+
+            UserInterface.PrintObservation(obs);
             UserInterface.PrintComments(await client.GetFromJsonAsync<IEnumerable<CommentRec>>($"comments?id={id}"));
         }
 
@@ -204,7 +225,7 @@ namespace Bison.CLI
             }
         }
 
-        private static async Task<long> GetIDSuccesor()
+        public static async Task<long> GetIDSuccesor()
         {
             using HttpClient client = new();
             client.BaseAddress = new Uri(baseURL);

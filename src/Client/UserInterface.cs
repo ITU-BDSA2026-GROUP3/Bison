@@ -23,8 +23,22 @@ public static class UserInterface
         }
     }
 
+    public static void PrintObservation(ObservationRec observation)
+    {
+        DateTimeOffset date = DateTimeOffset.FromUnixTimeSeconds(observation.Timestamp).ToLocalTime();
+
+        string formattedDate = date.ToString("MM/dd/yy HH:mm:ss");
+
+        Console.WriteLine($"{observation.Author} @ {formattedDate}: {observation.Observation} @ {observation.Location}");
+    }
+
     public static void PrintComments(IEnumerable<CommentRec> comments)
     {
+        if(comments.Count() == 0)
+        {
+            Console.WriteLine("No comments have been made on this post");
+            Console.WriteLine("Try creating a discussion by commenting on the observation :)");
+        }
         foreach (CommentRec comment in comments)
         {
             Console.WriteLine(comment.Comment);
