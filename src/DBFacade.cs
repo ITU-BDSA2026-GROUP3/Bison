@@ -20,11 +20,11 @@ public static class DBFacade
         Directory.CreateDirectory(DatabasePath);
     }
 
-    public static string ReadComments() => ReadDatabase("bison_comment_cli.db", "bison_comment_cli_db");
+    public static void ReadComments() => ReadDatabase("bison_comment_cli.db", "bison_comment_cli_db");
 
-    public static string ReadObservations() => ReadDatabase("bison_observe_cli.db", "bison_observe_cli_db");
+    public static void ReadObservations() => ReadDatabase("bison_observe_cli.db", "bison_observe_cli_db");
 
-    public static string ReadProposals() => ReadDatabase("bison_proposal_cli.db", "bison_proposal_cli_db");
+    public static void ReadProposals() => ReadDatabase("bison_proposal_cli.db", "bison_proposal_cli_db");
 
     private static string ReadDatabase(string databaseFile, string tableName)
     {
