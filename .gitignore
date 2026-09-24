@@ -20,6 +20,8 @@ TestResults/
 !Directory.build.props
 !data
 !data/*.csv
+!scripts
+!scripts/**
 !.github/
 !.github/**
 
