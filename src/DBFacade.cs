@@ -1,39 +1,50 @@
-using System.Data;
 using Microsoft.Data.Sqlite;
 
-var dataDirectory = Path.Combine(
-    AppContext.BaseDirectory,
-    "../../../../data"
-);
-
-var databaseFiles = new[]
+public static class DBFacade
 {
-    "bison_comment_cli.db",
-    "bison_observe_cli.db",
-    "bison_proposal_cli.db"
-};
+    private static readonly string DataDirectory = Path.Combine(
+        AppContext.BaseDirectory,
+        "../../../../data");
 
-var BISONDBPATH = databaseFiles.All(file => File.Exists(Path.Combine(dataDirectory, file)))
-    ? dataDirectory
-    : Path.Combine(Path.GetTempPath(), "bison-db");
-
-Directory.CreateDirectory(BISONDBPATH);
-
-static string comments() {
-    using (var connection = new SqliteConnection($"Data Source={Path.Combine(BISONDBPATH, "bison_comment_cli.db")}"))
+    private static readonly string[] DatabaseFiles =
     {
-        connection.Open();
+        "bison_comment_cli.db",
+        "bison_observe_cli.db",
+        "bison_proposal_cli.db"
+    };
+
+    private static readonly string DatabasePath = DatabaseFiles.All(file => File.Exists(Path.Combine(DataDirectory, file))) ? DataDirectory : Path.Combine(Path.GetTempPath(), "bison-db");
+
+    static DBFacade()
+    {
+        Directory.CreateDirectory(DatabasePath);
     }
-}
-static string observations() {
-    using (var connection = new SqliteConnection($"Data Source={Path.Combine(BISONDBPATH, "bison_observe_cli.db")}"))
+
+    public static void ReadComments() => ReadDatabase("bison_comment_cli.db", "bison_comment_cli_db");
+
+    public static void ReadObservations() => ReadDatabase("bison_observe_cli.db", "bison_observe_cli_db");
+
+    public static void ReadProposals() => ReadDatabase("bison_proposal_cli.db", "bison_proposal_cli_db");
+
+    private static string ReadDatabase(string databaseFile, string tableName)
     {
+        using var connection = new SqliteConnection(
+            $"Data Source={Path.Combine(DatabasePath, databaseFile)}");
         connection.Open();
-    }
-}
-static string proposals() {
-    using (var connection = new SqliteConnection($"Data Source={Path.Combine(BISONDBPATH, "bison_proposal_cli.db")}"))
-    {
-        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = $"SELECT * FROM {tableName}";
+        List<string> returnedread = new List<string>();
+        using var reader = command.ExecuteReader();
+        
+        while (reader.Read())
+        {
+            for (int column = 0; column < reader.FieldCount; column++)
+            {
+                returnedread.Add($"{reader.GetName(column)}: {reader.GetValue(column)}");
+            }
+        }
+
+        return string.Join("\n", returnedread);
     }
 }
