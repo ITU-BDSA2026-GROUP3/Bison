@@ -240,6 +240,8 @@ public class FuzzEndToEndTests : IDisposable, IClassFixture<WebAppFixture>
 
         for(int i=0; i<comparedItems; i++)
         {
+            Console.WriteLine($"----- VALIDATING PROPOSAL {i}");
+            
             ProposalRec expected = sortedExpectedProposals[i].Item1;
             ProposalRec actual = actualProposals[i];
 
