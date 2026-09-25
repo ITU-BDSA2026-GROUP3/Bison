@@ -18,11 +18,14 @@
     <PackageReference Include="CsvHelper" Version="33.1.0" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
     <Compile Remove="Bison.CSVDBService\**" />
+    <Compile Remove="Bison.Razor\**" />
     <Compile Remove="SimpleDB\**" />
     <Compile Remove="Taxonomy\**" />
     <EmbeddedResource Remove="Bison.CSVDBService\**" />
+    <EmbeddedResource Remove="Bison.Razor\**" />
     <EmbeddedResource Remove="SimpleDB\**" />
     <None Remove="Bison.CSVDBService\**" />
+    <None Remove="Bison.Razor\**" />
     <None Remove="SimpleDB\**" />
   </ItemGroup>
 
