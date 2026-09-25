@@ -1,6 +1,8 @@
 
 using System.Net.Http.Json;
 using System.Numerics;
+using System.Runtime.InteropServices;
+using Bison.Taxonomy;
 using Microsoft.AspNetCore.Builder;
 
 namespace Bison.CLI.Tests;
@@ -16,6 +18,7 @@ public class FuzzEndToEndTests : IDisposable, IClassFixture<WebAppFixture>
 
     private string name;
     private List<long> validIDs;
+    private ITaxonomyRepository taxonomyRepository;
 
     private const string validTaxonID = "MSTSNM:Arter:3e4e67e4-f785-ea11-aa77-501ac539d1ea";
     private const string badUglyStupidNotValidTaxonID = "This is NOT a valid ID and should NEVER work >:)";
@@ -37,6 +40,8 @@ public class FuzzEndToEndTests : IDisposable, IClassFixture<WebAppFixture>
         client = fixture.Client;
 
         validIDs = new List<long>();
+        var taxa = TaxonomyCsvLoader.Load();
+        taxonomyRepository = new TaxonomyRepository(taxa);
 
         expectedObservations = new List<(ObservationRec,string)>();
         expectedComments = new List<(CommentRec,string)>();
@@ -114,7 +119,8 @@ public class FuzzEndToEndTests : IDisposable, IClassFixture<WebAppFixture>
         var rootCommands = Program.getRootCommands(0, false);
 
         int exitcode = await rootCommands.Parse(new[] {"comment", comment, obsID.ToString()}).InvokeAsync();
-        if(exitcode == 0)
+
+        if(validIDs.Contains(obsID))
         {
             expectedComments.Add((new CommentRec(obsID, comment), $"comment {comment} {obsID}"));
         }
@@ -129,7 +135,7 @@ public class FuzzEndToEndTests : IDisposable, IClassFixture<WebAppFixture>
 
         int exitcode = await rootCommands.Parse(new[] {"propose", obsID.ToString(), taxonID}).InvokeAsync();
 
-        if(exitcode == 0)
+        if(taxonomyRepository.GetById(taxonID) != null && validIDs.Contains(obsID))
         {
             expectedProposals.Add((new ProposalRec(obsID, taxonID), $"propose {obsID} {taxonID}"));
         }
@@ -220,6 +226,7 @@ public class FuzzEndToEndTests : IDisposable, IClassFixture<WebAppFixture>
     {
         var rawProposalsForObs = await client.GetFromJsonAsync<IEnumerable<ProposalRec>>($"proposals");
         List<ProposalRec> actualProposals = rawProposalsForObs.ToList();
+        actualProposals.Sort((a1, a2)  => a1.obsID.CompareTo(a2.obsID));
 
         var sortedExpectedProposals = expectedProposals.OrderBy(e => e.Item1.obsID).ToList();
 
