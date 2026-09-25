@@ -44,7 +44,7 @@ public class ObservationService : IObservationService
     public List<CommentViewModel> GetComments(long id)
     {
         List<CommentViewModel> comments = new List<CommentViewModel>();
-        foreach (Object[] row in DBFacade.ReadObservations())
+        foreach (Object[] row in DBFacade.ReadComments())
         {
             comments.Add(new CommentViewModel((long)row[0], (string)row[1]));
         }
