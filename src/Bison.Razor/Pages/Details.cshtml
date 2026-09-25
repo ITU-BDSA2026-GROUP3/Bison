@@ -1,0 +1,31 @@
+﻿@page "/ob/{id}"
+@model Bison.Razor.Pages.DetailsModel
+@{
+    ViewData["Title"] = "Bison";
+    Layout = "Shared/_Layout";
+    var routeName = HttpContext.GetRouteValue("id");
+}
+
+<div>
+    <h2> @routeName's details </h2>
+
+    @if (Model.Comments.Any())
+    {
+        <ul id="DetalList" class="Details">
+            @foreach (var ob in Model.Comments)
+            {
+                <li>
+                    <p>
+                        <strong>
+                            @ob.Comment
+                        </strong>
+                    </p>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <em>There are no details so far.</em>
+    }
+</div>
