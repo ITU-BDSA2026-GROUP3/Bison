@@ -1,3 +1,6 @@
+using System.Data;
+using static System.Net.Mime.MediaTypeNames;
+
 public record ObservationViewModel(long obsID, string Author, string Message, string Location ,string Timestamp);
 public record CommentViewModel(long commentID, long obsID,string Author, string Comment);
 public interface IObservationService
@@ -24,17 +27,28 @@ public class ObservationService : IObservationService
 
     public List<ObservationViewModel> GetObservations()
     {
-        return _obs;
+        List<ObservationViewModel> observations = new List<ObservationViewModel>();
+        foreach (IDataRecord row in DBFacade.ReadObservations())
+        {
+            observations.Add(new ObservationViewModel(row.GetInt64(0), row.GetString(1), row.GetString(2), row.GetString(3), row.GetString(4)));
+        }
+    
+        return observations;
     }
 
     public List<ObservationViewModel> GetObservationsFromAuthor(string author)
     {
         // filter by the provided author name
-        return _obs.Where(x => x.Author == author).ToList();
+        return GetObservations().Where(x => x.Author == author).ToList(); // this is lazy and needs to be changed >:(
     }
     public List<CommentViewModel> GetComments(long id)
     {
-        // filter by the provided author name
+        List<CommentViewModel> comments = new List<CommentViewModel>();
+        foreach (IDataRecord row in DBFacade.ReadObservations())
+        {
+            comments.Add(new CommentViewModel(row.GetInt64(0), row.GetInt64(1), row.GetString(2), row.GetString(3)));
+        }
+;
         return _comments.Where(x => x.obsID == id).ToList();
     }
 
