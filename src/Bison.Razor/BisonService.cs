@@ -28,9 +28,9 @@ public class ObservationService : IObservationService
     public List<ObservationViewModel> GetObservations()
     {
         List<ObservationViewModel> observations = new List<ObservationViewModel>();
-        foreach (IDataRecord row in DBFacade.ReadObservations())
+        foreach (Object[] row in DBFacade.ReadObservations())
         {
-            observations.Add(new ObservationViewModel(row.GetInt64(0), row.GetString(1), row.GetString(2), row.GetString(3), row.GetString(4)));
+            observations.Add(new ObservationViewModel((long)row[0], (string)row[1], (string)row[2], (string)row[3], UnixTimeStampToDateTimeString((long)row[4])));
         }
     
         return observations;
@@ -44,12 +44,12 @@ public class ObservationService : IObservationService
     public List<CommentViewModel> GetComments(long id)
     {
         List<CommentViewModel> comments = new List<CommentViewModel>();
-        foreach (IDataRecord row in DBFacade.ReadObservations())
+        foreach (Object[] row in DBFacade.ReadObservations())
         {
-            comments.Add(new CommentViewModel(row.GetInt64(0),row.GetString(1)));
+            comments.Add(new CommentViewModel((long)row[0], (string)row[1]));
         }
 ;
-        return _comments.Where(x => x.obsID == id).ToList();
+        return comments.Where(x => x.obsID == id).ToList();
     }
 
     private static string UnixTimeStampToDateTimeString(double unixTimeStamp)

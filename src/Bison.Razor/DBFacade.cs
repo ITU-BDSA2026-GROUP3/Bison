@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 using System.Data;
+using System.Data.Common;
 
 public static class DBFacade
 {
@@ -21,13 +22,13 @@ public static class DBFacade
         Directory.CreateDirectory(DatabasePath);
     }
 
-    public static List<IDataRecord> ReadComments() => ReadDatabase("bison_comment_cli.db", "bison_comment_cli_db");
+    public static List<Object[]> ReadComments() => ReadDatabase("bison_comment_cli.db", "bison_comment_cli_db");
 
-    public static List<IDataRecord> ReadObservations() => ReadDatabase("bison_observe_cli.db", "bison_observe_cli_db");
+    public static List<Object[]> ReadObservations() => ReadDatabase("bison_observe_cli.db", "bison_observe_cli_db");
 
-    public static List<IDataRecord> ReadProposals() => ReadDatabase("bison_proposal_cli.db", "bison_proposal_cli_db");
+    public static List<Object[]> ReadProposals() => ReadDatabase("bison_proposal_cli.db", "bison_proposal_cli_db");
 
-    private static List<IDataRecord> ReadDatabase(string databaseFile, string tableName)
+    private static List<Object[]> ReadDatabase(string databaseFile, string tableName)
     {
         using var connection = new SqliteConnection(
             $"Data Source={Path.Combine(DatabasePath, databaseFile)}");
@@ -35,12 +36,15 @@ public static class DBFacade
 
         using var command = connection.CreateCommand();
         command.CommandText = $"SELECT * FROM {tableName}";
-        List<IDataRecord> returnedread = new List<IDataRecord>();
+        List<Object[]> returnedread = new List<Object[]>();
         using var reader = command.ExecuteReader();
        
         while (reader.Read())
         {
-            returnedread.Add((IDataRecord)reader);
+            Object[] row = new Object[reader.FieldCount];
+
+            reader.GetValues(row);
+            returnedread.Add(row);
         }
 
         return returnedread;
