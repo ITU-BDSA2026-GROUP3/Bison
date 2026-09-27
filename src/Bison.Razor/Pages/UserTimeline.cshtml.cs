@@ -5,6 +5,7 @@ namespace Bison.Razor.Pages;
 
 public class UserTimelineModel : PageModel
 {
+    private const int PageSize = 32;
     private readonly IObservationService _observationService;
 
     public List<ObservationViewModel> Observations { get; private set; } = new();
@@ -17,6 +18,10 @@ public class UserTimelineModel : PageModel
     public string Author {get; private set; } = string.Empty;
 
     public int CurrentPage { get; private set; } = 1;
+
+    public bool HasPreviousPage => CurrentPage > 1;
+
+    public bool HasNextPage => Observations.Count == PageSize;
 
     public ActionResult OnGet([FromRoute] string author, [FromQuery] int page = 1)
     {

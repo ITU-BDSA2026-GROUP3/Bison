@@ -5,6 +5,7 @@ namespace Bison.Razor.Pages;
 
 public class PublicModel : PageModel
 {
+    private const int PageSize = 32;
     private readonly IObservationService _observationService;
     public List<ObservationViewModel> Observations { get; private set; } = new();
 
@@ -14,6 +15,10 @@ public class PublicModel : PageModel
     }
 
     public int CurrentPage {get; private set; } = 1;
+
+    public bool HasPreviousPage => CurrentPage > 1;
+
+    public bool HasNextPage => Observations.Count == PageSize;
 
     public ActionResult OnGet([FromQuery] int page = 1)
     {
