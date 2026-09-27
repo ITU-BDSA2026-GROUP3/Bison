@@ -5,17 +5,20 @@ namespace Bison.Razor.Pages;
 
 public class PublicModel : PageModel
 {
-    private readonly IObservationService _service;
-    public List<ObservationViewModel> Observations { get; set; }
+    private readonly IObservationService _observationService;
+    public List<ObservationViewModel> Observations { get; private set; } = new();
 
-    public PublicModel(IObservationService service)
+    public PublicModel(IObservationService observationService)
     {
-        _service = service;
+        _observationService = observationService;
     }
 
-    public ActionResult OnGet()
+    public int CurrentPage {get; private set; } = 1;
+
+    public ActionResult OnGet([FromQuery] int page = 1)
     {
-        Observations = _service.GetObservations();
+        CurrentPage = Math.Max(page, 1);
+        Observations = _observationService.GetObservations(CurrentPage);
         return Page();
     }
 }

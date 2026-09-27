@@ -4,22 +4,63 @@ using System.Data.Common;
 
 public static class DBFacade
 {
-    private static readonly string DataDirectory = Path.Combine(
-        AppContext.BaseDirectory,
-        "../../../../data");
 
-    private static readonly string[] DatabaseFiles =
-    {
-        "bison_comment_cli.db",
-        "bison_observe_cli.db",
-        "bison_proposal_cli.db"
-    };
+    private static readonly string DataDirectory = Path.GetFullPath(
+        Path.Combine(
+            AppContext.BaseDirectory,
+            "../../../../../data"));
 
-    private static readonly string DatabasePath = DatabaseFiles.All(file => File.Exists(Path.Combine(DataDirectory, file))) ? DataDirectory : Path.Combine(Path.GetTempPath(), "bison-db");
+    private static readonly string DatabasePath = DataDirectory;
 
     static DBFacade()
     {
         Directory.CreateDirectory(DatabasePath);
+        InitializeDatabases();
+    }
+
+    private static void InitializeDatabases()
+    {
+        InitializeDatabase(
+            "bison_observe_cli.db",
+            """
+            CREATE TABLE IF NOT EXISTS bison_observe_cli_db (
+                obsID INTEGER PRIMARY KEY,
+                Author TEXT NOT NULL,
+                Observation TEXT NOT NULL,
+                Location TEXT NOT NULL,
+                Timestamp INTEGER NOT NULL
+            );
+            """);
+
+        InitializeDatabase(
+            "bison_comment_cli.db",
+            """
+            CREATE TABLE IF NOT EXISTS bison_comment_cli_db (
+                obsID INTEGER NOT NULL,
+                Comment TEXT NOT NULL
+            );
+            """);
+
+        InitializeDatabase(
+            "bison_proposal_cli.db",
+            """
+            CREATE TABLE IF NOT EXISTS bison_proposal_cli_db (
+                obsID INTEGER NOT NULL,
+                taxonID TEXT NOT NULL
+            );
+            """);
+    }
+
+    private static void InitializeDatabase(string databaseFile, string commandText)
+    {
+        using var connection = new SqliteConnection(
+            $"Data Source={Path.Combine(DatabasePath, databaseFile)}");
+
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        command.CommandText = commandText;
+        command.ExecuteNonQuery();
     }
 
     public static List<Object[]> ReadComments() => ReadDatabase("bison_comment_cli.db", "bison_comment_cli_db");
