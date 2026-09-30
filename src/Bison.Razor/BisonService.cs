@@ -5,14 +5,15 @@ public record ObservationViewModel(long obsID, string Author, string Message, st
 public record CommentViewModel(long obsID, string Comment);
 public interface IObservationService
 {
-    public List<ObservationViewModel> GetObservations();
-    public List<ObservationViewModel> GetObservationsFromAuthor(string author);
+    public List<ObservationViewModel> GetObservations(int page = 1);
+    public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page = 1);
 
     public List<CommentViewModel> GetComments(long id);
 }
 
 public class ObservationService : IObservationService
 {
+    private const int PageSize = 32;
     // These would normally be loaded from a database for example
     private static readonly List<ObservationViewModel> _obs = new()
         {
@@ -25,10 +26,11 @@ public class ObservationService : IObservationService
             new CommentViewModel(1,"Nice observation bro!"),
         };
 
-    public List<ObservationViewModel> GetObservations()
+    public List<ObservationViewModel> GetObservations(int page = 1)
     {
+        int validPage = Math.Max(page, 1);
         List<ObservationViewModel> observations = new List<ObservationViewModel>();
-        foreach (Object[] row in DBFacade.ReadObservations())
+        foreach (Object[] row in DBFacade.ReadObservations(validPage, PageSize))
         {
             observations.Add(new ObservationViewModel((long)row[0], (string)row[1], (string)row[2], (string)row[3], UnixTimeStampToDateTimeString((long)row[4])));
         }
@@ -36,10 +38,17 @@ public class ObservationService : IObservationService
         return observations;
     }
 
-    public List<ObservationViewModel> GetObservationsFromAuthor(string author)
+    public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page = 1)
     {
-        // filter by the provided author name
-        return GetObservations().Where(x => x.Author == author).ToList(); // this is lazy and needs to be changed >:(
+        int validPage = Math.Max(page, 1);
+        List<ObservationViewModel> observations = new List<ObservationViewModel>();
+
+        foreach(object[] row in DBFacade.ReadObservationsFromAuthor(author, validPage, PageSize))
+        {
+            observations.Add(new ObservationViewModel((long)row[0], (string)row[1], (string)row[2], (string)row[3], UnixTimeStampToDateTimeString((long)row[4])));
+        }
+
+        return observations; // this is now changed
     }
     public List<CommentViewModel> GetComments(long id)
     {

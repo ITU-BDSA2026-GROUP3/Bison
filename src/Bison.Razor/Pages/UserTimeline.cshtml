@@ -1,4 +1,4 @@
-﻿@page "/{author}"
+﻿@page "/obs/{author}"
 @model Bison.Razor.Pages.UserTimelineModel
 @{
     ViewData["Title"] = "Bison";
@@ -17,10 +17,13 @@
                 <li>
                     <p>
                         <strong>
-                            <a href="/@ob.Author">@ob.Author</a>
+                             <a asp-page="/UserTimeline"
+                                 asp-route-author="@ob.Author">
+                                 @ob.Author
+                             </a>
                         </strong>
                         @ob.Message
-                        <small>&mdash; @ob.Timestamp</small>
+                        <small><em>&mdash; </em>@ob.Timestamp</small>
                     </p>
                 </li>
             }
@@ -30,4 +33,23 @@
     {
         <em>There are no Observations so far.</em>
     }
+    <nav aria-label="User timeline pagination">
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-page="/UserTimeline"
+                asp-route-author="@Model.Author"
+                asp-route-page="@(Model.CurrentPage - 1)">
+                Previous
+            </a>
+        }
+        <span>Page @Model.CurrentPage</span>
+        @if (Model.HasNextPage)
+        {
+            <a asp-page="/UserTimeline"
+                asp-route-author="@Model.Author"
+                asp-route-page="@(Model.CurrentPage + 1)">
+                Next
+            </a>
+        }
+    </nav>
 </div>
