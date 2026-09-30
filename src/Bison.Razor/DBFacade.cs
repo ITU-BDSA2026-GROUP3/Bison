@@ -6,7 +6,7 @@ public static class DBFacade
 {
     private static readonly string DataDirectory = Path.Combine(
         AppContext.BaseDirectory,
-        "../../../../data");
+        "../../../../../data");
 
     private static readonly string[] DatabaseFiles =
     {
