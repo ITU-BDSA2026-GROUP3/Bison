@@ -6,6 +6,7 @@ public record CommentViewModel(long obsID, string Comment);
 public interface IObservationService
 {
     public List<ObservationViewModel> GetObservations(int page = 1);
+    public ObservationViewModel GetObservation(long id);
     public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page = 1);
 
     public List<CommentViewModel> GetComments(long id);
@@ -36,6 +37,13 @@ public class ObservationService : IObservationService
         }
     
         return observations;
+    }
+
+    public ObservationViewModel GetObservation(long id)
+    {
+        Object[] ob = DBFacade.ReadObservation(id);
+        if(ob == null) return null;
+        return new ObservationViewModel((long)ob[0], (string)ob[1], (string)ob[2], (string)ob[3], UnixTimeStampToDateTimeString((long)ob[4]));
     }
 
     public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page = 1)

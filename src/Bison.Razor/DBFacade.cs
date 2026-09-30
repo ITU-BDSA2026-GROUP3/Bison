@@ -93,6 +93,29 @@ public static class DBFacade
             });
     }
 
+    public static Object[] ReadObservation(long id)
+    {
+        const string commandText =
+            "SELECT obsID, Author, Observation, Location, Timestamp " +
+            "FROM bison_observe_cli_db " +
+            "WHERE obsID = @id";
+        
+        List<Object[]> objects = ReadObservationDatabase(
+            commandText,
+            command =>
+            {
+                command.Parameters.AddWithValue(
+                    "@id",
+                    id);
+            });
+
+        if(objects.Count() == 0)
+        {
+            return null;
+        }
+        return objects[0];
+    }
+
     public static List<object[]> ReadObservationsFromAuthor(string author, int page, int pageSize)
     {
         int validPage = Math.Max(page, 1);
