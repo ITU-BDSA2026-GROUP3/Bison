@@ -6,6 +6,7 @@ namespace Bison.Razor.Pages;
 public class DetailsModel : PageModel
 {
     private readonly IObservationService _service;
+    public ObservationViewModel Observation {get; set;}
     public List<CommentViewModel> Comments { get; set; }
 
     public DetailsModel(IObservationService service)
@@ -15,6 +16,7 @@ public class DetailsModel : PageModel
 
     public ActionResult OnGet(long id)
     {
+        Observation = _service.GetObservation(id);
         Comments = _service.GetComments(id);
         return Page();
     }

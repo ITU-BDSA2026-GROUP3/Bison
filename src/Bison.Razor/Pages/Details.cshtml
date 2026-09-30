@@ -7,22 +7,42 @@
 }
 
 <div>
-    <h2> @routeName's details </h2>
+    <h2> Observation @routeName's details </h2>
 
-    @if (Model.Comments.Any())
+    @if (Model.Observation != null)
     {
-        <ul id="DetalList" class="Details">
-            @foreach (var ob in Model.Comments)
-            {
-                <li>
-                    <p>
-                        <strong>
-                            @ob.Comment
-                        </strong>
-                    </p>
-                </li>
-            }
-        </ul>
+        <h3> Observation: </h3>
+        <p>
+            <strong>
+                <a asp-page="/UserTimeline"
+                    asp-route-author="@Model.Observation.Author">
+                    @Model.Observation.Author
+                </a>
+            </strong>
+            @Model.Observation.Message
+            <small><em>&mdash; </em>@Model.Observation.Timestamp</small>
+        </p>
+
+        @if (Model.Comments.Any())
+        {
+            <h3> Comments: </h3>
+            <ul id="DetalList" class="Details">
+                @foreach (var ob in Model.Comments)
+                {
+                    <li>
+                        <p>
+                            <strong>
+                                @ob.Comment
+                            </strong>
+                        </p>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <em>No comments have been made on this observation.</em>
+        }
     }
     else
     {
