@@ -102,26 +102,62 @@ public class RazorUnitTests : IDisposable
     public void GetCommentsOnObservation()
     {
         //Arrange
-
+        var obs1 = new ObservationViewModel(0L, "Emil", "Hjalte im not doing that", "her", "123");
+        var obs2 = new ObservationViewModel(1L, "THe dEVil", "DONT COMMENT ON THIS OR YOU DIEEE", "kfc", "1232");
+        var com = new CommentViewModel(1L, "I COMMENTED HIHIIHIHIHIH");
+        DatabaseHandler.AddObservation(obs2);
+        DatabaseHandler.AddComment(com);
 
         //Act
-
+        var comments = service.GetComments(obs2.obsID);
 
         //Assert
-        
+        Assert.NotEmpty(comments);
+        Assert.Single(comments);
+
+        var comment = comments[0];
+        CompareComments(com, comment);
     }
 
-    [Fact]
+    
+    //NEEDS LOGIC WHEN INSERTING COMMENTS TO WORK. CAN'T CURRENTLY TEST :(
+    /*[Fact]
     public void GetCommentsOnNonExistingObservation()
     {
         //Arrange
-
+        var com = new CommentViewModel(0L, "I COMMENTED HIHIIHIHIHIH");
+        DatabaseHandler.AddComment(com);
 
         //Act
-
+        var comments = service.GetComments(0L);
 
         //Assert
-        
+        Assert.Empty(comments);
+    }*/
+
+    [Fact]
+    public void GetMultipleCommentsOnObservation()
+    {
+        //Arrange
+        var obs = new ObservationViewModel(0L, "THe dEVil", "DONT COMMENT ON THIS OR YOU DIEEE", "kfc", "1232");
+        var com1 = new CommentViewModel(0L, "I COMMENTED HIHIIHIHIHIH");
+        var com2 = new CommentViewModel(0L, "ME TOO LOLOLOLOLO");
+        DatabaseHandler.AddObservation(obs);
+        DatabaseHandler.AddComment(com1);
+        DatabaseHandler.AddComment(com2);
+
+        //Act
+        var comments = service.GetComments(0L);
+
+        //Assert
+        Assert.NotEmpty(comments);
+        Assert.Equal(2, comments.Count());
+
+        var comment1 = comments[0];
+        var comment2 = comments[1];
+
+        CompareComments(com1, comment1);
+        CompareComments(com2, comment2);
     }
 
     [Fact]
@@ -158,11 +194,23 @@ public class RazorUnitTests : IDisposable
 
     private void CompareObservations(ObservationViewModel obs1, ObservationViewModel obs2)
     {
+        Assert.NotNull(obs1);
+        Assert.NotNull(obs2);
+
         Assert.Equal(obs1.obsID, obs2.obsID);
         Assert.Equal(obs1.Author, obs2.Author);
         Assert.Equal(obs1.Message, obs2.Message);
         Assert.Equal(obs1.Location, obs2.Location);
         Assert.Equal(ObservationService.UnixTimeStampToDateTimeString(double.Parse(obs1.Timestamp)), obs2.Timestamp);
+    }
+
+    private void CompareComments(CommentViewModel com1, CommentViewModel com2)
+    {
+        Assert.NotNull(com1);
+        Assert.NotNull(com2);
+
+        Assert.Equal(com1.obsID, com2.obsID);
+        Assert.Equal(com1.Comment, com2.Comment);
     }
 
     public void Dispose()

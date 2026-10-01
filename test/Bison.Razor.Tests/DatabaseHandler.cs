@@ -136,12 +136,12 @@ public class DatabaseHandler
         connection.Close();
 
         connection = new SqliteConnection(
-            $"Data Source={Path.Combine(DatabasePath, commentTable)}");
+            $"Data Source={Path.Combine(DatabasePath, commentDatabase)}");
 
         connection.Open();
 
         command = connection.CreateCommand();
-        command.CommandText = resetDatabase+observationTable+";";
+        command.CommandText = resetDatabase+commentTable+";";
         command.ExecuteNonQuery();
 
         connection.Close();
