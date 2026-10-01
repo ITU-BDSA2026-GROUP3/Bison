@@ -54,7 +54,7 @@ public class ObservationService : IObservationService
         foreach(object[] row in DBFacade.ReadObservationsFromAuthor(author, validPage, PageSize))
         {
             //Doing the same here as with the GetObservations()
-            observations.Add(new ObservationViewModel((long)row[0], (string)row[1], (string)row[2], UnixTimeStampToDateTimeString((long)row[3])));
+            observations.Add(new ObservationViewModel((long)row[0], (string)row[1], (string)row[2],"", UnixTimeStampToDateTimeString((long)row[3])));
         }
 
         return observations; // this is now changed
