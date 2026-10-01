@@ -1,10 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IObservationService, ObservationService>();
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ChatDBContext>(options => options.UseSqlite(connectionString));
+builder.Services.AddDbContext<BisonContext>(options => options.UseSqlite(connectionString));
 
 
 var app = builder.Build();
