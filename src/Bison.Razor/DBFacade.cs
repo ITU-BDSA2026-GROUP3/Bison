@@ -11,6 +11,12 @@ public static class DBFacade
             "../../../../../data"));
 
     private static readonly string DatabasePath = DataDirectory;
+    public static string observationDatabase = "bison_observe_cli.db";
+    public static string observationTable = "bison_observe_cli_db";
+    public static string commentDatabase = "bison_comment_cli.db";
+    public static string commentTable = "bison_comment_cli_db";
+    public static string proposalDatabase = "bison_proposal_cli.db";
+    public static string proposalTable = "bison_proposal_cli_db";
 
     static DBFacade()
     {
@@ -63,9 +69,9 @@ public static class DBFacade
         command.ExecuteNonQuery();
     }
 
-    public static List<Object[]> ReadComments() => ReadDatabase("bison_comment_cli.db", "bison_comment_cli_db");
+    public static List<Object[]> ReadComments() => ReadDatabase(commentDatabase, commentTable);
 
-    public static List<Object[]> ReadObservations() => ReadDatabase("bison_observe_cli.db", "bison_observe_cli_db");
+    public static List<Object[]> ReadObservations() => ReadDatabase(observationDatabase, observationTable);
 
     public static List<Object[]> ReadObservations(int page, int pageSize)
     {
@@ -73,9 +79,9 @@ public static class DBFacade
         int validPageSize = Math.Max(pageSize, 1);
         int offset = (validPage - 1) * validPageSize;
 
-        const string commandText =
+        string commandText =
             "SELECT obsID, Author, Observation, Location, Timestamp " +
-            "FROM bison_observe_cli_db " +
+            $"FROM {observationTable} " +
             "ORDER BY Timestamp DESC, obsID DESC " +
             "LIMIT @pageSize OFFSET @offset;";
 
@@ -99,9 +105,9 @@ public static class DBFacade
         int validPageSize = Math.Max(pageSize, 1);
         int offset = (validPage - 1) * validPageSize;
 
-        const string commandText =
+        string commandText =
             "SELECT obsID, Author, Observation, Location, Timestamp " +
-            "FROM bison_observe_cli_db " +
+            $"FROM {observationTable} " +
             "WHERE Author = @author " +
             "ORDER BY Timestamp DESC, obsID DESC " +
             "LIMIT @pageSize OFFSET @offset;";
@@ -124,11 +130,11 @@ public static class DBFacade
             });
     }
 
-    public static List<Object[]> ReadProposals() => ReadDatabase("bison_proposal_cli.db", "bison_proposal_cli_db");
+    public static List<Object[]> ReadProposals() => ReadDatabase(proposalDatabase, proposalTable);
 
     private static List<object[]> ReadObservationDatabase(string commandText, Action<SqliteCommand> addParameters)
     {
-        using var connection = new SqliteConnection($"Data Source={Path.Combine(DatabasePath, "bison_observe_cli.db")}");
+        using var connection = new SqliteConnection($"Data Source={Path.Combine(DatabasePath, observationDatabase)}");
 
         connection.Open();
 

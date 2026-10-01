@@ -15,17 +15,7 @@ public class DBFacadeUnitTests : IDisposable
 
     public DBFacadeUnitTests()
     {
-        DBFacade.InitializeDatabase(
-            "test_observe_cli.db",
-            """
-            CREATE TABLE IF NOT EXISTS test_observe_cli_db (
-                obsID INTEGER PRIMARY KEY,
-                Author TEXT NOT NULL,
-                Observation TEXT NOT NULL,
-                Location TEXT NOT NULL,
-                Timestamp INTEGER NOT NULL
-            );
-            """);
+        DatabaseHandler.InitializeDatabases();
     }
 
     [Fact]
@@ -45,7 +35,7 @@ public class DBFacadeUnitTests : IDisposable
     public void ReadFromDatabase()
     {
         //Arrange
-        DatabaseHandler.AddObservation(new ObservationViewModel(0, "Emil", "Test", "Test Location", "1234321"), observationDatabase, tableName);
+        DatabaseHandler.AddObservation(new ObservationViewModel(0, "Emil", "Test", "Test Location", "1234321"));
 
         //Act
         var records = DBFacade.ReadDatabase(observationDatabase, tableName);
@@ -63,18 +53,8 @@ public class DBFacadeUnitTests : IDisposable
         Assert.Equal(1234321L, record[4]); //Timestamp
     }
 
-    const string resetDatabase = "DROP TABLE IF EXISTS ";
     public void Dispose()
     {
-        using var connection = new SqliteConnection(
-            $"Data Source={Path.Combine(DatabasePath, observationDatabase)}");
-
-        connection.Open();
-
-        using var command = connection.CreateCommand();
-        command.CommandText = resetDatabase+tableName+";";
-        command.ExecuteNonQuery();
-
-        connection.Close();
+        DatabaseHandler.ResetDatabases();
     }
 }
