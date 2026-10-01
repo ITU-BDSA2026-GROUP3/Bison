@@ -5,24 +5,11 @@ namespace Bison.Razor.Tests;
 [Collection("Sequential Tests")]
 public class RazorUnitTests : IDisposable
 {
-    string observationDatabase;
-    string observationTable;
-    string commentDatabase;
-    string commentTable;
-    string proposalDatabase;
-    string proposalTable;
-
     IObservationService service;
     
     public RazorUnitTests()
     {
         DatabaseHandler.InitializeDatabases();
-        observationDatabase = DatabaseHandler.observationDatabase;
-        observationTable = DatabaseHandler.observationTable;
-        commentDatabase = DatabaseHandler.commentDatabase;
-        commentTable = DatabaseHandler.commentTable;
-        proposalDatabase = DatabaseHandler.proposalDatabase;
-        proposalTable = DatabaseHandler.proposalTable;
 
         service = new ObservationService();
     }
