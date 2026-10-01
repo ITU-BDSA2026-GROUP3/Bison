@@ -1,3 +1,4 @@
+using Bison.Razor.Pages;
 using Microsoft.Data.Sqlite;
 using System.Data;
 using System.Data.Common;
@@ -5,7 +6,7 @@ using System.Data.Common;
 public static class DBFacade
 {
 
-    private static readonly string DataDirectory = Path.GetFullPath(
+    /*private static readonly string DataDirectory = Path.GetFullPath(
         Path.Combine(
             AppContext.BaseDirectory,
             "../../../../../data"));
@@ -16,8 +17,20 @@ public static class DBFacade
     {
         Directory.CreateDirectory(DatabasePath);
         InitializeDatabases();
-    }
+    }*/
 
+
+    private readonly string DatabasePath;
+
+    public DBFacade()
+    {
+        string ? dbPath = Environment.GetEnvironmentVariable("BISONDBPATH");
+
+        DatabasePath = string.IsNullOrWhiteSpace(dbPath) 
+        ? Path.Combine(dbPath.GetTempPath(), "bison.db")
+        :Path.GetFullPath(dbPath);
+    }
+/*
     private static void InitializeDatabases()
     {
         InitializeDatabase(
@@ -49,8 +62,9 @@ public static class DBFacade
                 taxonID TEXT NOT NULL
             );
             """);
-    }
-
+    }*/
+    
+    /*
     private static void InitializeDatabase(string databaseFile, string commandText)
     {
         using var connection = new SqliteConnection(
@@ -61,7 +75,7 @@ public static class DBFacade
         using var command = connection.CreateCommand();
         command.CommandText = commandText;
         command.ExecuteNonQuery();
-    }
+    }*/
 
     public static List<Object[]> ReadComments() => ReadDatabase("bison_comment_cli.db", "bison_comment_cli_db");
 
@@ -74,9 +88,12 @@ public static class DBFacade
         int offset = (validPage - 1) * validPageSize;
 
         const string commandText =
-            "SELECT obsID, Author, Observation, Location, Timestamp " +
-            "FROM bison_observe_cli_db " +
-            "ORDER BY Timestamp DESC, obsID DESC " +
+            "SELECT observation.observation_id, user.username" +
+            "observation.text, observation.pub_date" +
+            "FROM observation" +
+            "JOIN user ON observation.author_id = user.user_id;"+
+            "ORDER BY observation.pub_date DESC," +
+            "observation.observation_id DESC "+
             "LIMIT @pageSize OFFSET @offset;";
 
         return ReadObservationDatabase(
@@ -100,10 +117,12 @@ public static class DBFacade
         int offset = (validPage - 1) * validPageSize;
 
         const string commandText =
-            "SELECT obsID, Author, Observation, Location, Timestamp " +
-            "FROM bison_observe_cli_db " +
-            "WHERE Author = @author " +
-            "ORDER BY Timestamp DESC, obsID DESC " +
+            "SELECT observation.observation_id, user.username" +
+            "observation.text, observation.pub_date" +
+            "FROM observation" +
+            "JOIN user ON observation.author_id = user.user_id;"+
+            "ORDER BY observation.pub_date DESC," +
+            "observation.observation_id DESC "+
             "LIMIT @pageSize OFFSET @offset;";
 
         return ReadObservationDatabase(
@@ -128,7 +147,7 @@ public static class DBFacade
 
     private static List<object[]> ReadObservationDatabase(string commandText, Action<SqliteCommand> addParameters)
     {
-        using var connection = new SqliteConnection($"Data Source={Path.Combine(DatabasePath, "bison_observe_cli.db")}");
+        using var connection = new SqliteConnection($"Data Source={DatabasePath}");
 
         connection.Open();
 
@@ -173,4 +192,37 @@ public static class DBFacade
 
         return rows;
     }
+
+    public object[]? ReadObservation(long id)
+    {
+        const string  commandText =
+            "SELECT observation.observation_id, user.username" +
+            "observation.text, observation.pub_date" +
+            "FROM observation" +
+            "JOIN user ON observation.author_id = user.user_id;"+
+            "WHERE observation.observation_id = @id; ";
+          
+            
+          using var connection = new SQliteConnection($"Data Source={DatabasePath}");
+
+            connection.Open();
+
+            using var command = connection.CreateCommand();
+
+            command.CommandText = commandText;
+
+            command.Parameters.AddWithValue("@id", id);
+
+            using var reader = command.ExecuteReader();
+
+        if (!reader.Read)
+        {
+            return null;
+        }
+
+        object[] row = new object[reader.FieldCount];
+        reader.GetValues(row);
+
+        return row;
+   } 
 }

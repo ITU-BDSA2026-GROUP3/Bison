@@ -9,6 +9,8 @@ public interface IObservationService
     public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page = 1);
 
     public List<CommentViewModel> GetComments(long id);
+
+    public List<ObservationViewModel> GetComments(long id);
 }
 
 public class ObservationService : IObservationService
@@ -32,7 +34,13 @@ public class ObservationService : IObservationService
         List<ObservationViewModel> observations = new List<ObservationViewModel>();
         foreach (Object[] row in DBFacade.ReadObservations(validPage, PageSize))
         {
-            observations.Add(new ObservationViewModel((long)row[0], (string)row[1], (string)row[2], (string)row[3], UnixTimeStampToDateTimeString((long)row[4])));
+            // Fixed the mapping, it is now, row[0] = observation_id, row[2]=username, row[2]=text, row[3] = pub_date
+            // There is a "" because location does not the exist in the schema, the sql schema
+            observations.Add(new ObservationViewModel((long)row[0], 
+                                                        (string)row[1], 
+                                                        (string)row[2], 
+                                                        "", 
+                                                        UnixTimeStampToDateTimeString((long)row[3])));
         }
     
         return observations;
@@ -45,7 +53,8 @@ public class ObservationService : IObservationService
 
         foreach(object[] row in DBFacade.ReadObservationsFromAuthor(author, validPage, PageSize))
         {
-            observations.Add(new ObservationViewModel((long)row[0], (string)row[1], (string)row[2], (string)row[3], UnixTimeStampToDateTimeString((long)row[4])));
+            //Doing the same here as with the GetObservations()
+            observations.Add(new ObservationViewModel((long)row[0], (string)row[1], (string)row[2], UnixTimeStampToDateTimeString((long)row[3])));
         }
 
         return observations; // this is now changed
@@ -67,6 +76,24 @@ public class ObservationService : IObservationService
         DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         dateTime = dateTime.AddSeconds(unixTimeStamp);
         return dateTime.ToString("MM/dd/yy H:mm:ss");
+    }
+
+    public ObservationViewModel? GetObservation(long id)
+    {
+        object[]? row = DBFacade.ReadObservation(id);
+
+        if (row == null)
+        {
+            return null;
+        }
+
+        return new ObservationViewModel(
+            (long)row[0],
+            (string)row[1],
+            (string)row[2],
+            "",
+            UnixTimeStampToDateTimeString((long)row[3]));
+        
     }
 
 }
