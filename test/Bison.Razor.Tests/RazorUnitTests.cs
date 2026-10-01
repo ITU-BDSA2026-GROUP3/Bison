@@ -189,7 +189,20 @@ public class RazorUnitTests : IDisposable
     [Fact]
     public void UnixTimeStampToDateTimeStringReturnsCorrectTime()
     {
-        
+        //Arrange
+        string time1 = "01-01-70 0:02:03";
+        var unixtime1 = 123L;
+
+        string time2 = "10-01-26 10:29:22";
+        var unixtime2 = 1790850562L;
+
+        //Act
+        var convertedTime1 = ObservationService.UnixTimeStampToDateTimeString(unixtime1);
+        var convertedTime2 = ObservationService.UnixTimeStampToDateTimeString(unixtime2);
+
+        //Assert
+        Assert.Equal(time1, convertedTime1);
+        Assert.Equal(time2, convertedTime2);
     }
 
     private void CompareObservations(ObservationViewModel obs1, ObservationViewModel obs2)
