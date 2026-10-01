@@ -51,7 +51,7 @@ public static class DBFacade
             """);
     }
 
-    private static void InitializeDatabase(string databaseFile, string commandText)
+    public static void InitializeDatabase(string databaseFile, string commandText)
     {
         using var connection = new SqliteConnection(
             $"Data Source={Path.Combine(DatabasePath, databaseFile)}");
@@ -139,7 +139,7 @@ public static class DBFacade
         return ReadRows(command);
     }
 
-    private static List<Object[]> ReadDatabase(string databaseFile, string tableName)
+    public static List<Object[]> ReadDatabase(string databaseFile, string tableName)
     {
         using var connection = new SqliteConnection(
             $"Data Source={Path.Combine(DatabasePath, databaseFile)}");
