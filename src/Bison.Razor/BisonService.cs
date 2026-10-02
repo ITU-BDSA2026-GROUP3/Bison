@@ -16,9 +16,13 @@ public class ObservationService : IObservationService
 {
 
     private readonly IPostRepository _PostRepository;
-    public ObservationService(IPostRepository postRepository)
+    private readonly IAuthorRepository _AuthorRepository;
+    private readonly ITaxonRepository _TaxonRepository;
+    public ObservationService(IPostRepository postRepository, IAuthorRepository authorRepository, ITaxonRepository taxonRepository)
     {
         _PostRepository = postRepository;
+        _AuthorRepository = authorRepository;
+        _TaxonRepository = taxonRepository;
     }
     private const int PageSize = 32;
     // These would normally be loaded from a database for example
@@ -36,10 +40,6 @@ public class ObservationService : IObservationService
 
     public async Task<List<ObservationViewModel>> GetObservations(int page = 1)
     {
-        //testing purposes
-        List<Observation> listfg = new List<Observation>();
-        Observation testing = new Observation() { Id = 0, Author = new Author(), Text = "testing!", TimeStamp = DateTime.Now};
-        await _PostRepository.CreateObservations(new List<Observation> { testing });
 
         int validPage = Math.Max(page, 1);
         List<ObservationViewModel> observations = new List<ObservationViewModel>();

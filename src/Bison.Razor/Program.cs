@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IObservationService, ObservationService>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<ITaxonRepository, TaxonRepository>();
+builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<BisonContext>(options => options.UseSqlite(connectionString));
 

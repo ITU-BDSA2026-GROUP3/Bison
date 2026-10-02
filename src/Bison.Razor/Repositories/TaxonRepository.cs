@@ -16,13 +16,18 @@ namespace Bison.Razor.Repositories
         }
     public async Task<List<int>> CreateTaxons(List<Taxon> taxons)
         {
-            List<int> ids = new List<int>();
+
             foreach(Taxon taxon in taxons)
             {
                 var queryResult = await _bisonContext.Taxons.AddAsync(taxon); // does not write to the database!
-                ids.Add(queryResult.Entity.Id);
             }
             await _bisonContext.SaveChangesAsync(); // persist the changes in the database
+
+            List<int> ids = new List<int>();
+            foreach (Taxon taxon in taxons)
+            {
+                ids.Add(taxon.Id);
+            }
             return ids;
         }
 

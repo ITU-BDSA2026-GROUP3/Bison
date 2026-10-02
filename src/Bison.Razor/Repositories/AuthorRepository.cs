@@ -22,13 +22,18 @@ namespace Bison.Razor.Repositories
 
         public async Task<List<int>> CreateAuthors(List<Author> authors)
         {
-            List<int> ids = new List<int>();
             foreach(Author author in authors)
             {
                 var queryResult = await _bisonContext.Authors.AddAsync(author); // does not write to the database!
-                ids.Add(queryResult.Entity.Id);
             }
             await _bisonContext.SaveChangesAsync(); // persist the changes in the database
+
+            // count the ideas after the db has been updated
+            List<int> ids = new List<int>();
+            foreach (Author author in authors)
+            {
+                ids.Add(author.Id);
+            }
             return ids;
         }
 
