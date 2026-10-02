@@ -10,7 +10,7 @@ public class PaginationPageModelTests
         FakeObservationService service = new();
         PublicModel model = new(service);
 
-        model.OnGet(2);
+        model.OnGetAsync(2);
 
         Assert.Equal(2, model.CurrentPage);
         Assert.Equal(2, service.RequestedPublicPage);
@@ -24,7 +24,7 @@ public class PaginationPageModelTests
         FakeObservationService service = new();
         PublicModel model = new(service);
 
-        model.OnGet(page);
+        model.OnGetAsync(page);
 
         Assert.Equal(1, model.CurrentPage);
         Assert.Equal(1, service.RequestedPublicPage);

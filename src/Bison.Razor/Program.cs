@@ -1,10 +1,12 @@
+using Bison.Razor.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<IObservationService, ObservationService>();
+builder.Services.AddScoped<IObservationService, ObservationService>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<BisonContext>(options => options.UseSqlite(connectionString));
 

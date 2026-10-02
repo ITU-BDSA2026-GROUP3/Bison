@@ -20,10 +20,10 @@ public class PublicModel : PageModel
 
     public bool HasNextPage => Observations.Count == PageSize;
 
-    public ActionResult OnGet([FromQuery] int page = 1)
+    public async Task<ActionResult> OnGetAsync([FromQuery] int page = 1)
     {
         CurrentPage = Math.Max(page, 1);
-        Observations = _observationService.GetObservations(CurrentPage);
+        Observations = await _observationService.GetObservations(CurrentPage);
         return Page();
     }
 }

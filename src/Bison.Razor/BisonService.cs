@@ -1,3 +1,4 @@
+using Bison.Razor.Repositories;
 using System.Data;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -5,7 +6,7 @@ public record ObservationViewModel(long obsID, string Author, string Message, st
 public record CommentViewModel(long obsID, string Comment);
 public interface IObservationService
 {
-    public List<ObservationViewModel> GetObservations(int page = 1);
+    public Task<List<ObservationViewModel>> GetObservations(int page = 1);
     public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page = 1);
 
     public List<CommentViewModel> GetComments(long id);
@@ -13,6 +14,12 @@ public interface IObservationService
 
 public class ObservationService : IObservationService
 {
+
+    private readonly IPostRepository _PostRepository;
+    public ObservationService(IPostRepository postRepository)
+    {
+        _PostRepository = postRepository;
+    }
     private const int PageSize = 32;
     // These would normally be loaded from a database for example
     private static readonly List<ObservationViewModel> _obs = new()
@@ -26,13 +33,15 @@ public class ObservationService : IObservationService
             new CommentViewModel(1,"Nice observation bro!"),
         };
 
-    public List<ObservationViewModel> GetObservations(int page = 1)
+
+    public async Task<List<ObservationViewModel>> GetObservations(int page = 1)
     {
         int validPage = Math.Max(page, 1);
         List<ObservationViewModel> observations = new List<ObservationViewModel>();
-        foreach (Object[] row in DBFacade.ReadObservations(validPage, PageSize))
+        var repoQuery = await _PostRepository.ReadAllObservations();
+        foreach (Observation obs in repoQuery)
         {
-            observations.Add(new ObservationViewModel((long)row[0], (string)row[1], (string)row[2], (string)row[3], UnixTimeStampToDateTimeString((long)row[4])));
+            observations.Add(new ObservationViewModel(obs.Id,"blank",obs.Text,"Jonas seems to have forgotten location",obs.TimeStamp.ToString()));
         }
     
         return observations;
