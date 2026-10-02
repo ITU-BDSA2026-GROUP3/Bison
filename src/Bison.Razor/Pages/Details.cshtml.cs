@@ -13,9 +13,9 @@ public class DetailsModel : PageModel
         _service = service;
     }
 
-    public ActionResult OnGet(long id)
+    public async Task<ActionResult> OnGet(int id)
     {
-        Comments = _service.GetComments(id);
+        Comments = await _service.GetComments(id);
         return Page();
     }
 }

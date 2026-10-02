@@ -121,10 +121,5 @@ namespace Bison.Razor.Repositories
             }
             return DTOs;*/
         }
-        public async Task<int> nextId()
-        {
-            // needs to be properly implementet
-            return 1000000000;
-        }
     }
 }

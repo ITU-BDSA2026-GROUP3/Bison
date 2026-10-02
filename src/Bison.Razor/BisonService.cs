@@ -7,9 +7,9 @@ public record CommentViewModel(long obsID, string Comment);
 public interface IObservationService
 {
     public Task<List<ObservationViewModel>> GetObservations(int page = 1);
-    public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page = 1);
+    public Task<List<ObservationViewModel>> GetObservationsFromAuthor(int authorId, int page = 1);
 
-    public List<CommentViewModel> GetComments(long id);
+    public Task<List<CommentViewModel>> GetComments(int observationId);
 }
 
 public class ObservationService : IObservationService
@@ -43,36 +43,42 @@ public class ObservationService : IObservationService
 
         int validPage = Math.Max(page, 1);
         List<ObservationViewModel> observations = new List<ObservationViewModel>();
-        var repoQuery = await _PostRepository.ReadAllObservations();
-        foreach (Observation obs in repoQuery)
+        var repoQueryResult = await _PostRepository.ReadAllObservations();
+        foreach (Observation obs in repoQueryResult)
         {
-            observations.Add(new ObservationViewModel(obs.Id,"blank",obs.Text,"Jonas seems to have forgotten location",obs.TimeStamp.ToString()));
+
+            observations.Add(new ObservationViewModel(obs.Id,
+                (obs.Author.Name ??= "nullAuthor"),
+                obs.Text,
+                "Jonas seems to have forgotten location",
+                obs.TimeStamp.ToString()));
         }
     
         return observations;
     }
 
-    public List<ObservationViewModel> GetObservationsFromAuthor(string author, int page = 1)
+    public async Task<List<ObservationViewModel>> GetObservationsFromAuthor(int authorId, int page = 1)
     {
         int validPage = Math.Max(page, 1);
         List<ObservationViewModel> observations = new List<ObservationViewModel>();
-
-        foreach(object[] row in DBFacade.ReadObservationsFromAuthor(author, validPage, PageSize))
+        var repoQueryResult = await _PostRepository.ReadObservations(authorId);
+        foreach (Observation obs in repoQueryResult)
         {
-            observations.Add(new ObservationViewModel((long)row[0], (string)row[1], (string)row[2], (string)row[3], UnixTimeStampToDateTimeString((long)row[4])));
+            observations.Add(new ObservationViewModel(obs.Id, obs.Author.Name, obs.Text, "Jonas seems to have forgotten location", obs.TimeStamp.ToString()));
         }
 
-        return observations; // this is now changed
+        return observations;
     }
-    public List<CommentViewModel> GetComments(long id)
+    public async Task<List<CommentViewModel>> GetComments(int observationId)
     {
         List<CommentViewModel> comments = new List<CommentViewModel>();
-        foreach (Object[] row in DBFacade.ReadComments())
+        var repoQueryResult = await _PostRepository.ReadComments(observationId);
+        foreach (Comment comment in repoQueryResult)
         {
-            comments.Add(new CommentViewModel((long)row[0], (string)row[1]));
+            comments.Add(new CommentViewModel(comment.Id, comment.Text));
         }
 ;
-        return comments.Where(x => x.obsID == id).ToList();
+        return comments;
     }
 
     private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
