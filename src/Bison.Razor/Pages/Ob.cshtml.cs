@@ -7,7 +7,7 @@ namespace Bison.Razor.Pages;
 public class ObModel : PageModel
 
 {
-    private readonly IObservationService _ObservationService;
+    private readonly IObservationService _observationService;
 
     public ObservationViewModel? Observation {get; private set;}
 

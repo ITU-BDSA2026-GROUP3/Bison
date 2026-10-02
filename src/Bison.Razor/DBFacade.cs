@@ -134,7 +134,7 @@ public class DBFacade
 
     public List<Object[]> ReadProposals() => ReadDatabase("bison_proposal_cli.db", "bison_proposal_cli_db");
 
-    private static List<object[]> ReadObservationDatabase(string commandText, Action<SqliteCommand> addParameters)
+    private  List<object[]> ReadObservationDatabase(string commandText, Action<SqliteCommand> addParameters)
     {
         using var connection = new SqliteConnection($"Data Source={DatabasePath}");
 

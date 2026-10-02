@@ -12,7 +12,7 @@
     {
         <h2>All observations</h2>
 
-        @if (Model.Observaitons.Any())
+        @if (Model.Observations.Any())
         {
             <ul id="messagelist" class="observations">
 
@@ -36,8 +36,7 @@
                                         </a>
 
                                         <small>
-
-                                            <em>@mdash;</em> @obs.Timestamp
+                                            <em>-</em> @obs.Timestamp
                                         </small>
                         </p>
                     </li>
