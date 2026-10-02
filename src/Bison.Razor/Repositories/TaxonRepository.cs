@@ -2,17 +2,19 @@
 
 
 
+using Microsoft.EntityFrameworkCore;
+
 namespace Bison.Razor.Repositories
 {
 
     public class TaxonRepository : ITaxonRepository
     {
         private readonly BisonContext _bisonContext;
-        public PostRepository(BisonContext bisonContext)
+        public TaxonRepository(BisonContext bisonContext)
         {
             _bisonContext = bisonContext;
         }
-    public async Task<int> CreateTaxons(List<Author> taxons)
+    public async Task<List<int>> CreateTaxons(List<Taxon> taxons)
         {
             List<int> ids = new List<int>();
             foreach(Taxon taxon in taxons)
@@ -24,24 +26,13 @@ namespace Bison.Razor.Repositories
             return ids;
         }
 
-        public async Task<Author> getTaxons(int taxonId)
+        public async Task<Taxon> getTaxon(int taxonId)
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
-            var query = _bisonContext.Authors
-             .Where(obs => obs.Taxon.Id == taxonId);
+            var query = _bisonContext.Taxons
+             .Where(taxon => taxon.Id == taxonId);
             // Execute the query and store the results
-            var result = await query.ToListAsync();
-
-            return result;
-        }
-
-        public async Task<List<Author>> getTaxons(string taxonName)
-        {
-            // Define the query - with our setup, EF Core translates this to an SQLite query in the background
-            var query = _bisonContext.Authors
-             .Where(obs => obs.Taxon.Name == taxonName);
-            // Execute the query and store the results
-            var result = await query.ToListAsync();
+            var result = await query.SingleAsync();
 
             return result;
         }

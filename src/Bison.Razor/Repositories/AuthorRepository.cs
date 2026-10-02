@@ -15,52 +15,30 @@ namespace Bison.Razor.Repositories
     public class AuthorRepository : IAuthorRepository
     {
         private readonly BisonContext _bisonContext;
-        public PostRepository(BisonContext bisonContext)
+        public AuthorRepository(BisonContext bisonContext)
         {
             _bisonContext = bisonContext;
         }
 
-        public async Task<int> CreateAuthors(List<Author> authors)
+        public async Task<List<int>> CreateAuthors(List<Author> authors)
         {
             List<int> ids = new List<int>();
             foreach(Author author in authors)
             {
-                var queryResult = await _bisonContext.authors.AddAsync(author); // does not write to the database!
+                var queryResult = await _bisonContext.Authors.AddAsync(author); // does not write to the database!
                 ids.Add(queryResult.Entity.Id);
             }
             await _bisonContext.SaveChangesAsync(); // persist the changes in the database
             return ids;
         }
 
-        public async Task<List<Author>> getAuthors(int authorID)
+        public async Task<Author> getAuthor(int authorID)
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
             var query = _bisonContext.Authors
-             .Where(obs => obs.Author.Id == authorID);
+             .Where(author => author.Id == authorID);
             // Execute the query and store the results
-            var result = await query.ToListAsync();
-
-            return result;
-        }
-
-        public async Task<List<Author>> getAuthors(string authorEmail)
-        {
-            // Define the query - with our setup, EF Core translates this to an SQLite query in the background
-            var query = _bisonContext.Authors
-             .Where(obs => obs.Author.Email == authorEmail);
-            // Execute the query and store the results
-            var result = await query.ToListAsync();
-
-            return result;
-        }
-
-        public async Task<List<Author>> getAuthors(string authorName)
-        {
-            // Define the query - with our setup, EF Core translates this to an SQLite query in the background
-            var query = _bisonContext.Authors
-             .Where(obs => obs.Author.Name == authorName);
-            // Execute the query and store the results
-            var result = await query.ToListAsync();
+            var result = await query.SingleAsync();
 
             return result;
         }

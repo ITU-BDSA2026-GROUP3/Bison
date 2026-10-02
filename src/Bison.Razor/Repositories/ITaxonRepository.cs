@@ -6,18 +6,10 @@ using System.Threading.Tasks;
 
 namespace Bison.Razor.Repositories
 {
-    public class TestDTO // for testing!
-    {
-        public TestDTO(string text, DateTime t)
-        {
-        }
-    }
     public interface ITaxonRepository
     {
-        public async Task<int> CreateTaxons(List<Taxon> taxons);
-        public async Task<Author> getTaxons(int taxonId);
-        public async Task<List<Author>> getTaxons(string taxonName);
-
+        public Task<List<int>> CreateTaxons(List<Taxon> taxons);
+        public Task<Taxon> getTaxon(int taxonId);
 
         public Task<int> nextId();
 
