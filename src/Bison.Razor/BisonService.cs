@@ -17,6 +17,13 @@ public class ObservationService : IObservationService
 {
     private const int PageSize = 32;
     // These would normally be loaded from a database for example
+
+    private readonly DBFacade _dbFacade;
+
+    public ObservationService(DBFacade dbFacade)
+    {
+        _dbFacade = dbFacade;
+    }
     private static readonly List<ObservationViewModel> _obs = new()
         {
             new ObservationViewModel(0, "Peter", "I saw a heron","Legoland", UnixTimeStampToDateTimeString(1690892208)),
@@ -32,7 +39,7 @@ public class ObservationService : IObservationService
     {
         int validPage = Math.Max(page, 1);
         List<ObservationViewModel> observations = new List<ObservationViewModel>();
-        foreach (Object[] row in DBFacade.ReadObservations(validPage, PageSize))
+        foreach (Object[] row in _dbFacade.ReadObservations(validPage, PageSize))
         {
             // Fixed the mapping, it is now, row[0] = observation_id, row[2]=username, row[2]=text, row[3] = pub_date
             // There is a "" because location does not the exist in the schema, the sql schema
@@ -51,7 +58,7 @@ public class ObservationService : IObservationService
         int validPage = Math.Max(page, 1);
         List<ObservationViewModel> observations = new List<ObservationViewModel>();
 
-        foreach(object[] row in DBFacade.ReadObservationsFromAuthor(author, validPage, PageSize))
+        foreach(object[] row in _dbFacade.ReadObservationsFromAuthor(author, validPage, PageSize))
         {
             //Doing the same here as with the GetObservations()
             observations.Add(new ObservationViewModel((long)row[0], (string)row[1], (string)row[2],"", UnixTimeStampToDateTimeString((long)row[3])));
@@ -62,7 +69,7 @@ public class ObservationService : IObservationService
     public List<CommentViewModel> GetComments(long id)
     {
         List<CommentViewModel> comments = new List<CommentViewModel>();
-        foreach (Object[] row in DBFacade.ReadComments())
+        foreach (Object[] row in _dbFacade.ReadComments())
         {
             comments.Add(new CommentViewModel((long)row[0], (string)row[1]));
         }
@@ -80,7 +87,7 @@ public class ObservationService : IObservationService
 
     public ObservationViewModel? GetObservation(long id)
     {
-        object[]? row = DBFacade.ReadObservation(id);
+        object[]? row = _dbFacade.ReadObservation(id);
 
         if (row == null)
         {

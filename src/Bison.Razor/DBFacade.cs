@@ -15,7 +15,7 @@ public class DBFacade
         string ? dbPath = Environment.GetEnvironmentVariable("BISONDBPATH");
 
         DatabasePath = string.IsNullOrWhiteSpace(dbPath) 
-        ? Path.Combine(dbPath.GetTempPath(), "bison.db")
+        ? Path.Combine(Path.GetTempPath(), "bison.db")
         :Path.GetFullPath(dbPath);
     }
 /*
@@ -65,22 +65,22 @@ public class DBFacade
         command.ExecuteNonQuery();
     }*/
 
-    public static List<Object[]> ReadComments() => ReadDatabase("bison_comment_cli.db", "bison_comment_cli_db");
+    public List<Object[]> ReadComments() => ReadDatabase("bison_comment_cli.db", "bison_comment_cli_db");
 
-    public static List<Object[]> ReadObservations() => ReadDatabase("bison_observe_cli.db", "bison_observe_cli_db");
+    public List<Object[]> ReadObservations() => ReadDatabase("bison_observe_cli.db", "bison_observe_cli_db");
 
-    public static List<Object[]> ReadObservations(int page, int pageSize)
+    public List<Object[]> ReadObservations(int page, int pageSize)
     {
         int validPage = Math.Max(page, 1);
         int validPageSize = Math.Max(pageSize, 1);
         int offset = (validPage - 1) * validPageSize;
 
         const string commandText =
-            "SELECT observation.observation_id, user.username" +
-            "observation.text, observation.pub_date" +
-            "FROM observation" +
-            "JOIN user ON observation.author_id = user.user_id;"+
-            "ORDER BY observation.pub_date DESC," +
+            "SELECT observation.observation_id, user.username, " +
+            "observation.text, observation.pub_date " +
+            "FROM observation " +
+            "JOIN user ON observation.author_id = user.user_id "+
+            "ORDER BY observation.pub_date DESC, " +
             "observation.observation_id DESC "+
             "LIMIT @pageSize OFFSET @offset;";
 
@@ -98,18 +98,19 @@ public class DBFacade
             });
     }
 
-    public static List<object[]> ReadObservationsFromAuthor(string author, int page, int pageSize)
+    public List<object[]> ReadObservationsFromAuthor(string author, int page, int pageSize)
     {
         int validPage = Math.Max(page, 1);
         int validPageSize = Math.Max(pageSize, 1);
         int offset = (validPage - 1) * validPageSize;
 
         const string commandText =
-            "SELECT observation.observation_id, user.username" +
-            "observation.text, observation.pub_date" +
-            "FROM observation" +
-            "JOIN user ON observation.author_id = user.user_id;"+
-            "ORDER BY observation.pub_date DESC," +
+            "SELECT observation.observation_id, user.username, " +
+            "observation.text, observation.pub_date " +
+            "FROM observation " +
+            "JOIN user ON observation.author_id = user.user_id "+
+            "WHERE user.username = @author " +
+            "ORDER BY observation.pub_date DESC, " +
             "observation.observation_id DESC "+
             "LIMIT @pageSize OFFSET @offset;";
 
@@ -131,7 +132,7 @@ public class DBFacade
             });
     }
 
-    public static List<Object[]> ReadProposals() => ReadDatabase("bison_proposal_cli.db", "bison_proposal_cli_db");
+    public List<Object[]> ReadProposals() => ReadDatabase("bison_proposal_cli.db", "bison_proposal_cli_db");
 
     private static List<object[]> ReadObservationDatabase(string commandText, Action<SqliteCommand> addParameters)
     {
@@ -146,7 +147,7 @@ public class DBFacade
         return ReadRows(command);
     }
 
-    private static List<Object[]> ReadDatabase(string databaseFile, string tableName)
+    private List<Object[]> ReadDatabase(string databaseFile, string tableName)
     {
         using var connection = new SqliteConnection(
             $"Data Source={Path.Combine(DatabasePath, databaseFile)}");
@@ -184,14 +185,14 @@ public class DBFacade
     public object[]? ReadObservation(long id)
     {
         const string  commandText =
-            "SELECT observation.observation_id, user.username" +
-            "observation.text, observation.pub_date" +
-            "FROM observation" +
-            "JOIN user ON observation.author_id = user.user_id;"+
-            "WHERE observation.observation_id = @id; ";
+            "SELECT observation.observation_id, user.username, " +
+            "observation.text, observation.pub_date " +
+            "FROM observation " +
+            "JOIN user ON observation.author_id = user.user_id "+
+            "WHERE observation.observation_id = @id;";
           
             
-          using var connection = new SQliteConnection($"Data Source={DatabasePath}");
+          using var connection = new SqliteConnection($"Data Source={DatabasePath}");
 
             connection.Open();
 
@@ -203,7 +204,7 @@ public class DBFacade
 
             using var reader = command.ExecuteReader();
 
-        if (!reader.Read)
+        if (!reader.Read())
         {
             return null;
         }
