@@ -8,7 +8,7 @@ namespace Bison.Razor.Repositories
 {
     public class TestDTO // for testing!
     {
-        public TestDTO(string text, DateTime t)
+        public TestDTO(string text, DateTime t) // DateTime is a no no "Usually, it is advisable that DTOs consist of fields of predefined types only, i.e., int, strings, etc. DateTime is not a predefined type"
         {
         }
     }

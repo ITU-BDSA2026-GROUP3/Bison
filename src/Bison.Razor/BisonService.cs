@@ -36,6 +36,11 @@ public class ObservationService : IObservationService
 
     public async Task<List<ObservationViewModel>> GetObservations(int page = 1)
     {
+        //testing purposes
+        List<Observation> listfg = new List<Observation>();
+        Observation testing = new Observation() { Id = 0, Author = new Author(), Text = "testing!", TimeStamp = DateTime.Now};
+        await _PostRepository.CreateObservations(new List<Observation> { testing });
+
         int validPage = Math.Max(page, 1);
         List<ObservationViewModel> observations = new List<ObservationViewModel>();
         var repoQuery = await _PostRepository.ReadAllObservations();
