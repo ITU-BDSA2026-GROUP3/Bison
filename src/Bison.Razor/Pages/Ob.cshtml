@@ -8,6 +8,90 @@
 
 <div>
 
-@if (model)
+    @if (Model.Observation == null)
+    {
+        <h2>All observations</h2>
 
+        @if (Model.Observaitons.Any())
+        {
+            <ul id="messagelist" class="observations">
+
+                @foreach(var obs in Model.Observations)
+                {
+                    <li>
+
+                        <p>
+                            
+                        <strong>
+
+                            <a asp-page ="/UserTimeline"
+                                 asp-route-author ="@obs.Author">
+                                 @obs.Author
+                            </a>
+                        </strong>    
+
+                                    <a asp-page="/Ob"
+                                        asp-route-id ="@obs.obsID">
+                                        @obs.Message
+                                        </a>
+
+                                        <small>
+
+                                            <em>@mdash;</em> @obs.Timestamp
+                                        </small>
+                        </p>
+                    </li>
+                }
+            </ul>
+        }
+        //If there a no observations yet in the database
+        else
+        {
+             <em> No observations yet, keep observing. </em>
+        }
+    }
+    else
+    {
+       <h2>Observation @Model.Observation.obsID</h2>
+
+       <p>
+        <strong>Author:</strong>
+        <a asp-page="/UserTimeline"
+        aps-route-author="@Model.Observation.Author">
+        </a>
+       </p>
+
+       <p>
+
+        <strong>Observation:</strong>
+        @Model.Observation.Location
+       </p>
+
+       <p>
+            <strong>Date:</strong>
+            @Model.Observation.Timestamp
+       </p>
+       <h3>Comments</h3>
+
+       @if (Model.Comments.Any())
+        {
+            <ul>
+                @foreach (var comment in Model.Comments)
+                {
+                    <li>
+                        @comment.Comment
+                    </li>
+                }
+            </ul>
+            }
+            else
+            {
+                <em>There are no comments for this observation, get active</em>
+            }
+
+            <h3>Proposals</h3>
+
+            <em>Proposals will be displayed here once the proposal table is connected to the new SQLite database.</em>
+        }
+   <!-- here a: } -->
 </div>

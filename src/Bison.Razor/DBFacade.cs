@@ -3,21 +3,9 @@ using Microsoft.Data.Sqlite;
 using System.Data;
 using System.Data.Common;
 
-public static class DBFacade
+public class DBFacade
 {
 
-    /*private static readonly string DataDirectory = Path.GetFullPath(
-        Path.Combine(
-            AppContext.BaseDirectory,
-            "../../../../../data"));
-
-    private static readonly string DatabasePath = DataDirectory;
-
-    static DBFacade()
-    {
-        Directory.CreateDirectory(DatabasePath);
-        InitializeDatabases();
-    }*/
 
 
     private readonly string DatabasePath;

@@ -10,7 +10,7 @@ public interface IObservationService
 
     public List<CommentViewModel> GetComments(long id);
 
-    public List<ObservationViewModel> GetComments(long id);
+    public ObservationViewModel? GetObservation(long id);
 }
 
 public class ObservationService : IObservationService
