@@ -57,5 +57,27 @@ public static class DbInitializer
             observation2);
 
         context.SaveChanges();
+
+        var comment1 = new Comment
+        {
+            Text = "Nice observation!",
+            TimeStamp = DateTime.Now,
+            Author = author2,
+            Observation = observation1
+        };
+
+        var comment2 = new Comment
+        {
+            Text = "Where exactly did you see it?",
+            TimeStamp = DateTime.Now,
+            Author = author1,
+            Observation = observation2
+        };
+
+        context.Comments.AddRange(
+            comment1,
+            comment2);
+
+        context.SaveChanges();
     }
 }
