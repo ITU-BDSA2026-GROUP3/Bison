@@ -79,5 +79,29 @@ public static class DbInitializer
             comment2);
 
         context.SaveChanges();
+
+        var proposal1 = new Proposal
+        {
+            Text = "I think this might actually be a Bison",
+            TimeStamp = DateTime.Now,
+            Author = author2,
+            Observation = observation1,
+            Taxon = taxon1
+        };
+
+        var proposal2 = new Proposal
+        {
+            Text = "This observation could be a Heron",
+            TimeStamp = DateTime.Now,
+            Author = author1,
+            Observation = observation2,
+            Taxon = taxon2
+        };
+
+        context.Proposals.AddRange(
+            proposal1,
+            proposal2);
+
+        context.SaveChanges();
     }
 }
