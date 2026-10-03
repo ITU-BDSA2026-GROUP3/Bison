@@ -3,6 +3,10 @@ using static System.Net.Mime.MediaTypeNames;
 
 public record ObservationViewModel(long obsID, string Author, string Message, string Location ,string Timestamp);
 public record CommentViewModel(long obsID, string Comment);
+
+public record ProposalViewModel(long obsID, string comment);
+
+
 public interface IObservationService
 {
     public List<ObservationViewModel> GetObservations(int page = 1);
@@ -11,6 +15,8 @@ public interface IObservationService
     public List<CommentViewModel> GetComments(long id);
 
     public ObservationViewModel? GetObservation(long id);
+
+    public List<ProposalViewModel> GetProposals(long id);
 }
 
 public class ObservationService : IObservationService
@@ -101,6 +107,27 @@ public class ObservationService : IObservationService
             "",
             UnixTimeStampToDateTimeString((long)row[3]));
         
+    }
+
+    public List<ProposalViewModel> GetProposals(long id)
+    {
+        List<ProposalViewModel> proposals = new List<ProposalViewModel>();
+
+        foreach (Object[] row in _dbFacade.ReadProposals())
+        {
+            if((long)row[0] == id)
+            {
+                proposals.Add(
+                    new ProposalViewModel(
+                        (long)row[0],
+                        (string)row[1]
+                    )
+                );
+            }
+            
+        }
+        
+        return proposals;
     }
 
 }

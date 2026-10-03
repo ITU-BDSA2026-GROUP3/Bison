@@ -20,7 +20,9 @@ public class ObModel : PageModel
         _observationService = observationService;
     }
 
-    public IActionResult OnGet(long? id)
+    public List<ProposalViewModel> Proposals {get; private set;} = new();
+
+    public IActionResult OnGet([FromRoute]long? id)
     {
         // /ob/
         //This shows all observations so far.
@@ -44,6 +46,7 @@ public class ObModel : PageModel
         // Load comments belonging to this observation
         Comments = _observationService.GetComments(id.Value);
         
+        Proposals = _observationService.GetProposals(id.Value);
         return Page();
 
     }

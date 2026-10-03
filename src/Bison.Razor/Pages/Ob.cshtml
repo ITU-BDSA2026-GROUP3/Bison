@@ -56,20 +56,21 @@
        <p>
         <strong>Author:</strong>
         <a asp-page="/UserTimeline"
-        aps-route-author="@Model.Observation.Author">
+        asp-route-author="@Model.Observation.Author">
+        @Model.Observation.Author
         </a>
        </p>
 
        <p>
-
         <strong>Observation:</strong>
-        @Model.Observation.Location
+        @Model.Observation.Message
        </p>
 
        <p>
             <strong>Date:</strong>
             @Model.Observation.Timestamp
        </p>
+
        <h3>Comments</h3>
 
        @if (Model.Comments.Any())
@@ -89,8 +90,25 @@
             }
 
             <h3>Proposals</h3>
-
-            <em>Proposals will be displayed here once the proposal table is connected to the new SQLite database.</em>
+      
+        
+          @if (Model.Proposals.Any())
+        {
+            <ul>
+                @foreach (var proposal in Model.Proposals)
+                {
+                    <li>
+                        @proposal.comment
+                    </li>
+                }
+            </ul>
         }
-   <!-- here a: } -->
+        else
+        {
+            
+            <em>No proposals for this observation.</em>
+                        
+        }
+        }
+        <!-- here a: } -->
 </div>
