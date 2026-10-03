@@ -73,42 +73,41 @@
 
        <h3>Comments</h3>
 
-       @if (Model.Comments.Any())
+        @if (Model.Comments.Any())
         {
             <ul>
-                @foreach (var comment in Model.Comments)
+                @foreach(var comment in Model.Comments)
                 {
                     <li>
                         @comment.Comment
                     </li>
                 }
             </ul>
-            }
-            else
-            {
-                <em>There are no comments for this observation, get active</em>
-            }
+        }
+        else
+        {
+            //If no comments for the observation
+            <em>No comments for this observation </em>
+        }
 
-            <h3>Proposals</h3>
-      
-        
-          @if (Model.Proposals.Any())
+        <h3>Proposals</h3>
+
+        @if (Model.Proposals.Any())
         {
             <ul>
                 @foreach (var proposal in Model.Proposals)
                 {
                     <li>
-                        @proposal.comment
+                        @proposal.taxonID
                     </li>
                 }
             </ul>
         }
         else
         {
+            //If there are no proposals for this observation
+            <em>No proposals for this observation</em>
+        }
+}
             
-            <em>No proposals for this observation.</em>
-                        
-        }
-        }
-        <!-- here a: } -->
 </div>

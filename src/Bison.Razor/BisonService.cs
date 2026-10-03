@@ -4,7 +4,7 @@ using static System.Net.Mime.MediaTypeNames;
 public record ObservationViewModel(long obsID, string Author, string Message, string Location ,string Timestamp);
 public record CommentViewModel(long obsID, string Comment);
 
-public record ProposalViewModel(long obsID, string comment);
+public record ProposalViewModel(long obsID, string taxonID);
 
 
 public interface IObservationService

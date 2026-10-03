@@ -1,5 +1,8 @@
+using System.Security.Cryptography.Xml;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Net.Http.Headers;
 
 namespace Bison.Razor.Pages;
 
@@ -13,28 +16,29 @@ public class ObModel : PageModel
 
     public List<ObservationViewModel> Observations {get; private set; } = new();
 
-    public List<CommentViewModel> Comments { get; private set;} = new();
+    public List<CommentViewModel> Comments {get; private set; } = new();
+
+    public List<ProposalViewModel> Proposals {get; private set;} = new();
 
     public ObModel(IObservationService observationService)
     {
         _observationService = observationService;
     }
 
-    public List<ProposalViewModel> Proposals {get; private set;} = new();
+    
 
-    public IActionResult OnGet([FromRoute]long? id)
+    public IActionResult OnGet([FromRoute]long? id,[FromQuery] int page = 1)
     {
         // /ob/
         //This shows all observations so far.
         if(id == null)
         {
-            Observations = _observationService.GetObservations();
+            Observations = _observationService.GetObservations(page);
             return Page();
         }
 
         // /ob/{id}
         // Show one specific observation.
-
         Observation = _observationService.GetObservation(id.Value);
 
         //The observation does not exist
@@ -43,10 +47,10 @@ public class ObModel : PageModel
             return NotFound();
         }
 
-        // Load comments belonging to this observation
+        // Show the comments and proposals for this obseration
         Comments = _observationService.GetComments(id.Value);
-        
         Proposals = _observationService.GetProposals(id.Value);
+       
         return Page();
 
     }

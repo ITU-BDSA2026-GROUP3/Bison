@@ -12,7 +12,7 @@ public class DBFacade
 
     public DBFacade()
     {
-        string ? dbPath = Environment.GetEnvironmentVariable("BISONDBPATH");
+        string? dbPath = Environment.GetEnvironmentVariable("BISONDBPATH");
 
         DatabasePath = string.IsNullOrWhiteSpace(dbPath) 
         ? Path.Combine(Path.GetTempPath(), "bison.db")
@@ -63,9 +63,31 @@ public class DBFacade
         using var command = connection.CreateCommand();
         command.CommandText = commandText;
         command.ExecuteNonQuery();
+        
     }*/
 
-    public List<Object[]> ReadComments() => ReadDatabase("bison_comment_cli.db", "bison_comment_cli_db");
+    public List<Object[]> ReadComments()
+    {
+        
+        const string commandText = 
+        " SELECT obsID, Comment FROM comment;";
+        
+
+        using var connection = new SqliteConnection($"Data Source = {DatabasePath}");
+
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+
+        
+
+        command.CommandText = commandText;
+
+        return ReadRows(command);
+
+
+       
+    }
 
     public List<Object[]> ReadObservations() => ReadDatabase("bison_observe_cli.db", "bison_observe_cli_db");
 
@@ -132,7 +154,23 @@ public class DBFacade
             });
     }
 
-    public List<Object[]> ReadProposals() => ReadDatabase("bison_proposal_cli.db", "bison_proposal_cli_db");
+    public List<Object[]> ReadProposals()
+    {
+
+        const string commandText =
+        "SELECT obsID, comment FROM proposal;";
+
+        using var connection =  new SqliteConnection($"Data Source={DatabasePath}");
+
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+
+        command.CommandText = commandText;
+        
+        return ReadRows(command);
+        
+    }
 
     private  List<object[]> ReadObservationDatabase(string commandText, Action<SqliteCommand> addParameters)
     {
@@ -171,7 +209,9 @@ public class DBFacade
     private static List<object[]> ReadRows(SqliteCommand command)
     {
         List<object[]> rows = new();
+        
         using var reader = command.ExecuteReader();
+        
         while (reader.Read())
         {
             object[] row = new object[reader.FieldCount];
