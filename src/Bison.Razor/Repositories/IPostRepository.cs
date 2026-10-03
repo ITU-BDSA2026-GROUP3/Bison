@@ -20,8 +20,8 @@ namespace Bison.Razor.Repositories
         public Task<List<ObservationDto>> ReadAllObservations();
 
         public Task<List<int>> CreateComments(List<Comment> comments);
-        public Task<List<Comment>> ReadComments(int obsID);
+        public Task<List<CommentDto>> ReadComments(int obsID);
         public Task<List<int>> CreateProposals(List<Proposal> proposals);
-        public Task<List<Proposal>> ReadProposals(int obsID);
+        public Task<List<ProposalDto>> ReadProposals(int obsID);
     }
 }

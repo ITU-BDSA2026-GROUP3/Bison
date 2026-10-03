@@ -103,22 +103,31 @@ namespace Bison.Razor.Repositories
             return ids;
         }
 
-        public async Task<List<Comment>> ReadComments(int obsID)
+        public async Task<List<CommentDto>> ReadComments(int obsID)
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
             var query = _bisonContext.Comments
-             .Where(comment => comment.Observation.Id == obsID);
+                .Include(comment => comment.Author)
+                .Include(comment => comment.Observation)
+                .Where(comment => comment.Observation.Id == obsID);
             // Execute the query and store the results
             var result = await query.ToListAsync();
 
-            return result;
-            // converts result to DTO to be added later
-            /*List<TestDTO> DTOs = new List<TestDTO>();
-            foreach (var value in result)
+            List<CommentDto> dtos = new();
+
+            foreach (var comment in result)
             {
-                DTOs.Add(new TestDTO(value.Text,value.TimeStamp));
+                dtos.Add(new CommentDto
+                {
+                    Id = comment.Id,
+                    Text = comment.Text,
+                    Timestamp = comment.TimeStamp.ToString(),
+                    AuthorName = comment.Author.Name,
+                    ObservationId = comment.Observation.Id
+                });
             }
-            return DTOs;*/
+
+            return dtos;
         }
         public async Task<List<int>> CreateProposals(List<Proposal> proposals)
         {
@@ -132,22 +141,33 @@ namespace Bison.Razor.Repositories
             return ids;
         }
 
-        public async Task<List<Proposal>> ReadProposals(int obsID)
+        public async Task<List<ProposalDto>> ReadProposals(int obsID)
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
             var query = _bisonContext.Proposals
-             .Where(proposal => proposal.Observation.Id == obsID);
+                .Include(proposal => proposal.Author)
+                .Include(proposal => proposal.Observation)
+                .Include(proposal => proposal.Taxon)
+                .Where(proposal => proposal.Observation.Id == obsID);
             // Execute the query and store the results
             var result = await query.ToListAsync();
 
-            return result;
-            // converts result to DTO to be added later
-            /*List<TestDTO> DTOs = new List<TestDTO>();
-            foreach (var value in result)
+            List<ProposalDto> dtos = new();
+
+            foreach (var proposal in result)
             {
-                DTOs.Add(new TestDTO(value.Text,value.TimeStamp));
+                dtos.Add(new ProposalDto
+                {
+                    Id = proposal.Id,
+                    Text = proposal.Text,
+                    Timestamp = proposal.TimeStamp.ToString(),
+                    AuthorName = proposal.Author.Name,
+                    ObservationId = proposal.Observation.Id,
+                    TaxonName = proposal.Taxon.Name
+                });
             }
-            return DTOs;*/
+
+            return dtos;
         }
     }
 }

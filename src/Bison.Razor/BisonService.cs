@@ -77,12 +77,18 @@ public class ObservationService : IObservationService
     public async Task<List<CommentViewModel>> GetComments(int observationId)
     {
         List<CommentViewModel> comments = new List<CommentViewModel>();
-        var repoQueryResult = await _PostRepository.ReadComments(observationId);
-        foreach (Comment comment in repoQueryResult)
+
+        var repoQueryResult =
+            await _PostRepository.ReadComments(observationId);
+
+        foreach (var comment in repoQueryResult)
         {
-            comments.Add(new CommentViewModel(comment.Id, comment.Text));
+            comments.Add(
+                new CommentViewModel(
+                    comment.Id,
+                    comment.Text));
         }
-;
+
         return comments;
     }
 
