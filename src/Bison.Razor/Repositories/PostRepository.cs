@@ -71,13 +71,6 @@ namespace Bison.Razor.Repositories
             }
 
             return dtos;
-            // converts result to DTO to be added later
-            /*List<TestDTO> DTOs = new List<TestDTO>();
-            foreach (var value in result)
-            {
-                DTOs.Add(new TestDTO(value.Text, value.TimeStamp));
-            }
-            return DTOs;*/
         }
 
         public async Task<List<int>> CreateObservations(List<Observation> observations)
