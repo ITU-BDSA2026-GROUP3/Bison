@@ -15,6 +15,15 @@ builder.Services.AddDbContext<BisonContext>(options => options.UseSqlite(connect
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<BisonContext>();
+
+    context.Database.EnsureCreated();
+
+    DbInitializer.Initialize(context);
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
