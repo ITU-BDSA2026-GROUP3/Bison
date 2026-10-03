@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Bison.Razor.DTOs;
 
 namespace Bison.Razor.Repositories
 {
@@ -18,7 +19,7 @@ namespace Bison.Razor.Repositories
             _bisonContext = bisonContext;
         }
 
-        public async Task<List<Observation>> ReadObservations(int authorID)
+        public async Task<List<ObservationDto>> ReadObservations(int authorID)
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
             var query = _bisonContext.Observations
@@ -26,18 +27,25 @@ namespace Bison.Razor.Repositories
              .Include(obs => obs.Taxon) // eager loading, connects the foreign keys in the database to the corresponding entity, otherwise the returning field would be null.
              .Where(obs => obs.Author.Id == authorID);
             // Execute the query and store the results
+            List<ObservationDto> dtos = new();
+
             var result = await query.ToListAsync();
 
-            return result;
-            // converts result to DTO to be added later
-            /*List<TestDTO> DTOs = new List<TestDTO>();
-            foreach (var value in result)
+            foreach (var obs in result)
             {
-                DTOs.Add(new TestDTO(value.Text,value.TimeStamp));
+                dtos.Add(new ObservationDto
+                {
+                    Id = obs.Id,
+                    Text = obs.Text,
+                    Timestamp = obs.TimeStamp.ToString(),
+                    AuthorName = obs.Author.Name,
+                    TaxonName = obs.Taxon.Name
+                });
             }
-            return DTOs;*/
+
+            return dtos;
         }
-        public async Task<List<Observation>> ReadAllObservations()
+        public async Task<List<ObservationDto>> ReadAllObservations()
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
             var query = _bisonContext.Observations
@@ -48,7 +56,21 @@ namespace Bison.Razor.Repositories
             // Execute the query and store the results
             var result = await query.ToListAsync();
 
-            return result;
+            List<ObservationDto> dtos = new();
+
+            foreach (var obs in result)
+            {
+                dtos.Add(new ObservationDto
+                {
+                    Id = obs.Id,
+                    Text = obs.Text,
+                    Timestamp = obs.TimeStamp.ToString(),
+                    AuthorName = obs.Author.Name,
+                    TaxonName = obs.Taxon.Name
+                });
+            }
+
+            return dtos;
             // converts result to DTO to be added later
             /*List<TestDTO> DTOs = new List<TestDTO>();
             foreach (var value in result)

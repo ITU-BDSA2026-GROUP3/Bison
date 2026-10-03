@@ -44,14 +44,14 @@ public class ObservationService : IObservationService
         int validPage = Math.Max(page, 1);
         List<ObservationViewModel> observations = new List<ObservationViewModel>();
         var repoQueryResult = await _PostRepository.ReadAllObservations();
-        foreach (Observation obs in repoQueryResult)
+        foreach (var obs in repoQueryResult)
         {
-
-            observations.Add(new ObservationViewModel(obs.Id,
-                obs.Author.Name,
+            observations.Add(new ObservationViewModel(
+                obs.Id,
+                obs.AuthorName,
                 obs.Text,
                 "Jonas seems to have forgotten location",
-                obs.TimeStamp.ToString()));
+                obs.Timestamp));
         }
     
         return observations;
@@ -62,9 +62,14 @@ public class ObservationService : IObservationService
         int validPage = Math.Max(page, 1);
         List<ObservationViewModel> observations = new List<ObservationViewModel>();
         var repoQueryResult = await _PostRepository.ReadObservations(authorId);
-        foreach (Observation obs in repoQueryResult)
+        foreach (var obs in repoQueryResult)
         {
-            observations.Add(new ObservationViewModel(obs.Id, obs.Author.Name, obs.Text, "Jonas seems to have forgotten location", obs.TimeStamp.ToString()));
+            observations.Add(new ObservationViewModel(
+                obs.Id,
+                obs.AuthorName,
+                obs.Text,
+                "Jonas seems to have forgotten location",
+                obs.Timestamp));
         }
 
         return observations;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bison.Razor.DTOs;
 
 namespace Bison.Razor.Repositories
 {
@@ -15,8 +16,8 @@ namespace Bison.Razor.Repositories
     public interface IPostRepository
     {
         public Task<List<int>> CreateObservations(List<Observation> observations);
-        public Task<List<Observation>> ReadObservations(int authorID);
-        public Task<List<Observation>> ReadAllObservations();
+        public Task<List<ObservationDto>> ReadObservations(int authorID);
+        public Task<List<ObservationDto>> ReadAllObservations();
 
         public Task<List<int>> CreateComments(List<Comment> comments);
         public Task<List<Comment>> ReadComments(int obsID);
