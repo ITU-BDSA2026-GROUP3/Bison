@@ -48,7 +48,7 @@ public class ObservationService : IObservationService
         {
 
             observations.Add(new ObservationViewModel(obs.Id,
-                (obs.Author.Name ??= "nullAuthor"),
+                obs.Author.Name,
                 obs.Text,
                 "Jonas seems to have forgotten location",
                 obs.TimeStamp.ToString()));
