@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using Bison.Razor.Pages;
 
 namespace Bison.Razor.Tests;
@@ -80,6 +81,16 @@ public class PaginationPageModelTests
             RequestedAuthorPage = page;
 
             return new List<ObservationViewModel>();
+        }
+
+        public ObservationViewModel? GetObservation(long id)
+        {
+            return null;
+        }
+
+        public List<ProposalViewModel> GetProposals(long id)
+        {
+            return new List<ProposalViewModel>();
         }
 
         public List<CommentViewModel> GetComments(long id)
