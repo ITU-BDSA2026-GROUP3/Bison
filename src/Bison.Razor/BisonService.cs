@@ -4,12 +4,18 @@ using static System.Net.Mime.MediaTypeNames;
 
 public record ObservationViewModel(long obsID, string Author, string Message, string Location ,string Timestamp);
 public record CommentViewModel(long obsID, string Comment);
+
+public record ProposalViewModel(long obsID, string taxonID);
+
+
 public interface IObservationService
 {
     public Task<List<ObservationViewModel>> GetObservations(int page = 1);
     public Task<List<ObservationViewModel>> GetObservationsFromAuthor(int authorId, int page = 1);
 
     public Task<List<CommentViewModel>> GetComments(int observationId);
+
+    Task<List<ProposalViewModel>> GetProposals(long id);
 }
 
 public class ObservationService : IObservationService
@@ -24,8 +30,9 @@ public class ObservationService : IObservationService
         _AuthorRepository = authorRepository;
         _TaxonRepository = taxonRepository;
     }
+
     private const int PageSize = 32;
-    // These would normally be loaded from a database for example
+
     private static readonly List<ObservationViewModel> _obs = new()
         {
             new ObservationViewModel(0, "Peter", "I saw a heron","Legoland", UnixTimeStampToDateTimeString(1690892208)),
@@ -38,45 +45,59 @@ public class ObservationService : IObservationService
         };
 
 
-    public async Task<List<ObservationViewModel>> GetObservations(int page = 1)
-    {
-
-        int validPage = Math.Max(page, 1);
-        List<ObservationViewModel> observations = new List<ObservationViewModel>();
-        var repoQueryResult = await _PostRepository.ReadAllObservations();
-        foreach (var obs in repoQueryResult)
-        {
-            observations.Add(new ObservationViewModel(
-                obs.Id,
-                obs.AuthorName,
-                obs.Text,
-                "Jonas seems to have forgotten location",
-                obs.Timestamp));
-        }
-    
-        return observations;
-    }
-
-    public async Task<List<ObservationViewModel>> GetObservationsFromAuthor(int authorId, int page = 1)
+    public async Task<List<ObservationViewModel>> GetObservations(
+        int page = 1)
     {
         int validPage = Math.Max(page, 1);
-        List<ObservationViewModel> observations = new List<ObservationViewModel>();
-        var repoQueryResult = await _PostRepository.ReadObservations(authorId);
+
+        List<ObservationViewModel> observations = new();
+
+        var repoQueryResult =
+            await _PostRepository.ReadAllObservations();
+
         foreach (var obs in repoQueryResult)
         {
-            observations.Add(new ObservationViewModel(
-                obs.Id,
-                obs.AuthorName,
-                obs.Text,
-                "Jonas seems to have forgotten location",
-                obs.Timestamp));
+            observations.Add(
+                new ObservationViewModel(
+                    obs.Id,
+                    obs.AuthorName,
+                    obs.Text,
+                    "Jonas seems to have forgotten location",
+                    obs.Timestamp));
         }
 
         return observations;
     }
-    public async Task<List<CommentViewModel>> GetComments(int observationId)
+
+    public async Task<List<ObservationViewModel>>
+        GetObservationsFromAuthor(
+            int authorId,
+            int page = 1)
     {
-        List<CommentViewModel> comments = new List<CommentViewModel>();
+        int validPage = Math.Max(page, 1);
+
+        List<ObservationViewModel> observations = new();
+
+        var repoQueryResult =
+            await _PostRepository.ReadObservations(authorId);
+
+        foreach (var obs in repoQueryResult)
+        {
+            observations.Add(
+                new ObservationViewModel(
+                    obs.Id,
+                    obs.AuthorName,
+                    obs.Text,
+                    "Jonas seems to have forgotten location",
+                    obs.Timestamp));
+        }
+
+        return observations;
+    }
+    public async Task<List<CommentViewModel>> GetComments(
+        int observationId)
+    {
+        List<CommentViewModel> comments = new();
 
         var repoQueryResult =
             await _PostRepository.ReadComments(observationId);
@@ -100,4 +121,21 @@ public class ObservationService : IObservationService
         return dateTime.ToString("MM/dd/yy H:mm:ss");
     }
 
+    public async Task<List<ProposalViewModel>> GetProposals(long id)
+    {
+        List<ProposalViewModel> proposals = new();
+
+        var repoQueryResult =
+            await _PostRepository.ReadProposals((int)id);
+
+        foreach (var proposal in repoQueryResult)
+        {
+            proposals.Add(
+                new ProposalViewModel(
+                    proposal.ObservationId,
+                    proposal.TaxonName));
+        }
+
+        return proposals;
+    }
 }

@@ -129,7 +129,7 @@ public async Task invalidObservationIsNotStored()
         }
             catch (HttpRequestException)
             {
-                // The server is still stating
+                // The server is still starting
             }
 
             await Task.Delay(500);
