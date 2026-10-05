@@ -9,15 +9,22 @@ public class PaginationContractTests
     {
         MethodInfo? method = typeof(IObservationService).GetMethod("GetObservations",new[] { typeof(int) });
         Assert.NotNull(method);
-        Assert.Equal(typeof(List<ObservationViewModel>), method.ReturnType);
+        Assert.Equal(
+            typeof(Task<List<ObservationViewModel>>),
+            method.ReturnType);
     }
 
     [Fact]
     public void ObservationServiceSupportsUserTimelinePagination()
     {
-        MethodInfo? method = typeof(IObservationService).GetMethod("GetObservationsFromAuthor", new[] { typeof(string), typeof(int) });
+        MethodInfo? method = typeof(IObservationService).GetMethod(
+            "GetObservationsFromAuthor",
+            new[] { typeof(int), typeof(int) });
+
         Assert.NotNull(method);
-        Assert.Equal(typeof(List<ObservationViewModel>),method.ReturnType);
+        Assert.Equal(
+            typeof(Task<List<ObservationViewModel>>),
+            method.ReturnType);
     }
 
     [Fact]
