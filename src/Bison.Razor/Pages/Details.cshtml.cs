@@ -7,8 +7,8 @@ namespace Bison.Razor.Pages;
 public class DetailsModel : PageModel
 {
     private readonly IObservationService _service;
-    public List<CommentDto> Comments { get; set; }
-    public List<ProposalDto> Proposals { get; set; }
+    public List<CommentDto> Comments { get; set; } = new();
+    public List<ProposalDto> Proposals { get; set; } = new();
 
     public DetailsModel(IObservationService service)
     {
