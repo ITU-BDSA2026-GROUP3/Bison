@@ -1,0 +1,47 @@
+@page "/details/{id?}"
+@model Bison.Razor.Pages.DetailsModel
+
+@{
+    ViewData["Title"] = "Bison";
+    Layout = "Shared/_Layout";
+}
+
+<div>
+        @if (Model.Comments.Any())
+        {
+            <ul>
+                @foreach(var comment in Model.Comments)
+                {
+                    <li>
+                        @comment.Text
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            //If no comments for the observation
+            <em>No comments for this observation </em>
+        }
+
+        <h3>Proposals</h3>
+
+        @if (Model.Proposals.Any())
+        {
+            <ul>
+                @foreach (var proposal in Model.Proposals)
+                {
+                    <li>
+                        @proposal
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            //If there are no proposals for this observation
+            <em>No proposals for this observation</em>
+        }
+}
+            
+</div>

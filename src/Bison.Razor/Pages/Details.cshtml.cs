@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bison.Razor.DTOs;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Bison.Razor.Pages;
@@ -6,7 +7,8 @@ namespace Bison.Razor.Pages;
 public class DetailsModel : PageModel
 {
     private readonly IObservationService _service;
-    public List<CommentViewModel> Comments { get; set; }
+    public List<CommentDto> Comments { get; set; }
+    public List<ProposalDto> Proposals { get; set; }
 
     public DetailsModel(IObservationService service)
     {

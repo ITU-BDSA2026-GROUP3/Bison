@@ -17,11 +17,11 @@
                     <p>
                         <strong>
                             <a asp-page="/UserTimeline"
-                               asp-route-author="@obs.Author">
-                               @obs.Author
+                               asp-route-author="@obs.AuthorName">
+                               @obs.AuthorName
                             </a>
                         </strong>
-                        @obs.Message
+                        @obs.Text
                         <small><em>&mdash; </em>@obs.Timestamp</small>
                     </p>
                 </li>
