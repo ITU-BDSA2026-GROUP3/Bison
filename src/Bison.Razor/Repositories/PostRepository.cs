@@ -57,6 +57,16 @@ namespace Bison.Razor.Repositories
             await _bisonContext.SaveChangesAsync(); // persist the changes in the database
             return ids;
         }
+        public async Task<Observation> ReadSingleObservation(int observationID)
+        {
+            var query = _bisonContext.Observations
+             .Where(obs => obs.Id == observationID);
+            // Execute the query and store the results
+            var result = await query.SingleAsync();
+
+            return result;
+        }
+
         public async Task<List<int>> CreateComments(List<Comment> comments)
         {
             List<int> ids = new List<int>();
