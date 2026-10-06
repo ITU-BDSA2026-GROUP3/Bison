@@ -5,22 +5,15 @@ namespace Bison.Razor.Tests;
 public class DatabaseHandler
 {
     private static readonly string DatabasePath = Path.GetFullPath(
-        Path.Combine(
-            AppContext.BaseDirectory,
-            "../../../../../data"));
+        Path.Combine(Path.Combine(
+            AppContext.BaseDirectory,"../../../../../data"), "test.db"));
     
-    public const string observationDatabase = "test_observe_cli.db";
-    public const string observationTable = "test_observe_cli_db";
-    public const string commentDatabase = "test_comment_cli.db";
-    public const string commentTable = "test_comment_cli_db";
-    public const string proposalDatabase = "test_proposal_cli.db";
-    public const string proposalTable = "test_proposal_cli_db";
     
-    public static void AddObservation(ObservationViewModel obs)
+    public static void AddObservation(ObservationViewModel obs, int author_id)
     {
-        string commandText = 
-        $"INSERT INTO {observationTable} (obsID, Author, Observation, Location, Timestamp) " +
-        "VALUES (@obsID, @Author, @Observation, @Location, @Timestamp);";
+        const string commandText = 
+        "INSERT INTO observation (observation_id, author_id, text, pub_date) " +
+        "VALUES (@obsID, @Author_id, @Observation, @Timestamp);";
 
         Action<SqliteCommand> parameters = command =>
         {
@@ -28,25 +21,46 @@ public class DatabaseHandler
                 "@obsID", obs.obsID
             );
             command.Parameters.AddWithValue(
-                "@Author", obs.Author
+                "@Author_id", author_id
             );
             command.Parameters.AddWithValue(
                 "@Observation", obs.Message
             );
             command.Parameters.AddWithValue(
-                "@Location", obs.Location
-            );
-            command.Parameters.AddWithValue(
                 "@Timestamp", obs.Timestamp
             );
         };
-        InsertIntoDatabase(commandText, parameters, observationDatabase);
+        InsertIntoDatabase(commandText, parameters);
+    }
+
+    public static void AddUser(int user_id, string username, string email, string pw_hash)
+    {
+        const string commandText = 
+        "INSERT INTO user (user_id, username, email, pw_hash) " +
+        "VALUES (@user_id, @username, @email, @pw_hash);";
+
+        Action<SqliteCommand> parameters = command =>
+        {
+            command.Parameters.AddWithValue(
+                "@user_id", user_id
+            );
+            command.Parameters.AddWithValue(
+                "@username", username
+            );
+            command.Parameters.AddWithValue(
+                "@email", email
+            );
+            command.Parameters.AddWithValue(
+                "@pw_hash", pw_hash
+            );
+        };
+        InsertIntoDatabase(commandText, parameters);
     }
 
     public static void AddComment(CommentViewModel comment)
     {
         string commandText = 
-        $"INSERT INTO {commentTable} (obsID, Comment) " +
+        "INSERT INTO comment (obsID, Comment) " +
         "VALUES (@obsID, @Comment);";
 
         Action<SqliteCommand> parameters = command =>
@@ -58,17 +72,30 @@ public class DatabaseHandler
                 "@Comment", comment.Comment
             );
         };
-        InsertIntoDatabase(commandText, parameters, commentDatabase);
+        InsertIntoDatabase(commandText, parameters);
     }
 
-    /*public static void AddProposal(ProposalViewModel comment)
+    public static void AddProposal(ProposalViewModel comment)
     {
-        
-    }*/
+        string commandText = 
+        "INSERT INTO comment (obsID, Comment) " +
+        "VALUES (@obsID, @Comment);";
 
-    private static void InsertIntoDatabase(string commandText, Action<SqliteCommand> parameters, string databaseFile)
+        Action<SqliteCommand> parameters = command =>
+        {
+            command.Parameters.AddWithValue(
+                "@obsID", comment.obsID
+            );
+            command.Parameters.AddWithValue(
+                "@Comment", comment.taxonID
+            );
+        };
+        InsertIntoDatabase(commandText, parameters);
+    }
+
+    private static void InsertIntoDatabase(string commandText, Action<SqliteCommand> parameters)
     {
-        using var connection = new SqliteConnection($"Data Source={Path.Combine(DatabasePath, databaseFile)}");
+        using var connection = new SqliteConnection($"Data Source={Path.Combine(DatabasePath)}");
 
         connection.Open();
         
@@ -81,78 +108,35 @@ public class DatabaseHandler
         connection.Close();
     }
 
-    public static void InitializeDatabases()
+    public static void InitializeDatabases(DBFacade db)
     {
-        DBFacade.InitializeDatabase(
-            observationDatabase,
-            """
-            CREATE TABLE IF NOT EXISTS test_observe_cli_db (
-                obsID INTEGER PRIMARY KEY,
-                Author TEXT NOT NULL,
-                Observation TEXT NOT NULL,
-                Location TEXT NOT NULL,
-                Timestamp INTEGER NOT NULL
-            );
-            """);
-
-        DBFacade.InitializeDatabase(
-            commentDatabase,
-            """
-            CREATE TABLE IF NOT EXISTS test_comment_cli_db (
-                obsID INTEGER NOT NULL,
-                Comment TEXT NOT NULL
-            );
-            """);
-
-        DBFacade.InitializeDatabase(
-            proposalDatabase,
-            """
-            CREATE TABLE IF NOT EXISTS test_proposal_cli_db (
-                obsID INTEGER NOT NULL,
-                taxonID TEXT NOT NULL
-            );
-            """);
-        
-        DBFacade.observationDatabase = observationDatabase;
-        DBFacade.observationTable = observationTable;
-        DBFacade.commentDatabase = commentDatabase;
-        DBFacade.commentTable = commentTable;
-        DBFacade.proposalDatabase = proposalDatabase;
-        DBFacade.proposalTable = proposalTable;
+        db.DatabasePath = Path.Combine(Path.Combine(
+            AppContext.BaseDirectory,"../../../../../data"), "test.db");
+        db.InitializeDatabases();
     }
 
     const string resetDatabase = "DROP TABLE IF EXISTS ";
     public static void ResetDatabases()
     {
         var connection = new SqliteConnection(
-            $"Data Source={Path.Combine(DatabasePath, observationDatabase)}");
+            $"Data Source={Path.Combine(DatabasePath)}");
 
         connection.Open();
 
         var command = connection.CreateCommand();
-        command.CommandText = resetDatabase+observationTable+";";
+        command.CommandText = resetDatabase+"observation;";
         command.ExecuteNonQuery();
 
-        connection.Close();
-
-        connection = new SqliteConnection(
-            $"Data Source={Path.Combine(DatabasePath, commentDatabase)}");
-
-        connection.Open();
-
         command = connection.CreateCommand();
-        command.CommandText = resetDatabase+commentTable+";";
+        command.CommandText = resetDatabase+"user;";
         command.ExecuteNonQuery();
 
-        connection.Close();
-
-        connection = new SqliteConnection(
-            $"Data Source={Path.Combine(DatabasePath, proposalDatabase)}");
-
-        connection.Open();
+        command = connection.CreateCommand();
+        command.CommandText = resetDatabase+"comment;";
+        command.ExecuteNonQuery();
 
         command = connection.CreateCommand();
-        command.CommandText = resetDatabase+proposalTable+";";
+        command.CommandText = resetDatabase+"proposal;";
         command.ExecuteNonQuery();
 
         connection.Close();

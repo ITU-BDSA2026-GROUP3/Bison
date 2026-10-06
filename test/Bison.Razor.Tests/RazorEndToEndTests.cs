@@ -7,7 +7,7 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFixture
     public RazorEndToEndTests(RazorServiceFixture fixture)
     {
         Client = fixture.CreateClient();
-        DatabaseHandler.InitializeDatabases();
+        DatabaseHandler.InitializeDatabases(fixture.db);
     }
 
     [Fact]
@@ -15,7 +15,8 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFixture
     {
         //Arrange
         var obs1 = new ObservationViewModel(0, "Emil", "Sej gut", "Lejlighed", "123454321");
-        DatabaseHandler.AddObservation(obs1);
+        DatabaseHandler.AddUser(0, "Emil", "Emil@mail", "hash");
+        DatabaseHandler.AddObservation(obs1, 0);
 
         //Act
         var response = await Client.GetAsync("/obs");
@@ -35,6 +36,8 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFixture
         //Act
         var response = await Client.GetAsync("/obs");
         var content = await response.Content.ReadAsStringAsync();
+
+        Console.WriteLine(content);
 
         //Assert
         Assert.Contains("<em>There are no observations so far.</em>", content);
@@ -73,9 +76,12 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFixture
         var obs2 = new ObservationViewModel(1, "Jonas", "*Downvote Post", "Skummel Lokation", "12356");
         var obs3 = new ObservationViewModel(2, "Emil", "Hvem downvotede mit post :(", "Lejlighed", "12399");
         
-        DatabaseHandler.AddObservation(obs1);
-        DatabaseHandler.AddObservation(obs2);
-        DatabaseHandler.AddObservation(obs3);
+        DatabaseHandler.AddUser(0, "Emil", "emil@mail", "hash");
+        DatabaseHandler.AddUser(1, "Jonas", "jonas@mail", "hash2");
+
+        DatabaseHandler.AddObservation(obs1, 0);
+        DatabaseHandler.AddObservation(obs2, 1);
+        DatabaseHandler.AddObservation(obs3, 0);
 
         //Act
         var response = await Client.GetAsync("/obs/Emil");
@@ -105,7 +111,8 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFixture
     {
         //Arrange
         var obs1 = new ObservationViewModel(0, "Morten", "Hvem fanden er Morten?", "???", "123");
-        DatabaseHandler.AddObservation(obs1);
+        DatabaseHandler.AddUser(0, "Morten", "mail", "hash");
+        DatabaseHandler.AddObservation(obs1, 0);
 
         //Act
         var response = await Client.GetAsync("/obs/Emil");

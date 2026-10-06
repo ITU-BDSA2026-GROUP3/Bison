@@ -10,12 +10,11 @@ public class DBFacadeUnitTests : IDisposable
             AppContext.BaseDirectory,
             "../../../../../data"));
     
-    const string observationDatabase = "test_observe_cli.db";
-    const string tableName = "test_observe_cli_db";
+    private DBFacade db = new DBFacade();
 
     public DBFacadeUnitTests()
     {
-        DatabaseHandler.InitializeDatabases();
+        DatabaseHandler.InitializeDatabases(db);
     }
 
     [Fact]
@@ -25,7 +24,7 @@ public class DBFacadeUnitTests : IDisposable
 
 
         //Act
-        var records = DBFacade.ReadDatabase(observationDatabase, tableName);
+        var records = db.ReadDatabase("observation");
 
         //Assert
         Assert.Empty(records);
@@ -35,10 +34,11 @@ public class DBFacadeUnitTests : IDisposable
     public void ReadFromDatabase()
     {
         //Arrange
-        DatabaseHandler.AddObservation(new ObservationViewModel(0, "Emil", "Test", "Test Location", "1234321"));
+        DatabaseHandler.AddUser(0, "Emil", "emil@mail", "hash");
+        DatabaseHandler.AddObservation(new ObservationViewModel(0, "Emil", "Test", "Test Location", "1234321"), 0);
 
         //Act
-        var records = DBFacade.ReadDatabase(observationDatabase, tableName);
+        var records = db.ReadDatabase("observation");
 
         //Assert
         Assert.NotEmpty(records);
@@ -47,10 +47,9 @@ public class DBFacadeUnitTests : IDisposable
         var record = records[0];
 
         Assert.Equal(0L, record[0]); //obsID
-        Assert.Equal("Emil", record[1]); //Author
+        Assert.Equal(0L, record[1]); //Author ID
         Assert.Equal("Test", record[2]); //Observation
-        Assert.Equal("Test Location", record[3]); //Location
-        Assert.Equal(1234321L, record[4]); //Timestamp
+        Assert.Equal(1234321L, record[3]); //Timestamp
     }
 
     public void Dispose()

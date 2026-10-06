@@ -6,12 +6,15 @@ namespace Bison.Razor.Tests;
 public class RazorUnitTests : IDisposable
 {
     IObservationService service;
+    DBFacade db;
     
     public RazorUnitTests()
     {
-        DatabaseHandler.InitializeDatabases();
+        db = new DBFacade();
+        
+        DatabaseHandler.InitializeDatabases(db);
 
-        service = new ObservationService();
+        service = new ObservationService(db);
     }
 
     [Fact]
@@ -19,7 +22,8 @@ public class RazorUnitTests : IDisposable
     {
         //Arrange
         var obs1 = new ObservationViewModel(0, "Hjalte", "Email og gullerod", "2G05", "123");
-        DatabaseHandler.AddObservation(obs1);
+        DatabaseHandler.AddUser(0, "Hjalte", "mail", "hash");
+        DatabaseHandler.AddObservation(obs1, 0);
 
         //Act
         var records = service.GetObservations();
@@ -52,9 +56,11 @@ public class RazorUnitTests : IDisposable
         var obs1 = new ObservationViewModel(0, "Hjalte", "Email og gullerod", "2G05", "123");
         var obs2 = new ObservationViewModel(1, "Emil", "Kop med iste", "Bord", "1234");
         var obs3 = new ObservationViewModel(2, "Hjalte", "Bruglig observation", "Brulig Lokation", "1237");
-        DatabaseHandler.AddObservation(obs1);
-        DatabaseHandler.AddObservation(obs2);
-        DatabaseHandler.AddObservation(obs3);
+        DatabaseHandler.AddUser(0, "Emil", "email", "hash");
+        DatabaseHandler.AddUser(1, "Hjalte", "hmail", "hash2");
+        DatabaseHandler.AddObservation(obs1, 1);
+        DatabaseHandler.AddObservation(obs2, 0);
+        DatabaseHandler.AddObservation(obs3, 1);
 
         //Act
         var records = service.GetObservationsFromAuthor("Hjalte");
@@ -76,7 +82,8 @@ public class RazorUnitTests : IDisposable
     {
         //Arrange
         var obs1 = new ObservationViewModel(0, "Hjalte", "Email og gullerod", "2G05", "123");
-        DatabaseHandler.AddObservation(obs1);
+        DatabaseHandler.AddUser(0, "Hjalte", "hmail", "hash");
+        DatabaseHandler.AddObservation(obs1, 0);
 
         //Act
         var records = service.GetObservationsFromAuthor("Very Real User And Not Bot About To Hack The Database :)");
@@ -92,7 +99,10 @@ public class RazorUnitTests : IDisposable
         var obs1 = new ObservationViewModel(0L, "Emil", "Hjalte im not doing that", "her", "123");
         var obs2 = new ObservationViewModel(1L, "THe dEVil", "DONT COMMENT ON THIS OR YOU DIEEE", "kfc", "1232");
         var com = new CommentViewModel(1L, "I COMMENTED HIHIIHIHIHIH");
-        DatabaseHandler.AddObservation(obs2);
+        DatabaseHandler.AddUser(0, "Emil", "email", "hash");
+        DatabaseHandler.AddUser(1, "THe dEVil", "dmail", "hash2");
+        DatabaseHandler.AddObservation(obs1, 0);
+        DatabaseHandler.AddObservation(obs2, 1);
         DatabaseHandler.AddComment(com);
 
         //Act
@@ -129,7 +139,8 @@ public class RazorUnitTests : IDisposable
         var obs = new ObservationViewModel(0L, "THe dEVil", "DONT COMMENT ON THIS OR YOU DIEEE", "kfc", "1232");
         var com1 = new CommentViewModel(0L, "I COMMENTED HIHIIHIHIHIH");
         var com2 = new CommentViewModel(0L, "ME TOO LOLOLOLOLO");
-        DatabaseHandler.AddObservation(obs);
+        DatabaseHandler.AddUser(0, "THe dEVil", "dmail", "hash");
+        DatabaseHandler.AddObservation(obs, 0);
         DatabaseHandler.AddComment(com1);
         DatabaseHandler.AddComment(com2);
 
@@ -200,7 +211,6 @@ public class RazorUnitTests : IDisposable
         Assert.Equal(obs1.obsID, obs2.obsID);
         Assert.Equal(obs1.Author, obs2.Author);
         Assert.Equal(obs1.Message, obs2.Message);
-        Assert.Equal(obs1.Location, obs2.Location);
         Assert.Equal(ObservationService.UnixTimeStampToDateTimeString(double.Parse(obs1.Timestamp)), obs2.Timestamp);
     }
 

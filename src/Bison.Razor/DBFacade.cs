@@ -18,8 +18,6 @@ public class DBFacade
             AppContext.BaseDirectory,"../../../../../data"), "bison.db")
         :Path.GetFullPath(dbPath);
 
-        Console.WriteLine("Path: "+DatabasePath);
-
         InitializeDatabases();
     }
     public void InitializeDatabases()
