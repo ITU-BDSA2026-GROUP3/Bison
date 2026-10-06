@@ -13,7 +13,16 @@
                 @foreach(var comment in Model.Comments)
                 {
                     <li>
-                        @comment.Text
+                        <p>
+                            <strong>
+                                <a asp-page="/UserTimeline"
+                                    asp-route-author="@comment.AuthorName">
+                                    @comment.AuthorName
+                                </a>
+                            </strong>
+                            @comment.Text
+                            <small><em>&mdash; </em>@comment.Timestamp</small>
+                        </p>
                     </li>
                 }
             </ul>
