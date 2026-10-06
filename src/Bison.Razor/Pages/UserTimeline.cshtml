@@ -1,4 +1,4 @@
-﻿@page "/obs/{author}"
+﻿@page "/obs/{authorId}"
 @model Bison.Razor.Pages.UserTimelineModel
 @{
     ViewData["Title"] = "Bison";
@@ -18,11 +18,11 @@
                     <p>
                         <strong>
                              <a asp-page="/UserTimeline"
-                                 asp-route-author="@ob.Author">
-                                 @ob.Author
+                                 asp-route-author="@ob.AuthorName">
+                                 @ob.AuthorName
                              </a>
                         </strong>
-                        @ob.Message
+                        @ob.Text
                         <small><em>&mdash; </em>@ob.Timestamp</small>
                     </p>
                 </li>
