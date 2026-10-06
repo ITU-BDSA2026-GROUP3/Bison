@@ -8,6 +8,7 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddRazorPages();
+        builder.Services.AddSingleton<DBFacade>();
         builder.Services.AddSingleton<IObservationService, ObservationService>();
 
 

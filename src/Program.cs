@@ -151,7 +151,7 @@ namespace Bison.CLI
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             UserInterface.PrintObservations(await client.GetFromJsonAsync<IEnumerable<ObservationRec>>($"observations"));
-
+            
 
         }
 
