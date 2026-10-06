@@ -78,7 +78,7 @@ public class DatabaseHandler
     public static void AddProposal(ProposalViewModel comment)
     {
         string commandText = 
-        "INSERT INTO comment (obsID, Comment) " +
+        "INSERT INTO proposal (obsID, Comment) " +
         "VALUES (@obsID, @Comment);";
 
         Action<SqliteCommand> parameters = command =>

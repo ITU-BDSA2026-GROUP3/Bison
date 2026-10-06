@@ -37,8 +37,6 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFixture
         var response = await Client.GetAsync("/obs");
         var content = await response.Content.ReadAsStringAsync();
 
-        Console.WriteLine(content);
-
         //Assert
         Assert.Contains("<em>There are no observations so far.</em>", content);
     }
@@ -47,25 +45,51 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFixture
     public async Task ObservationDetailsEndToEnd()
     {
         //Arrange
-
+        var obs1 = new ObservationViewModel(0, "Emil", "Saw a REALLY cool rabbit", "Lejlighed", "123454321");
+        var obs2 = new ObservationViewModel(1, "Emil", "Guttermanden 4", "Lejlighed", "999999999");
+        var com1 = new CommentViewModel(0L, "det er en kat i en papkasse???");
+        var com2 = new CommentViewModel(0L, "de danske skoler har fejlet os igen");
+        var prop = new ProposalViewModel(0L, "Kat i papkasse");
+        DatabaseHandler.AddUser(0, "Emil", "Emil@mail", "hash");
+        DatabaseHandler.AddObservation(obs1, 0);
+        DatabaseHandler.AddObservation(obs2, 0);
+        DatabaseHandler.AddComment(com1);
+        DatabaseHandler.AddComment(com2);
+        DatabaseHandler.AddProposal(prop);
 
         //Act
-
+        var response = await Client.GetAsync("/ob/0");
+        var content = await response.Content.ReadAsStringAsync();
 
         //Assert
-        
+        Assert.Contains("asp-route-author=\"Emil\">", content);
+        Assert.Contains("Saw a REALLY cool rabbit", content);
+        Assert.Contains(ObservationService.UnixTimeStampToDateTimeString(123454321L), content);
+        Assert.Contains("det er en kat i en papkasse???", content);
+        Assert.Contains("de danske skoler har fejlet os igen", content);
+        Assert.Contains("Kat i papkasse", content);
     }
 
     [Fact]
     public async Task NoObservationDetialsEndToEnd()
     {
         //Arrange
-
+        var obs1 = new ObservationViewModel(0, "Emil", "Saw a REALLY cool rabbit", "Lejlighed", "123454321");
+        var obs2 = new ObservationViewModel(1, "Emil", "Guttermanden 4", "Lejlighed", "999999999");
+        DatabaseHandler.AddUser(0, "Emil", "Emil@mail", "hash");
+        DatabaseHandler.AddObservation(obs1, 0);
+        DatabaseHandler.AddObservation(obs2, 0);
 
         //Act
-
+        var response = await Client.GetAsync("/ob/0");
+        var content = await response.Content.ReadAsStringAsync();
 
         //Assert
+        Assert.Contains("asp-route-author=\"Emil\">", content);
+        Assert.Contains("Saw a REALLY cool rabbit", content);
+        Assert.Contains(ObservationService.UnixTimeStampToDateTimeString(123454321L), content);
+        Assert.Contains("<em>No comments for this observation </em>", content);
+        Assert.Contains("<em>No proposals for this observation</em>", content);
     }
 
     [Fact]

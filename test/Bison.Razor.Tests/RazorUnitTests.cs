@@ -162,16 +162,27 @@ public class RazorUnitTests : IDisposable
     public void GetProposalsOnObservation()
     {
         //Arrange
-
+        var obs = new ObservationViewModel(0L, "Emil", "Tror det her er en kanin. Nogen der kan factchecke?", "zoo", "123");
+        var prop = new ProposalViewModel(0L, "Abekat");
+        
+        DatabaseHandler.AddUser(0, "Emil", "email", "hash");
+        DatabaseHandler.AddObservation(obs, 0);
+        DatabaseHandler.AddProposal(prop);
 
         //Act
-
+        var proposals = service.GetProposals(0L);
 
         //Assert
-        
+        Assert.NotEmpty(proposals);
+        Assert.Single(proposals);
+
+        var proposal = proposals[0];
+
+        CompareProposals(prop, proposal);
     }
 
-    [Fact]
+    //NEEDS LOGIC WHEN INSERTING PROPOSALS TO WORK. CAN'T CURRENTLY TEST :(
+    /*[Fact]
     public void GetProposalsOnNonExistingObservation()
     {
         //Arrange
@@ -182,7 +193,7 @@ public class RazorUnitTests : IDisposable
 
         //Assert
         
-    }
+    }*/
 
     [Fact]
     public void UnixTimeStampToDateTimeStringReturnsCorrectTime()
@@ -221,6 +232,15 @@ public class RazorUnitTests : IDisposable
 
         Assert.Equal(com1.obsID, com2.obsID);
         Assert.Equal(com1.Comment, com2.Comment);
+    }
+
+    private void CompareProposals(ProposalViewModel prop1, ProposalViewModel prop2)
+    {
+        Assert.NotNull(prop1);
+        Assert.NotNull(prop2);
+
+        Assert.Equal(prop1.obsID, prop2.obsID);
+        Assert.Equal(prop1.taxonID, prop2.taxonID);
     }
 
     public void Dispose()
