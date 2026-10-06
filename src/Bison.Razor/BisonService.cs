@@ -11,6 +11,8 @@ public interface IObservationService
     public Task<List<ObservationDto>> GetObservations(int page = 1);
     public Task<List<ObservationDto>> GetObservationsFromAuthor(int authorId, int page = 1);
 
+    public Task<ObservationDto> GetObservationFromId(int observationId, int page = 1);
+
     public Task<List<CommentDto>> GetComments(int observationId);
 }
 
@@ -96,6 +98,21 @@ public class ObservationService : IObservationService
         return filteredObservations;
     }
 
+    public async Task<ObservationDto> GetObservationFromId(int observationId, int page = 1)
+    {
+        var obs = await _PostRepository.ReadSingleObservation(observationId);
+        if (obs is null)
+            return null; //temp solution
+        ObservationDto dto = new ObservationDto
+        {
+            Id = obs.Id,
+            AuthorName = obs.Author.Name,
+            Text = obs.Text,
+            Timestamp = DateTimeToString(obs.TimeStamp),
+            TaxonName = obs.Taxon.Name
+        };
+        return dto;
+    }
     public async Task<List<CommentDto>> GetComments(int observationId)
     {
         List<CommentDto> comments = new List<CommentDto>();
