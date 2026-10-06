@@ -60,6 +60,8 @@ namespace Bison.Razor.Repositories
         public async Task<Observation> ReadSingleObservation(int observationID)
         {
             var query = _bisonContext.Observations
+             .Include(obs => obs.Author)
+             .Include(obs => obs.Taxon)
              .Where(obs => obs.Id == observationID);
             // Execute the query and store the results
             var result = await query.SingleAsync();
