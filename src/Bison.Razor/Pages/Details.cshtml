@@ -1,4 +1,4 @@
-@page "/details/{id?}"
+@page "/ob/{id?}"
 @model Bison.Razor.Pages.DetailsModel
 
 @{
@@ -7,6 +7,27 @@
 }
 
 <div>
+       <h2>Observation @Model.Observation</h2>
+
+       <p>
+        <strong>Author:</strong>
+        <a asp-page="/UserTimeline"
+        asp-route-author="@Model.Observation.AuthorName">
+        @Model.Observation.AuthorName
+        </a>
+       </p>
+
+       <p>
+        <strong>Observation:</strong>
+        @Model.Observation.Text
+       </p>
+
+       <p>
+            <strong>Date:</strong>
+            @Model.Observation.Timestamp
+       </p>
+
+       <h3>Comments</h3>
         @if (Model.Comments.Any())
         {
             <ul>
