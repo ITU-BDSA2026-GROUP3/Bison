@@ -21,20 +21,34 @@ public static class DbInitializer
             Email = "paul@example.com"
         };
 
+        var taxonAncestor1 = new Taxon
+        {
+            Name = "Mammal",
+            Description = "Warm-blooded vertebrate animals that have hair or fur and feed their young with milk from special glands."
+        };
+
+        var taxonAncestor2 = new Taxon
+        {
+            Name = "Bird",
+            Description = "Warm-blooded, two-legged animals with feathers, wings, and toothless, keratin-covered beaks."
+        };
+        
         var taxon1 = new Taxon
         {
             Name = "Bison",
-            Description = "European bison"
+            Description = "European bison",
+            ancestor = taxonAncestor1
         };
 
         var taxon2 = new Taxon
         {
             Name = "Heron",
-            Description = "Large water bird"
+            Description = "Large water bird",
+            ancestor = taxonAncestor2
         };
 
         context.Authors.AddRange(author1, author2);
-        context.Taxons.AddRange(taxon1, taxon2);
+        context.Taxons.AddRange(taxonAncestor1, taxonAncestor2, taxon1, taxon2);
 
         context.SaveChanges();
 

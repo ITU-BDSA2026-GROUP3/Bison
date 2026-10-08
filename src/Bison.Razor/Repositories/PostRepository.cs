@@ -48,15 +48,7 @@ namespace Bison.Razor.Repositories
         }
         public async Task<List<ObservationDto>> ReadAllObservations()
         {
-            // Define the query - with our setup, EF Core translates this to an SQLite query in the background
-            var query = _bisonContext.Observations
-             .Include(obs => obs.Author)
-             .Include(obs => obs.Taxon); // eager loading, connects the foreign keys in the database to the corresponding entity, otherwise the returning field would be null.
-
-
-            // Execute the query and store the results
-            var result = await query.ToListAsync();
-
+            var result = await ReadAllObservationObjects();
             List<ObservationDto> dtos = new();
 
             foreach (var obs in result)
@@ -72,6 +64,20 @@ namespace Bison.Razor.Repositories
             }
 
             return dtos;
+        }
+
+        public async Task<List<Observation>> ReadAllObservationObjects()
+        {
+            // Define the query - with our setup, EF Core translates this to an SQLite query in the background
+            var query = _bisonContext.Observations
+             .Include(obs => obs.Author)
+             .Include(obs => obs.Taxon); // eager loading, connects the foreign keys in the database to the corresponding entity, otherwise the returning field would be null.
+
+
+            // Execute the query and store the results
+            var result = await query.ToListAsync();
+
+            return result;
         }
 
         public async Task<List<int>> CreateObservations(List<Observation> observations)
