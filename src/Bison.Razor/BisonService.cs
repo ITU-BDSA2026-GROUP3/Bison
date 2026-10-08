@@ -13,6 +13,8 @@ public interface IObservationService
     public Task<ObservationDto> GetObservationFromId(int observationId, int page = 1);
 
     public Task<List<CommentDto>> GetComments(int observationId);
+
+    public Task<List<ProposalDto>> GetProposals(int observationId);
 }
 
 public class ObservationService : IObservationService
@@ -110,6 +112,29 @@ public class ObservationService : IObservationService
         }
 
         return comments;
+    }
+
+    public async Task<List<ProposalDto>> GetProposals(int observationId)
+    {
+        List<ProposalDto> proposals = new List<ProposalDto>();
+
+        var repoQueryResult =
+            await _PostRepository.ReadProposals(observationId);
+
+        foreach (var proposal in repoQueryResult)
+        {
+            ProposalDto dto = new ProposalDto
+            {
+                AuthorName = proposal.Author.Name,
+                Text = proposal.Text,
+                Timestamp = DateTimeToString(proposal.TimeStamp),
+                TaxonName = proposal.Taxon.Name
+            };
+
+            proposals.Add(dto);
+        }
+
+        return proposals;
     }
 
     private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
