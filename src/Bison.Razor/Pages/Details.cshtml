@@ -62,7 +62,21 @@
                 @foreach (var proposal in Model.Proposals)
                 {
                     <li>
-                        @proposal
+                        <p>
+                            <strong>
+                                <a asp-page="/UserTimeline"
+                                    asp-route-author="@proposal.AuthorName">
+                                    @proposal.AuthorName
+                                </a>
+                            </strong>
+                            Proposed:
+                            <strong>
+                                @proposal.TaxonName
+                            </strong>
+                            <small><em>&mdash; </em>@proposal.Timestamp</small>
+                            <br>
+                            @proposal.Text
+                        </p>
                     </li>
                 }
             </ul>
@@ -71,7 +85,5 @@
         {
             //If there are no proposals for this observation
             <em>No proposals for this observation</em>
-        }
-}
-            
+        }           
 </div>

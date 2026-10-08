@@ -32,7 +32,7 @@ public class DetailsModel : PageModel
 
         // Show the comments and proposals for this obseration
         Comments = await _observationService.GetComments(id);
-        //Proposals = _observationService.GetProposals(id);
+        Proposals = await _observationService.GetProposals(id);
 
         return Page();
 
