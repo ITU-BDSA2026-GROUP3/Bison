@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bison.Razor.DTOs;
+using Bison.Razor.domain_model;
 
 namespace Bison.Razor.Repositories
 {

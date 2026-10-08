@@ -1,7 +1,7 @@
 
 
 
-
+using Bison.Razor.domain_model;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bison.Razor.Repositories

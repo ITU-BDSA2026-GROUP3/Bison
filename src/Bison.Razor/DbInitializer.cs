@@ -1,3 +1,5 @@
+using Bison.Razor.domain_model;
+
 public static class DbInitializer
 {
     public static void Initialize(BisonContext context)

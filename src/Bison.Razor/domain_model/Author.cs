@@ -1,3 +1,4 @@
+namespace Bison.Razor.domain_model;
 public class Author
 {
     public int Id { get; set; }

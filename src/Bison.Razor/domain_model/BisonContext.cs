@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
+namespace Bison.Razor.domain_model;
 public class BisonContext : DbContext
 {
     public DbSet<Author> Authors
