@@ -1,3 +1,4 @@
+using Bison.Razor.domain_model;
 using Bison.Razor.Repositories;
 using System.Data;
 using static System.Net.Mime.MediaTypeNames;
@@ -74,6 +75,28 @@ public class ObservationService : IObservationService
 
         return observations;
     }
+
+    public async Task<List<ObservationViewModel>> GetObservationsFromTaxon(int taxonId, int page = 1)
+    {
+        int validPage = Math.Max(page, 1);
+        Taxon taxon = await _TaxonRepository.getTaxon(taxonId);
+        var obs = await _PostRepository.ReadAllObservationObjects();
+        Observation[] observations = obs.ToArray();
+        var filt = filterChecked.__default.FilterByChecked(taxon, Dafny.Sequence<Observation>.FromArray(observations));
+        List<ObservationViewModel> filteredObservations = new List<ObservationViewModel>();
+        foreach(var ob in filt)
+        {
+           filteredObservations.Add(new ObservationViewModel(
+            ob.Id,
+            ob.Author.Name,
+            ob.Text,
+            "Jonas seems to have forgotten location",
+            ob.TimeStamp.ToString("MM/dd/yy H:mm:ss")
+           )) ;
+        }
+        return filteredObservations;
+    }
+
     public async Task<List<CommentViewModel>> GetComments(int observationId)
     {
         List<CommentViewModel> comments = new List<CommentViewModel>();
