@@ -9,6 +9,7 @@ public interface IObservationService
 {
     public Task<List<ObservationViewModel>> GetObservations(int page = 1);
     public Task<List<ObservationViewModel>> GetObservationsFromAuthor(int authorId, int page = 1);
+    public Task<List<ObservationViewModel>> GetObservationsFromTaxon(int authorId, int page = 1);
 
     public Task<List<CommentViewModel>> GetComments(int observationId);
 }

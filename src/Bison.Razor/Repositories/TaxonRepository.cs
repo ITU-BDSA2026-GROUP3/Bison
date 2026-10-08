@@ -14,7 +14,7 @@ namespace Bison.Razor.Repositories
         {
             _bisonContext = bisonContext;
         }
-    public async Task<List<int>> CreateTaxons(List<Taxon> taxons)
+        public async Task<List<int>> CreateTaxons(List<Taxon> taxons)
         {
 
             foreach(Taxon taxon in taxons)
@@ -38,6 +38,14 @@ namespace Bison.Razor.Repositories
              .Where(taxon => taxon.Id == taxonId);
             // Execute the query and store the results
             var result = await query.SingleAsync();
+
+            return result;
+        }
+
+        public async Task<List<Taxon>> getAllTaxons()
+        {
+            var query = _bisonContext.Taxons;
+            var result = await query.ToListAsync();
 
             return result;
         }
