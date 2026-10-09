@@ -3,8 +3,8 @@ using Bison.Razor.Repositories;
 using System.Data;
 using static System.Net.Mime.MediaTypeNames;
 
-//public record ObservationViewModel(long obsID, string Author, string Message, string Location ,string Timestamp);
-//public record CommentViewModel(long obsID, string Comment);
+public record ObservationViewModel(long obsID, string Author, string Message, string Location ,string Timestamp);
+public record CommentViewModel(long obsID, string Comment);
 public interface IObservationService
 {
     public Task<List<ObservationDto>> GetObservations(int page = 1);
