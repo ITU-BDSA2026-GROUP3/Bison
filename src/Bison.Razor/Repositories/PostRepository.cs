@@ -19,33 +19,20 @@ namespace Bison.Razor.Repositories
             _bisonContext = bisonContext;
         }
 
-        public async Task<List<ObservationDto>> ReadObservations(int authorID)
+        public async Task<List<Observation>> ReadObservations(int authorID)
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
             var query = _bisonContext.Observations
              .Include(obs => obs.Author)
              .Include(obs => obs.Taxon) // eager loading, connects the foreign keys in the database to the corresponding entity, otherwise the returning field would be null.
              .Where(obs => obs.Author.Id == authorID);
+
             // Execute the query and store the results
-            List<ObservationDto> dtos = new();
 
             var result = await query.ToListAsync();
-
-            foreach (var obs in result)
-            {
-                dtos.Add(new ObservationDto
-                {
-                    Id = obs.Id,
-                    Text = obs.Text,
-                    Timestamp = obs.TimeStamp.ToString(),
-                    AuthorName = obs.Author.Name,
-                    TaxonName = obs.Taxon.Name
-                });
-            }
-
-            return dtos;
+            return result;
         }
-        public async Task<List<ObservationDto>> ReadAllObservations()
+        public async Task<List<Observation>> ReadAllObservations()
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
             var query = _bisonContext.Observations
@@ -56,21 +43,7 @@ namespace Bison.Razor.Repositories
             // Execute the query and store the results
             var result = await query.ToListAsync();
 
-            List<ObservationDto> dtos = new();
-
-            foreach (var obs in result)
-            {
-                dtos.Add(new ObservationDto
-                {
-                    Id = obs.Id,
-                    Text = obs.Text,
-                    Timestamp = obs.TimeStamp.ToString(),
-                    AuthorName = obs.Author.Name,
-                    TaxonName = obs.Taxon.Name
-                });
-            }
-
-            return dtos;
+            return result;
         }
 
         public async Task<List<int>> CreateObservations(List<Observation> observations)
@@ -84,6 +57,18 @@ namespace Bison.Razor.Repositories
             await _bisonContext.SaveChangesAsync(); // persist the changes in the database
             return ids;
         }
+        public async Task<Observation> ReadSingleObservation(int observationID)
+        {
+            var query = _bisonContext.Observations
+             .Include(obs => obs.Author)
+             .Include(obs => obs.Taxon)
+             .Where(obs => obs.Id == observationID);
+            // Execute the query and store the results
+            var result = await query.SingleAsync();
+
+            return result;
+        }
+
         public async Task<List<int>> CreateComments(List<Comment> comments)
         {
             List<int> ids = new List<int>();
@@ -96,7 +81,7 @@ namespace Bison.Razor.Repositories
             return ids;
         }
 
-        public async Task<List<CommentDto>> ReadComments(int obsID)
+        public async Task<List<Comment>> ReadComments(int obsID)
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
             var query = _bisonContext.Comments
@@ -106,21 +91,7 @@ namespace Bison.Razor.Repositories
             // Execute the query and store the results
             var result = await query.ToListAsync();
 
-            List<CommentDto> dtos = new();
-
-            foreach (var comment in result)
-            {
-                dtos.Add(new CommentDto
-                {
-                    Id = comment.Id,
-                    Text = comment.Text,
-                    Timestamp = comment.TimeStamp.ToString(),
-                    AuthorName = comment.Author.Name,
-                    ObservationId = comment.Observation.Id
-                });
-            }
-
-            return dtos;
+            return result;
         }
         public async Task<List<int>> CreateProposals(List<Proposal> proposals)
         {
@@ -134,7 +105,7 @@ namespace Bison.Razor.Repositories
             return ids;
         }
 
-        public async Task<List<ProposalDto>> ReadProposals(int obsID)
+        public async Task<List<Proposal>> ReadProposals(int obsID)
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
             var query = _bisonContext.Proposals
@@ -145,22 +116,7 @@ namespace Bison.Razor.Repositories
             // Execute the query and store the results
             var result = await query.ToListAsync();
 
-            List<ProposalDto> dtos = new();
-
-            foreach (var proposal in result)
-            {
-                dtos.Add(new ProposalDto
-                {
-                    Id = proposal.Id,
-                    Text = proposal.Text,
-                    Timestamp = proposal.TimeStamp.ToString(),
-                    AuthorName = proposal.Author.Name,
-                    ObservationId = proposal.Observation.Id,
-                    TaxonName = proposal.Taxon.Name
-                });
-            }
-
-            return dtos;
+            return result;
         }
     }
 }
