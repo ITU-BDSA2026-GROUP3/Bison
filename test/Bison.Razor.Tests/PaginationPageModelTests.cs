@@ -1,4 +1,3 @@
-using System.Net.Sockets;
 using Bison.Razor.Pages;
 
 namespace Bison.Razor.Tests;
@@ -11,7 +10,7 @@ public class PaginationPageModelTests
         FakeObservationService service = new();
         PublicModel model = new(service);
 
-        model.OnGet(2);
+        model.OnGetAsync(2);
 
         Assert.Equal(2, model.CurrentPage);
         Assert.Equal(2, service.RequestedPublicPage);
@@ -25,7 +24,7 @@ public class PaginationPageModelTests
         FakeObservationService service = new();
         PublicModel model = new(service);
 
-        model.OnGet(page);
+        model.OnGetAsync(page);
 
         Assert.Equal(1, model.CurrentPage);
         Assert.Equal(1, service.RequestedPublicPage);
@@ -37,11 +36,11 @@ public class PaginationPageModelTests
         FakeObservationService service = new();
         UserTimelineModel model = new(service);
 
-        model.OnGet("Peter", 2);
+        model.OnGet(1, 2);
 
-        Assert.Equal("Peter", model.Author);
+        Assert.Equal(1, model.AuthorId);
         Assert.Equal(2, model.CurrentPage);
-        Assert.Equal("Peter", service.RequestedAuthor);
+        Assert.Equal(1, service.RequestedAuthor);
         Assert.Equal(2, service.RequestedAuthorPage);
     }
 
@@ -53,7 +52,7 @@ public class PaginationPageModelTests
         FakeObservationService service = new();
         UserTimelineModel model = new(service);
 
-        model.OnGet("Peter", page);
+        model.OnGet(1, page);
 
         Assert.Equal(1, model.CurrentPage);
         Assert.Equal(1, service.RequestedAuthorPage);
@@ -63,39 +62,28 @@ public class PaginationPageModelTests
     {
         public int RequestedPublicPage { get; private set; }
 
-        public string RequestedAuthor { get; private set; } = string.Empty;
+        public int RequestedAuthor { get; private set; }
 
         public int RequestedAuthorPage { get; private set; }
 
-        public List<ObservationViewModel> GetObservations(int page = 1)
+        public Task<List<ObservationViewModel>> GetObservations(int page = 1)
         {
             RequestedPublicPage = page;
-            return new List<ObservationViewModel>();
+
+            return Task.FromResult(new List<ObservationViewModel>());
         }
 
-        public List<ObservationViewModel> GetObservationsFromAuthor(
-            string author,
-            int page = 1)
+        public Task<List<ObservationViewModel>> GetObservationsFromAuthor(int authorId, int page = 1)
         {
-            RequestedAuthor = author;
+            RequestedAuthor = authorId;
             RequestedAuthorPage = page;
 
-            return new List<ObservationViewModel>();
+            return Task.FromResult(new List<ObservationViewModel>());
         }
 
-        public ObservationViewModel? GetObservation(long id)
+        public Task<List<CommentViewModel>> GetComments(int observationId)
         {
-            return null;
-        }
-
-        public List<ProposalViewModel> GetProposals(long id)
-        {
-            return new List<ProposalViewModel>();
-        }
-
-        public List<CommentViewModel> GetComments(long id)
-        {
-            return new List<CommentViewModel>();
+            return Task.FromResult(new List<CommentViewModel>());
         }
     }
 }
