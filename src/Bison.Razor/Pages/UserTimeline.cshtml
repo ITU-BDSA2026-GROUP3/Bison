@@ -37,7 +37,7 @@
         @if (Model.HasPreviousPage)
         {
             <a asp-page="/UserTimeline"
-                asp-route-author="@Model.Author"
+                asp-route-author="@Model.AuthorId"
                 asp-route-page="@(Model.CurrentPage - 1)">
                 Previous
             </a>
@@ -46,7 +46,7 @@
         @if (Model.HasNextPage)
         {
             <a asp-page="/UserTimeline"
-                asp-route-author="@Model.Author"
+                asp-route-author="@Model.AuthorId"
                 asp-route-page="@(Model.CurrentPage + 1)">
                 Next
             </a>
