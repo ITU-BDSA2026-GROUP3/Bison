@@ -27,7 +27,7 @@ public class PublicModel : PageModel
     [BindProperty(SupportsGet = true, Name = "taxonId")]
     public int TaxonFilter {get; set;} = 0;
 
-    public required SelectList TaxonDropDown {get; set;}
+    public SelectList TaxonDropDown {get; set;}
 
     public async Task<ActionResult> OnGetAsync([FromQuery] int page = 1)
     {
