@@ -15,7 +15,7 @@ public class UserTimelineModel : PageModel
         _observationService = observationService;
     }
 
-    public int AuthorId {get; private set; }
+    public string Author {get; private set; } = string.Empty;
 
     public int CurrentPage { get; private set; } = 1;
 
@@ -23,12 +23,12 @@ public class UserTimelineModel : PageModel
 
     public bool HasNextPage => Observations.Count == PageSize;
 
-    public async Task<ActionResult> OnGet([FromRoute] int authorId, [FromQuery] int page = 1)
+    public ActionResult OnGet([FromRoute] string author, [FromQuery] int page = 1)
     {
-        AuthorId = authorId;
+        Author = author;
         CurrentPage = Math.Max(page, 1);
 
-        Observations = await _observationService.GetObservationsFromAuthor(AuthorId, CurrentPage);
+        Observations = _observationService.GetObservationsFromAuthor(Author, CurrentPage);
 
         return Page();
     }

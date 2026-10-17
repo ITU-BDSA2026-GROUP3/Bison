@@ -1,43 +1,34 @@
-using Bison.Razor.Repositories;
-using Microsoft.EntityFrameworkCore;
+namespace Bison.Razor;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddScoped<IObservationService, ObservationService>();
-builder.Services.AddScoped<IPostRepository, PostRepository>();
-builder.Services.AddScoped<ITaxonRepository, TaxonRepository>();
-builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<BisonContext>(options => options.UseSqlite(connectionString));
-
-
-var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
+public class Program
 {
-    var context = scope.ServiceProvider.GetRequiredService<BisonContext>();
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-    context.Database.EnsureCreated();
+        // Add services to the container.
+        builder.Services.AddRazorPages();
+        builder.Services.AddSingleton<DBFacade>();
+        builder.Services.AddSingleton<IObservationService, ObservationService>();
 
-    DbInitializer.Initialize(context);
+
+        var app = builder.Build();
+
+        // Configure the HTTP request pipeline.
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseExceptionHandler("/Error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
+        }
+
+        app.UseHttpsRedirection();
+        app.UseStaticFiles();
+
+        app.UseRouting();
+
+        app.MapRazorPages();
+
+        app.Run();
+    }
 }
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    // Configure the HTTP request pipeline.
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.MapRazorPages();
-
-app.Run();
