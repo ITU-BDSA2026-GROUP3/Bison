@@ -1,5 +1,6 @@
 using Bison.Razor.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Bison.Razor.domain_model;
 
 var builder = WebApplication.CreateBuilder(args);
 

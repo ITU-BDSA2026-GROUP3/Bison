@@ -1,16 +1,19 @@
+using Bison.Razor.domain_model;
 using Bison.Razor.Pages;
+using Bison.Razor.Repositories;
 
 namespace Bison.Razor.Tests;
 
 public class PaginationPageModelTests
 {
     [Fact]
-    public void PublicTimelinePassesRequestedPageToService()
+    public async Task PublicTimelinePassesRequestedPageToService()
     {
         FakeObservationService service = new();
-        PublicModel model = new(service);
+        FakeTaxonRepository repository = new();
+        PublicModel model = new(service, repository);
 
-        model.OnGetAsync(2);
+        await model.OnGetAsync(2);
 
         Assert.Equal(2, model.CurrentPage);
         Assert.Equal(2, service.RequestedPublicPage);
@@ -19,43 +22,44 @@ public class PaginationPageModelTests
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
-    public void PublicTimelineNormalizesInvalidPageToOne(int page)
+    public async Task PublicTimelineNormalizesInvalidPageToOne(int page)
     {
         FakeObservationService service = new();
-        PublicModel model = new(service);
+        FakeTaxonRepository repository = new();
+        PublicModel model = new(service, repository);
 
-        model.OnGetAsync(page);
+        await model.OnGetAsync(page);
 
         Assert.Equal(1, model.CurrentPage);
         Assert.Equal(1, service.RequestedPublicPage);
     }
 
     [Fact]
-    public void UserTimelinePassesAuthorAndPageToService()
+    public async Task UserTimelinePassesAuthorAndPageToService()
     {
         FakeObservationService service = new();
         UserTimelineModel model = new(service);
 
-        model.OnGet(1, 2);
+        await model.OnGet(1, 2);
 
         Assert.Equal(1, model.AuthorId);
         Assert.Equal(2, model.CurrentPage);
         Assert.Equal(1, service.RequestedAuthor);
-        Assert.Equal(2, service.RequestedAuthorPage);
+        Assert.Equal(2, service.RequestedPage);
     }
 
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
-    public void UserTimelineNormalizesInvalidPageToOne(int page)
+    public async Task UserTimelineNormalizesInvalidPageToOne(int page)
     {
         FakeObservationService service = new();
         UserTimelineModel model = new(service);
 
-        model.OnGet(1, page);
+        await model.OnGet(1, page);
 
         Assert.Equal(1, model.CurrentPage);
-        Assert.Equal(1, service.RequestedAuthorPage);
+        Assert.Equal(1, service.RequestedPage);
     }
 
     private class FakeObservationService : IObservationService
@@ -64,7 +68,8 @@ public class PaginationPageModelTests
 
         public int RequestedAuthor { get; private set; }
 
-        public int RequestedAuthorPage { get; private set; }
+        public int RequestedPage { get; private set; }
+        public int RequestedTaxon { get; private set; }
 
         public Task<List<ObservationViewModel>> GetObservations(int page = 1)
         {
@@ -76,7 +81,7 @@ public class PaginationPageModelTests
         public Task<List<ObservationViewModel>> GetObservationsFromAuthor(int authorId, int page = 1)
         {
             RequestedAuthor = authorId;
-            RequestedAuthorPage = page;
+            RequestedPage = page;
 
             return Task.FromResult(new List<ObservationViewModel>());
         }
@@ -84,6 +89,43 @@ public class PaginationPageModelTests
         public Task<List<CommentViewModel>> GetComments(int observationId)
         {
             return Task.FromResult(new List<CommentViewModel>());
+        }
+
+        public Task<List<ObservationViewModel>> GetObservationsFromTaxon(int taxonId, int page = 1)
+        {
+            RequestedTaxon = taxonId;
+            RequestedPage = page;
+
+            return Task.FromResult(new List<ObservationViewModel>());
+        }
+    }
+
+    private class FakeTaxonRepository : ITaxonRepository
+    {
+        List<Taxon> fakeTaxons = new List<Taxon> {new Taxon{Id = 0}};
+        public FakeTaxonRepository()
+        {
+            
+        }
+        public async Task<List<int>> CreateTaxons(List<Taxon> taxons)
+        {
+            foreach(Taxon taxon in taxons)
+            {
+                fakeTaxons.Add(taxon);
+            }
+            return null;
+        }
+
+        public async Task<List<Taxon>> getAllTaxons()
+        {
+            await Task.Delay(0);
+            return fakeTaxons;
+        }
+
+        public async Task<Taxon> getTaxon(int id)
+        {
+            await Task.Delay(0);
+            return fakeTaxons[id];
         }
     }
 }

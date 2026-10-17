@@ -7,7 +7,21 @@
 
 <div>
     <h2> Public Timeline </h2>
-
+    
+    <form method="get" class="mb-4">
+        <div class="form-group" style="max-width: 300px;">
+            <label for="taxonSelect" class="form-label">Filter by Taxon:</label>
+            
+            <select id="taxonSelect" name="taxonId" class="form-control" onchange="this.form.submit()">
+                <option value="0">Show All</option>
+                @foreach (var taxon in Model.TaxonDropDown)
+                {
+                    <option value="@taxon.Value" selected="@(taxon.Value == Model.TaxonFilter.ToString())">@taxon.Text</option>
+                }
+            </select>
+        </div>
+    </form>
+    
     @if (Model.Observations.Any())
     {
         <ul id="messagelist" class="observations">

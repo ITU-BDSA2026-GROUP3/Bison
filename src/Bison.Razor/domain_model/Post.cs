@@ -1,3 +1,4 @@
+namespace Bison.Razor.domain_model;
 public abstract class Post
 {
     public int Id { get; set; }
