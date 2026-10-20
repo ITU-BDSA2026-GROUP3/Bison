@@ -13,6 +13,8 @@ public interface IObservationService
 
     public Task<ObservationDto> GetObservationFromId(int observationId, int page = 1);
 
+    public Task<List<ObservationDto>> GetObservationsFromTaxon(int taxonId, int page = 1);
+
     public Task<List<CommentDto>> GetComments(int observationId);
 
     public Task<List<ProposalDto>> GetProposals(int observationId);
@@ -79,23 +81,26 @@ public class ObservationService : IObservationService
         return observations;
     }
 
-    public async Task<List<ObservationViewModel>> GetObservationsFromTaxon(int taxonId, int page = 1)
+    public async Task<List<ObservationDto>> GetObservationsFromTaxon(int taxonId, int page = 1)
     {
         int validPage = Math.Max(page, 1);
         Taxon taxon = await _TaxonRepository.getTaxon(taxonId);
-        var obs = await _PostRepository.ReadAllObservationObjects();
-        Observation[] observations = obs.ToArray();
-        var filt = filterChecked.__default.FilterByChecked(taxon, Dafny.Sequence<Observation>.FromArray(observations));
-        List<ObservationViewModel> filteredObservations = new List<ObservationViewModel>();
-        foreach(var ob in filt)
+        var observations = await _PostRepository.ReadAllObservations();
+        Observation[] observationsArray = observations.ToArray();
+        var filt = filterChecked.__default.FilterByChecked(taxon, Dafny.Sequence<Observation>.FromArray(observationsArray));
+        List<ObservationDto> filteredObservations = new List<ObservationDto>();
+        foreach (var obs in filt)
         {
-           filteredObservations.Add(new ObservationViewModel(
-            ob.Id,
-            ob.Author.Name,
-            ob.Text,
-            "Jonas seems to have forgotten location",
-            ob.TimeStamp.ToString("MM/dd/yy H:mm:ss")
-           )) ;
+            ObservationDto dto = new ObservationDto
+            {
+                Id = obs.Id,
+                AuthorName = obs.Author.Name,
+                Text = obs.Text,
+                Timestamp = DateTimeToString(obs.TimeStamp),
+                TaxonName = obs.Taxon.Name
+            };
+
+            filteredObservations.Add(dto);
         }
         return filteredObservations;
     }
