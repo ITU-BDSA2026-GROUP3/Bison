@@ -1,4 +1,5 @@
 using Bison.Razor.domain_model;
+using Bison.Razor.DTOs;
 using Bison.Razor.Pages;
 using Bison.Razor.Repositories;
 
@@ -71,32 +72,42 @@ public class PaginationPageModelTests
         public int RequestedPage { get; private set; }
         public int RequestedTaxon { get; private set; }
 
-        public Task<List<ObservationViewModel>> GetObservations(int page = 1)
+        public Task<List<ObservationDto>> GetObservations(int page = 1)
         {
             RequestedPublicPage = page;
 
-            return Task.FromResult(new List<ObservationViewModel>());
+            return Task.FromResult(new List<ObservationDto>());
         }
 
-        public Task<List<ObservationViewModel>> GetObservationsFromAuthor(int authorId, int page = 1)
+        public Task<List<ObservationDto>> GetObservationsFromAuthor(int authorId, int page = 1)
         {
             RequestedAuthor = authorId;
             RequestedPage = page;
 
-            return Task.FromResult(new List<ObservationViewModel>());
+            return Task.FromResult(new List<ObservationDto>());
         }
 
-        public Task<List<CommentViewModel>> GetComments(int observationId)
+        public Task<List<CommentDto>> GetComments(int observationId)
         {
-            return Task.FromResult(new List<CommentViewModel>());
+            return Task.FromResult(new List<CommentDto>());
         }
 
-        public Task<List<ObservationViewModel>> GetObservationsFromTaxon(int taxonId, int page = 1)
+        public Task<List<ObservationDto>> GetObservationsFromTaxon(int taxonId, int page = 1)
         {
             RequestedTaxon = taxonId;
             RequestedPage = page;
 
-            return Task.FromResult(new List<ObservationViewModel>());
+            return Task.FromResult(new List<ObservationDto>());
+        }
+
+        public Task<ObservationDto> GetObservationFromId(int observationId, int page = 1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<ProposalDto>> GetProposals(int observationId)
+        {
+            throw new NotImplementedException();
         }
     }
 
