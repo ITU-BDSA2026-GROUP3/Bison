@@ -1,0 +1,89 @@
+@page "/ob/{id?}"
+@model Bison.Razor.Pages.DetailsModel
+
+@{
+    ViewData["Title"] = "Bison";
+    Layout = "Shared/_Layout";
+}
+
+<div>
+       <h2>Observation @Model.Observation.Id</h2>
+
+       <p>
+        <strong>Author:</strong>
+        <a asp-page="/UserTimeline"
+        asp-route-author="@Model.Observation.AuthorName">
+        @Model.Observation.AuthorName
+        </a>
+       </p>
+
+       <p>
+        <strong>Observation:</strong>
+        @Model.Observation.Text
+       </p>
+
+       <p>
+            <strong>Date:</strong>
+            @Model.Observation.Timestamp
+       </p>
+
+       <h3>Comments</h3>
+        @if (Model.Comments.Any())
+        {
+            <ul>
+                @foreach(var comment in Model.Comments)
+                {
+                    <li>
+                        <p>
+                            <strong>
+                                <a asp-page="/UserTimeline"
+                                    asp-route-author="@comment.AuthorName">
+                                    @comment.AuthorName
+                                </a>
+                            </strong>
+                            @comment.Text
+                            <small><em>&mdash; </em>@comment.Timestamp</small>
+                        </p>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            //If no comments for the observation
+            <em>No comments for this observation </em>
+        }
+
+        <h3>Proposals</h3>
+
+        @if (Model.Proposals.Any())
+        {
+            <ul>
+                @foreach (var proposal in Model.Proposals)
+                {
+                    <li>
+                        <p>
+                            <strong>
+                                <a asp-page="/UserTimeline"
+                                    asp-route-author="@proposal.AuthorName">
+                                    @proposal.AuthorName
+                                </a>
+                            </strong>
+                            Proposed:
+                            <strong>
+                                @proposal.TaxonName
+                            </strong>
+                            <small><em>&mdash; </em>@proposal.Timestamp</small>
+                            <br>
+                            @proposal.Text
+                        </p>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            //If there are no proposals for this observation
+            <em>No proposals for this observation</em>
+        }           
+</div>

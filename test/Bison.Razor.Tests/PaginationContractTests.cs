@@ -1,3 +1,4 @@
+using Bison.Razor.DTOs;
 using System.Reflection;
 
 namespace Bison.Razor.Tests;
@@ -10,7 +11,7 @@ public class PaginationContractTests
         MethodInfo? method = typeof(IObservationService).GetMethod("GetObservations",new[] { typeof(int) });
         Assert.NotNull(method);
         Assert.Equal(
-            typeof(Task<List<ObservationViewModel>>),
+            typeof(Task<List<ObservationDto>>),
             method.ReturnType);
     }
 
@@ -23,7 +24,7 @@ public class PaginationContractTests
 
         Assert.NotNull(method);
         Assert.Equal(
-            typeof(Task<List<ObservationViewModel>>),
+            typeof(Task<List<ObservationDto>>),
             method.ReturnType);
     }
 
