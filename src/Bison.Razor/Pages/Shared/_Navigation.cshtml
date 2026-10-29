@@ -1,8 +1,14 @@
 <div class="navigation">
 
+
+
+@*This below checks wether the user is logged in,
+if it is true then we continue with this section*@
+
 @if (User.Identity?.IsAuthenticated == true)
     {
         <div>
+            @*User.Identity.Name displays the username*@
               <a href="/@(User.Identity.Name)">My Observations</a> |
               <a href="/obs">Public Observations</a> |
 
@@ -23,6 +29,8 @@
     else
     {
         <div>
+            @*The Register and Login, links to the APS.Net Core 
+            Identity pages below*@
             <a href="/obs">Public Observations</a> |
             <a asp-area ="Identity"
                 asp-page="/Account/Register">Register</a> |
