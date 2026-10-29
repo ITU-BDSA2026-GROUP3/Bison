@@ -21,16 +21,16 @@ namespace Bison.Razor.Repositories
             _bisonContext = bisonContext;
         }
 
-        public async Task<List<int>> CreateAuthors(List<Author> authors)
+        public async Task<List<string>> CreateAuthors(List<Author> authors)
         {
             foreach(Author author in authors)
             {
-                var queryResult = await _bisonContext.Authors.AddAsync(author); // does not write to the database!
+                var queryResult = await _bisonContext.Users.AddAsync(author); // does not write to the database!
             }
             await _bisonContext.SaveChangesAsync(); // persist the changes in the database
 
             // count the ideas after the db has been updated
-            List<int> ids = new List<int>();
+            List<string> ids = new List<string>();
             foreach (Author author in authors)
             {
                 ids.Add(author.Id);
@@ -38,10 +38,10 @@ namespace Bison.Razor.Repositories
             return ids;
         }
 
-        public async Task<Author> getAuthor(int authorID)
+        public async Task<Author> getAuthor(string authorID)
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
-            var query = _bisonContext.Authors
+            var query = _bisonContext.Users
              .Where(author => author.Id == authorID);
             // Execute the query and store the results
             var result = await query.SingleAsync();

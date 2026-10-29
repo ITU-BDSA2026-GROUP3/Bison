@@ -1,6 +1,8 @@
-using Bison.Razor.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Bison.Razor.domain_model;
+using Bison.Razor.Repositories;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,7 @@ builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<BisonContext>(options => options.UseSqlite(connectionString));
 
+builder.Services.AddDefaultIdentity<Author>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<BisonContext>();
 
 var app = builder.Build();
 
@@ -37,6 +40,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication(); // this line is optional
 
 app.MapRazorPages();
 
