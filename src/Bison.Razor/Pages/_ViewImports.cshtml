@@ -1,2 +1,10 @@
+
+@*makes thhe types in the project namespace easier to reference *@
 @using Bison.Razor
+
+
+@*This sets the default namespace for generated razor pagges *@
 @namespace Bison.Razor.Pages
+
+@*enables ASP.NET Core tag helpers, including asp-page and asp-area, which the navigation links use*@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
