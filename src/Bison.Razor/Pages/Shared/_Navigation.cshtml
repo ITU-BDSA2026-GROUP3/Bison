@@ -3,13 +3,30 @@
 @if (User.Identity?.IsAuthenticated == true)
     {
         <div>
-              <a href="/@(User.Identity.Nave)">My Observations</a> |
-              <a href ="/obs>"Public Observations</a> |
+              <a href="/@(User.Identity.Name)">My Observations</a> |
+              <a href="/obs">Public Observations</a> |
 
-              <form asp-
+              <form asp-area="Identity"
+              asp-page="/Account/Logout"
+              method="post">
+              <button type="submit">
+                Logout [@(User.Identity.Name)]
+
+              </button>
+
+              </form>
 
 
 
+        </div>
+    }
+    else
+    {
+        <div>
+            <a href="/obs">Public Observations</a> |
+            <a asp-area ="Identity"
+                asp-page="/Account/Register">Register</a> |
+                
         </div>
     }
 
