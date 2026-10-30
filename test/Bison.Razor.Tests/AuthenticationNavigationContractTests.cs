@@ -114,11 +114,11 @@ public class AuthenticationNavigationContractTests
     }
 
     [Fact]
-    public void NavigationDoesNotOfferRegistration()
+    public void NavigationOffersRegistrationAndLogin()
     {
         var navigation = ReadSourceFile(
             "src",
-            "Bison.Razr",
+            "Bison.Razor",
             "Pages",
             "Shared",
             "_Navigation.cshtml");
