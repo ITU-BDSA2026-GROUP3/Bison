@@ -7,6 +7,10 @@
 }
 
 <div>
+    <nav class="navigation" aria-label="Main navigation">
+        <a asp-page="/Public">Public Observations</a>
+        <a href="/login">Login</a>
+    </nav>
     <h2> @routeName's Observations </h2>
 
     @if (Model.Observations.Any())
