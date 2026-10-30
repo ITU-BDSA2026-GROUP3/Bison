@@ -6,20 +6,7 @@
 }
 
 <div>
-    <nav class="navigation" aria-label="Main navigation">
-        <a asp-page="/Public">Public Observations</a>
-        <a href="/login">Login</a>
-    </nav>
-    @if (User.Identity?.IsAuthenticated == true)
-    {
-        <div class="navigation">
-            <a href="/obs/@User.Identity.Name">My Observations</a>
-            |
-            <a href="/obs">Public Observations</a>
-            |
-            <a href="/logout">Logout [@User.Identity.Name]</a>
-        </div>
-    }
+    
     <h2> Public Timeline </h2>
     
     <form method="get" class="mb-4">
