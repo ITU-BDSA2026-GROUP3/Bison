@@ -73,6 +73,13 @@ app.MapGet("/login", () =>
     return Results.Challenge(authenticationProperties, new[] { "GitHub" });
 });
 
+app.MapGet("/logout", async (HttpContext context) =>
+{
+    await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+    return Results.Redirect("/Observations");
+}).RequireAuthorization();
+
 app.MapRazorPages();
 
 app.Run();
