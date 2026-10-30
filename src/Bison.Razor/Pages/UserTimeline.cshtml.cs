@@ -1,9 +1,11 @@
 ﻿using Bison.Razor.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bison.Razor.Pages;
 
+[Authorize]
 public class UserTimelineModel : PageModel
 {
     private const int PageSize = 32;
