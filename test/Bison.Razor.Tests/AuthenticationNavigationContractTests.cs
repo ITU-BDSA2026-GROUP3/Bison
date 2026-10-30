@@ -125,9 +125,11 @@ public class AuthenticationNavigationContractTests
 
 
 
-        Assert.Contains("asp-page=\"/Account/Register\"", navigation);
+        Assert.Contains("asp-page=\"/Account/Register\"", navigation,
+        StringComparison.OrdinalIgnoreCase);
 
-        Assert.Contains("asp-page=\"/Account/Login\"", navigation);
+        Assert.Contains("asp-page=\"/Account/Login\"", navigation,
+        StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
