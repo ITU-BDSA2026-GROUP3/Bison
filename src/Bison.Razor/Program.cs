@@ -2,6 +2,7 @@ using Bison.Razor.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Bison.Razor.domain_model;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +62,16 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGet("/login", () =>
+{
+    var authenticationProperties = new AuthenticationProperties
+    {
+        RedirectUri = "/obs"
+    };
+
+    return Results.Challenge(authenticationProperties, new[] { "GitHub" });
+});
 
 app.MapRazorPages();
 
