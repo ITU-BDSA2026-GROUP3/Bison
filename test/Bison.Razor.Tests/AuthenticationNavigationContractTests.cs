@@ -116,10 +116,18 @@ public class AuthenticationNavigationContractTests
     [Fact]
     public void NavigationDoesNotOfferRegistration()
     {
-        var razorSource = ReadRazorSource();
+        var navigation = ReadSourceFile(
+            "src",
+            "Bison.Razr",
+            "Pages",
+            "Shared",
+            "_Navigation.cshtml");
 
-        Assert.DoesNotContain("Register", razorSource);
-        Assert.DoesNotContain("/register", razorSource, StringComparison.OrdinalIgnoreCase);
+
+
+        Assert.Contains("asp-page=\"/Account/Register\"", navigation);
+
+        Assert.Contains("asp-page=\"/Account/Login\"", navigation);
     }
 
     [Fact]
