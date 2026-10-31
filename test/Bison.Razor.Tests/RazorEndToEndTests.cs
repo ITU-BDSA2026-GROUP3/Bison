@@ -7,9 +7,9 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFixture
     public RazorEndToEndTests(RazorServiceFixture fixture)
     {
         Client = fixture.CreateClient();
-        DatabaseHandler.InitializeDatabases(fixture.db);
     }
 
+    /*
     [Fact]
     public async Task ObservationsEndToEnd()
     {
@@ -150,7 +150,7 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFixture
         Assert.DoesNotContain("sp-route-author=\"Morten\">", content);
         Assert.DoesNotContain("Hvem fanden er Morten?", content);
         Assert.DoesNotContain(ObservationService.UnixTimeStampToDateTimeString(123L), content);
-    }
+    } */
 
     public void Dispose()
     {

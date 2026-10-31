@@ -175,6 +175,7 @@ public class ObservationServiceUnitTests : IDisposable
         Observation obs3 = new Observation{Id = 3, Author = author1, Taxon = taxon2, Text = "Sejt falsk dyr", TimeStamp = DateTime.Now};
 
         await _postRepository.CreateObservations([obs1, obs2, obs3]);
+        await _taxonRepository.CreateTaxons([taxon1, taxon2]);
 
         //Act
         var records = await service.GetObservationsFromTaxon(taxon1.Id);
@@ -204,6 +205,7 @@ public class ObservationServiceUnitTests : IDisposable
         Observation obs3 = new Observation{Id = 3, Author = author1, Taxon = taxon3, Text = "Halløj agent Sten. Din mission er at infiltrere dyrenes kongerige og skabe kaos", TimeStamp = DateTime.Now};
 
         await _postRepository.CreateObservations([obs1, obs2, obs3]);
+        await _taxonRepository.CreateTaxons([taxon1, taxon2, taxon3]);
 
         //Act
         var records = await service.GetObservationsFromTaxon(taxon1.Id);
@@ -343,17 +345,17 @@ public class ObservationServiceUnitTests : IDisposable
         await _postRepository.CreateProposals([prop1, prop2]);
 
         //Act
-        var proposals = await service.GetProposals(obs1.Id);
+        var records = await service.GetProposals(obs1.Id);
 
         //Assert
-        Assert.NotEmpty(proposals);
-        Assert.Equal(2, proposals.Count);
+        Assert.NotEmpty(records);
+        Assert.Equal(2, records.Count);
 
-        var proposal1 = proposals[0];
-        var proposal2 = proposals[1];
+        var record1 = Assert.Single(records.Where(o => o.Text == prop1.Text));
+        var record2 = Assert.Single(records.Where(o => o.Text == prop2.Text));
 
-        CompareProposals(prop1, proposal1);
-        CompareProposals(prop2, proposal2);
+        CompareProposals(prop1, record1);
+        CompareProposals(prop2, record2);
     }
 
 
@@ -384,7 +386,7 @@ public class ObservationServiceUnitTests : IDisposable
         Assert.NotNull(prop1);
         Assert.NotNull(prop2);
 
-        Assert.Equal(prop1.Id, prop2.Id);
+        Assert.Equal(prop1.Observation.Id, prop2.Id);
         Assert.Equal(prop1.Taxon.Name, prop2.TaxonName);
         Assert.Equal(prop1.Text, prop2.Text);
         Assert.Equal(prop1.Author.Name, prop2.AuthorName);

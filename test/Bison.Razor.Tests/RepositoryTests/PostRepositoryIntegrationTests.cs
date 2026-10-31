@@ -1,3 +1,4 @@
+using System.Data.Common;
 using Bison.Razor.domain_model;
 using Bison.Razor.Repositories;
 using Microsoft.Data.Sqlite;
@@ -8,129 +9,236 @@ namespace Bison.Razor.Tests;
 [Collection("Sequential Tests")]
 public class PostRepositoryIntegrationTests : IDisposable
 {
-    IAuthorRepository _authorRepository;
+    DbConnection _connection;
+    DbContextOptions<BisonContext> _contextOptions;
+    IPostRepository _postRepository;
     
     public PostRepositoryIntegrationTests()
     {
-        DbContextOptionsBuilder<BisonContext> options = new DbContextOptionsBuilder<BisonContext>();
-        options.UseSqlite("../../Data/test.db");
-        BisonContext bc = new  BisonContext(options.Options);
+        _connection = new SqliteConnection("Filename=:memory:");
+        _connection.Open();
+
+        _contextOptions = new DbContextOptionsBuilder<BisonContext>()
+            .UseSqlite(_connection)
+            .Options;
+
+        BisonContext bc = new BisonContext(_contextOptions);
 
         bc.Database.EnsureCreated();
 
-        _authorRepository = new AuthorRepository(bc);
+        _postRepository = new PostRepository(bc);
     }
-
-        /*public Task<List<int>> CreateObservations(List<Observation> observations);
-
-        public Task<Observation> ReadSingleObservation(int observationID);
-        public Task<List<Observation>> ReadObservations(int authorID);
-        public Task<List<Observation>> ReadAllObservations();
-
-        public Task<List<int>> CreateComments(List<Comment> comments);
-        public Task<List<Comment>> ReadComments(int obsID);
-        public Task<List<int>> CreateProposals(List<Proposal> proposals);
-        public Task<List<Proposal>> ReadProposals(int obsID);
-        */
 
     [Fact]
     public void CreateSingleObservation()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void CreateMultipleObservations()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void GetObservationByValidId()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void GetObservationByInvalidId()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void GetAllObservationsFromDatabase()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void GetAllObservationsFromEmptyDatabase()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void CreateSingleComment()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void CreateMultipleComments()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void GetSingleCommentFromObservation()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void GetMultipleCommentsFromObservation()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void GetCommentsFromNonExistingObservation()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void CreateSingleCProposal()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void CreateMultipleProposals()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void GetSingleProposalFromObservation()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void GetMultipleProposalsFromObservation()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     [Fact]
     public void GetProposalsFromNonExistingObservation()
     {
+        //Arrange
+
+
+        //Act
+
+
+        //Assert
         
     }
 
     public void Dispose()
     {
-        
+        _connection.Dispose();
     }
 }
