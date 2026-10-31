@@ -154,6 +154,6 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFixture
 
     public void Dispose()
     {
-        DatabaseHandler.ResetDatabases();
+        
     }
 }
