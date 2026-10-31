@@ -14,7 +14,14 @@ public class Taxon
 
     public bool isSubTaxon(Taxon Ancestor)
     {
-        if(Ancestor == ancestor) 
+        var child = ancestor;
+
+        while(child != null && child != Ancestor)
+        {
+            child = child.ancestor;
+        }
+        
+        if(Ancestor == child) 
         return true;
         else return false;
     }

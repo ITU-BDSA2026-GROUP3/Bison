@@ -200,25 +200,29 @@ public class ObservationServiceUnitTests : IDisposable
         Taxon taxon1 = new Taxon{Name = "The father of all animals", Id = 0};
         Taxon taxon2 = new Taxon{Name = "the child of the father of all animals", Id = 1, ancestor = taxon1};
         Taxon taxon3 = new Taxon{Name = "rock pretending to be an animal to infiltrate the kingdom and weaken their forces from the inside", Id = 2};
+        Taxon taxon4 = new Taxon{Name = "Omega child", ancestor = taxon2};
         Observation obs1 = new Observation{Id = 1, Author = author1, Taxon = taxon1, Text = "kæmpe daddy", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Id = 2, Author = author2, Taxon = taxon2, Text = "crazy barn", TimeStamp = DateTime.Now};
         Observation obs3 = new Observation{Id = 3, Author = author1, Taxon = taxon3, Text = "Halløj agent Sten. Din mission er at infiltrere dyrenes kongerige og skabe kaos", TimeStamp = DateTime.Now};
+        Observation obs4 = new Observation{Id = 4, Author = author2, Taxon = taxon4, Text = "gugugaga", TimeStamp = DateTime.Now};
 
-        await _postRepository.CreateObservations([obs1, obs2, obs3]);
-        await _taxonRepository.CreateTaxons([taxon1, taxon2, taxon3]);
+        await _postRepository.CreateObservations([obs1, obs2, obs3, obs4]);
+        await _taxonRepository.CreateTaxons([taxon1, taxon2, taxon3, taxon4]);
 
         //Act
         var records = await service.GetObservationsFromTaxon(taxon1.Id);
 
         //Assert
         Assert.NotEmpty(records);
-        Assert.Equal(2, records.Count);
+        Assert.Equal(3, records.Count);
 
         var record1 = Assert.Single(records.Where(o => o.Id == obs1.Id));
         var record2 = Assert.Single(records.Where(o => o.Id == obs2.Id));
+        var record3 = Assert.Single(records.Where(o => o.Id == obs4.Id));
 
         CompareObservations(obs1, record1);
         CompareObservations(obs2, record2);
+        CompareObservations(obs4, record3);
     }
 
     [Fact]
