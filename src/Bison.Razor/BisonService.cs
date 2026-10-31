@@ -157,7 +157,8 @@ public class ObservationService : IObservationService
                 AuthorName = proposal.Author.Name,
                 Text = proposal.Text,
                 Timestamp = DateTimeToString(proposal.TimeStamp),
-                TaxonName = proposal.Taxon.Name
+                TaxonName = proposal.Taxon.Name,
+                Id = observationId
             };
 
             proposals.Add(dto);
