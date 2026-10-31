@@ -1,0 +1,31 @@
+﻿.page .navigation {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 4px 10px;
+    border: 1px solid #c7d5d4;
+    background-color: #dee9e8;
+    font-size: 12px;
+}
+
+.page .navigation a,
+.page .navigation button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #444;
+    font: inherit;
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.page .navigation a:hover,
+.page .navigation button:hover {
+    color: #000;
+}
+
+.page .navigation form {
+    display: contents;
+}

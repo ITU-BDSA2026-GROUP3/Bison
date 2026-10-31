@@ -10,7 +10,5 @@ public class ProposalDto
 
     public string AuthorName { get; set; } = "";
 
-    public int ObservationId { get; set; }
-
     public string TaxonName { get; set; } = "";
 }

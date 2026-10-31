@@ -1,14 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bison.Razor.DTOs;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bison.Razor.Pages;
 
+[Authorize]
 public class UserTimelineModel : PageModel
 {
     private const int PageSize = 32;
     private readonly IObservationService _observationService;
 
-    public List<ObservationViewModel> Observations { get; private set; } = new();
+    public List<ObservationDto> Observations { get; private set; } = new();
 
     public UserTimelineModel(IObservationService observationService)
     {

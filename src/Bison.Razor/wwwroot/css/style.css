@@ -81,6 +81,14 @@ div.page div.navigation form {
     display: contents;
 }
 
+div.page div.navigation a:hover {
+    color: #000;
+}
+
+div.page div.navigation form {
+    display: contents;
+}
+
 div.page div.navigation form button {
     padding: unset;
     background: unset;
@@ -92,6 +100,11 @@ div.page div.navigation form button {
     text-decoration: underline;
     font-family: unset;
     letter-spacing: unset;
+}
+
+div.page div.navigation form button:hover {
+    background: none;
+    color: #000;
 }
 
 div.page h2 {

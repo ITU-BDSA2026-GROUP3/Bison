@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bison.Razor.DTOs;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Bison.Razor.domain_model;
 using Bison.Razor.Repositories;
@@ -11,7 +12,7 @@ public class PublicModel : PageModel
     private const int PageSize = 32;
     private readonly IObservationService _observationService;
     private readonly ITaxonRepository _taxonRepository;
-    public List<ObservationViewModel> Observations { get; private set; } = new();
+    public List<ObservationDto> Observations { get; private set; } = new();
 
     public PublicModel(IObservationService observationService, ITaxonRepository taxonRepository)
     {
