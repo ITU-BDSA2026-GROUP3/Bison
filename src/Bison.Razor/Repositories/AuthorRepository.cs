@@ -38,7 +38,7 @@ namespace Bison.Razor.Repositories
             return ids;
         }
 
-        public async Task<Author> getAuthor(int authorID)
+        public async Task<Author?> getAuthor(int authorID)
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
             var query = _bisonContext.Authors

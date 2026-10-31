@@ -133,7 +133,7 @@ public class PaginationPageModelTests
             return fakeTaxons;
         }
 
-        public async Task<Taxon> getTaxon(int id)
+        public async Task<Taxon?> getTaxon(int id)
         {
             await Task.Delay(0);
             return fakeTaxons[id];

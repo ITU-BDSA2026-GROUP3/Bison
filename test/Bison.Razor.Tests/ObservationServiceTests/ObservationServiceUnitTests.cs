@@ -393,16 +393,6 @@ public class ObservationServiceUnitTests : IDisposable
         Assert.Equal(prop1.TimeStamp.ToString("MM/dd/yy H:mm:ss"), prop2.Timestamp);
     }
 
-    private void CompareAuthors(Author auth1, Author auth2)
-    {
-        Assert.NotNull(auth1);
-        Assert.NotNull(auth2);
-
-        Assert.Equal(auth1.Name, auth2.Name);
-        Assert.Equal(auth1.Email, auth2.Email);
-        Assert.Equal(auth1.Id, auth2.Id);
-    }
-
     public void Dispose()
     {
         
@@ -433,7 +423,7 @@ public class ObservationServiceUnitTests : IDisposable
             return Task.FromResult(new List<int>());
         }
 
-        public Task<Observation> ReadSingleObservation(int observationID)
+        public Task<Observation?> ReadSingleObservation(int observationID)
         {
             var observation = Observations.FirstOrDefault(o => o.Id == observationID);
 
@@ -509,7 +499,7 @@ public class ObservationServiceUnitTests : IDisposable
 
             return Task.FromResult(new List<int>());
         }
-        public Task<Author> getAuthor(int authorID)
+        public Task<Author?> getAuthor(int authorID)
         {
             var author = Authors.FirstOrDefault(o => o.Id == authorID);
 
@@ -535,7 +525,7 @@ public class ObservationServiceUnitTests : IDisposable
 
             return Task.FromResult(new List<int>());
         }
-        public Task<Taxon> getTaxon(int taxonId)
+        public Task<Taxon?> getTaxon(int taxonId)
         {
             var taxon = Taxons.FirstOrDefault(o => o.Id == taxonId);
 
