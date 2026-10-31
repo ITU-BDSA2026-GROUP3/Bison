@@ -11,6 +11,7 @@ public class TaxonRepositoryIntegrationTests : IDisposable
 {
     DbConnection _connection;
     DbContextOptions<BisonContext> _contextOptions;
+    BisonContext bc;
     ITaxonRepository _taxonRepository;
     
     public TaxonRepositoryIntegrationTests()
@@ -22,7 +23,7 @@ public class TaxonRepositoryIntegrationTests : IDisposable
             .UseSqlite(_connection)
             .Options;
 
-        BisonContext bc = new BisonContext(_contextOptions);
+        bc = new BisonContext(_contextOptions);
 
         bc.Database.EnsureCreated();
 
@@ -30,85 +31,123 @@ public class TaxonRepositoryIntegrationTests : IDisposable
     }
 
     [Fact]
-    public void CreateSingleTaxon()
+    public async Task CreateSingleTaxon()
     {
         //Arrange
-
+        Taxon taxon = new Taxon{Name = "Cool animal", Description = "EPIC ANIMAL"};
 
         //Act
-
+        await _taxonRepository.CreateTaxons([taxon]);
+        var records = await bc.Taxons.ToListAsync();
 
         //Assert
+        Assert.NotEmpty(records);
+        Assert.Single(records);
 
+        CompareTaxons(taxon, records[0]);
     }
 
     [Fact]
-    public void CreateMultipleTaxons()
+    public async Task CreateMultipleTaxons()
     {
         //Arrange
-
+        Taxon taxon1 = new Taxon{Name = "Cool animal", Description = "EPIC ANIMAL"};
+        Taxon taxon2 = new Taxon{Name = "Cooler animal", Description = "SUPER EPIC ANIMAL"};
 
         //Act
-
+        await _taxonRepository.CreateTaxons([taxon1, taxon2]);
+        var records = await bc.Taxons.ToListAsync();
 
         //Assert
-        
+        Assert.NotEmpty(records);
+        Assert.Equal(2, records.Count);
+
+        var record1 = Assert.Single(records.Where(o => o.Id == taxon1.Id));
+        var record2 = Assert.Single(records.Where(o => o.Id == taxon2.Id));
+
+        CompareTaxons(taxon1, record1);
+        CompareTaxons(taxon2, record2);
     }
 
     [Fact]
-    public void GetTaxonByValidId()
+    public async Task GetTaxonByValidId()
     {
         //Arrange
-
+        Taxon taxon1 = new Taxon{Name = "Cool animal", Description = "EPIC ANIMAL"};
+        Taxon taxon2 = new Taxon{Name = "Cooler animal", Description = "SUPER EPIC ANIMAL"};
+        await _taxonRepository.CreateTaxons([taxon1, taxon2]);
 
         //Act
-
+        var record = await _taxonRepository.getTaxon(taxon1.Id);
 
         //Assert
-        
+        Assert.NotNull(record);
+
+        CompareTaxons(taxon1, record);
     }
 
     [Fact]
-    public void GetTaxonByInvalidId()
+    public async Task GetTaxonByInvalidId()
     {
         //Arrange
-
+        Taxon taxon1 = new Taxon{Name = "Cool animal", Description = "EPIC ANIMAL"};
+        Taxon taxon2 = new Taxon{Name = "Cooler animal", Description = "SUPER EPIC ANIMAL"};
+        await _taxonRepository.CreateTaxons([taxon1, taxon2]);
 
         //Act
-
+        var record = await _taxonRepository.getTaxon(-12328173);
 
         //Assert
-        
+        Assert.Null(record);
     }
 
     [Fact]
-    public void GetAllTaxonsFromDatabase()
+    public async Task GetAllTaxonsFromDatabase()
     {
         //Arrange
-
+        Taxon taxon1 = new Taxon{Name = "Cool animal", Description = "EPIC ANIMAL"};
+        Taxon taxon2 = new Taxon{Name = "Cooler animal", Description = "SUPER EPIC ANIMAL"};
+        await _taxonRepository.CreateTaxons([taxon1, taxon2]);
 
         //Act
-
+        var records = await _taxonRepository.getAllTaxons();
 
         //Assert
-        
+        Assert.NotEmpty(records);
+
+        var record1 = Assert.Single(records.Where(o => o.Id == taxon1.Id));
+        var record2 = Assert.Single(records.Where(o => o.Id == taxon2.Id));
+
+        CompareTaxons(taxon1, record1);
+        CompareTaxons(taxon2, record2);
     }
 
     [Fact]
-    public void GetAllTaxonsFromEmptyDatabase()
+    public async Task GetAllTaxonsFromEmptyDatabase()
     {
         //Arrange
 
 
         //Act
-
+        var records = await _taxonRepository.getAllTaxons();
 
         //Assert
-        
+        Assert.Empty(records);
+    }
+
+    private void CompareTaxons(Taxon tax1, Taxon tax2)
+    {
+        Assert.NotNull(tax1);
+        Assert.NotNull(tax1);
+
+        Assert.Equal(tax1.Id, tax2.Id);
+        Assert.Equal(tax1.Name, tax2.Name);
+        Assert.Equal(tax1.ancestor, tax2.ancestor);
     }
 
     public void Dispose()
     {
+        bc.Dispose();
         _connection.Dispose();
     }
 }
