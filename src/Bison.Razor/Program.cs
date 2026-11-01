@@ -82,7 +82,7 @@ public class Program
         {
             await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            return Results.Redirect("/Observations");
+            return Results.Redirect("/obs");
         }).RequireAuthorization();
 
         app.MapRazorPages();
