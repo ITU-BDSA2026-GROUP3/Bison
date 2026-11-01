@@ -39,11 +39,12 @@ public class PaginationPageModelTests
     public async Task UserTimelinePassesAuthorAndPageToService()
     {
         FakeObservationService service = new();
-        UserTimelineModel model = new(service);
+        FakeAuthorRepository fakeAuthorRepository = new();
+        UserTimelineModel model = new(service, fakeAuthorRepository);
 
         await model.OnGet(1, 2);
 
-        Assert.Equal(1, model.AuthorId);
+        Assert.Equal(1, model.author.Id);
         Assert.Equal(2, model.CurrentPage);
         Assert.Equal(1, service.RequestedAuthor);
         Assert.Equal(2, service.RequestedPage);
@@ -55,7 +56,8 @@ public class PaginationPageModelTests
     public async Task UserTimelineNormalizesInvalidPageToOne(int page)
     {
         FakeObservationService service = new();
-        UserTimelineModel model = new(service);
+        FakeAuthorRepository fakeAuthorRepository = new();
+        UserTimelineModel model = new(service, fakeAuthorRepository);
 
         await model.OnGet(1, page);
 
@@ -118,25 +120,49 @@ public class PaginationPageModelTests
         {
             
         }
-        public async Task<List<int>> CreateTaxons(List<Taxon> taxons)
+        public Task<List<int>> CreateTaxons(List<Taxon> taxons)
         {
             foreach(Taxon taxon in taxons)
             {
                 fakeTaxons.Add(taxon);
             }
-            return null;
+            return Task.FromResult(new List<int>());
         }
 
-        public async Task<List<Taxon>> getAllTaxons()
+        public Task<List<Taxon>> getAllTaxons()
         {
-            await Task.Delay(0);
-            return fakeTaxons;
+            return Task.FromResult(fakeTaxons);
         }
 
-        public async Task<Taxon?> getTaxon(int id)
+        public Task<Taxon?> getTaxon(int id)
         {
-            await Task.Delay(0);
-            return fakeTaxons[id];
+            var taxon = fakeTaxons.FirstOrDefault(o => o.Id == id);
+
+            return Task.FromResult(taxon);
+        }
+    }
+
+    private class FakeAuthorRepository : IAuthorRepository
+    {
+        List<Author> fakeAuthors = new List<Author> {new Author{Id = 1}};
+        public FakeAuthorRepository()
+        {
+            
+        }
+        public Task<List<int>> CreateAuthors(List<Author> authors)
+        {
+            foreach(Author author in authors)
+            {
+                fakeAuthors.Add(author);
+            }
+            return Task.FromResult(new List<int>());
+        }
+
+        public Task<Author?> getAuthor(int id)
+        {
+            var author = fakeAuthors.FirstOrDefault(o => o.Id == id);
+
+            return Task.FromResult(author);
         }
     }
 }
