@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -52,19 +53,26 @@ public class RazorServiceFactory : WebApplicationFactory<Program>
         });
 
         builder.ConfigureTestServices(services =>
-{
-    services
-        .AddAuthentication(options =>
         {
-            options.DefaultAuthenticateScheme = "IntegrationTest";
-            options.DefaultChallengeScheme = "IntegrationTest";
-            options.DefaultScheme = "IntegrationTest";
-        })
-        .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
-            "IntegrationTest",
-            options => { }
-        );
-});
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "IntegrationTest";
+                options.DefaultChallengeScheme = "IntegrationTest";
+                options.DefaultScheme = "IntegrationTest";
+            })
+            .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
+                "IntegrationTest",
+                options => { });
+        });
+
+        builder.ConfigureAppConfiguration((context, config) =>
+        {
+            config.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Authentication:Github:ClientId"] = "test-client-id",
+                ["Authentication:Github:ClientSecret"] = "test-client-secret"
+            });
+        });
 
         builder.UseEnvironment("Development");
     }
