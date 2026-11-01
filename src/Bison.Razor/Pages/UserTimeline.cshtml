@@ -7,50 +7,56 @@
 }
 
 <div>
-   
-    <h2> @routeName's Observations </h2>
-
-    @if (Model.Observations.Any())
+    @if (Model.author == null)
     {
-        <ul id="messagelist" class="observations">
-            @foreach (var ob in Model.Observations)
-            {
-                <li>
-                    <p>
-                        <strong>
-                             <a asp-page="/UserTimeline"
-                                 asp-route-author="@ob.AuthorName">
-                                 @ob.AuthorName
-                             </a>
-                        </strong>
-                        @ob.Text
-                        <small><em>&mdash; </em>@ob.Timestamp</small>
-                    </p>
-                </li>
-            }
-        </ul>
+        <em>The given Author doesn't exist.</em>
     }
     else
     {
-        <em>There are no Observations so far.</em>
+        <h2> @Model.author.Name's Observations </h2>
+
+        @if (Model.Observations.Any())
+        {
+            <ul id="messagelist" class="observations">
+                @foreach (var ob in Model.Observations)
+                {
+                    <li>
+                        <p>
+                            <strong>
+                                <a asp-page="/UserTimeline"
+                                    asp-route-author="@ob.AuthorName">
+                                    @ob.AuthorName
+                                </a>
+                            </strong>
+                            @ob.Text
+                            <small><em>&mdash; </em>@ob.Timestamp</small>
+                        </p>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <em>There are no Observations so far.</em>
+        }
+        <nav aria-label="User timeline pagination">
+            @if (Model.HasPreviousPage)
+            {
+                <a asp-page="/UserTimeline"
+                    asp-route-author="@Model.author.Id"
+                    asp-route-page="@(Model.CurrentPage - 1)">
+                    Previous
+                </a>
+            }
+            <span>Page @Model.CurrentPage</span>
+            @if (Model.HasNextPage)
+            {
+                <a asp-page="/UserTimeline"
+                    asp-route-author="@Model.author.Id"
+                    asp-route-page="@(Model.CurrentPage + 1)">
+                    Next
+                </a>
+            }
+        </nav>
     }
-    <nav aria-label="User timeline pagination">
-        @if (Model.HasPreviousPage)
-        {
-            <a asp-page="/UserTimeline"
-                asp-route-author="@Model.AuthorId"
-                asp-route-page="@(Model.CurrentPage - 1)">
-                Previous
-            </a>
-        }
-        <span>Page @Model.CurrentPage</span>
-        @if (Model.HasNextPage)
-        {
-            <a asp-page="/UserTimeline"
-                asp-route-author="@Model.AuthorId"
-                asp-route-page="@(Model.CurrentPage + 1)">
-                Next
-            </a>
-        }
-    </nav>
 </div>
