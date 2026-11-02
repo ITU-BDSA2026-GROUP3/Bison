@@ -38,13 +38,13 @@ namespace Bison.Razor.Repositories
             return ids;
         }
 
-        public async Task<Author> getAuthor(int authorID)
+        public async Task<Author?> getAuthor(int authorID)
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
             var query = _bisonContext.Authors
              .Where(author => author.Id == authorID);
             // Execute the query and store the results
-            var result = await query.SingleAsync();
+            var result = await query.SingleOrDefaultAsync(); //Temporary change to fix bug when calling the function with an ID that doesn't exist. Can now return null
 
             return result;
         }

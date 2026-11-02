@@ -31,20 +31,21 @@ namespace Bison.Razor.Repositories
             return ids;
         }
 
-        public async Task<Taxon> getTaxon(int taxonId)
+        public async Task<Taxon?> getTaxon(int taxonId)
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
             var query = _bisonContext.Taxons
              .Where(taxon => taxon.Id == taxonId);
             // Execute the query and store the results
-            var result = await query.SingleAsync();
+            var result = await query.SingleOrDefaultAsync();
 
             return result;
         }
 
         public async Task<List<Taxon>> getAllTaxons()
         {
-            var query = _bisonContext.Taxons;
+            var query = _bisonContext.Taxons
+            .Include(tax =>tax.ancestor);
             var result = await query.ToListAsync();
 
             return result;

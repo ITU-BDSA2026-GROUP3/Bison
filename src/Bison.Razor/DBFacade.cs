@@ -5,58 +5,62 @@ using System.Data.Common;
 
 public class DBFacade
 {
+    public string DatabaseName = "bison.db";
 
-
-
-    private readonly string DatabasePath;
+    public string DatabasePath;
 
     public DBFacade()
     {
         string? dbPath = Environment.GetEnvironmentVariable("BISONDBPATH");
 
         DatabasePath = string.IsNullOrWhiteSpace(dbPath) 
-        ? Path.Combine(Path.GetTempPath(), "bison.db")
+        ? Path.Combine(Path.Combine(
+            AppContext.BaseDirectory,"../../../../../data"), "bison.db")
         :Path.GetFullPath(dbPath);
+
+        InitializeDatabases();
     }
-/*
-    private static void InitializeDatabases()
+    public void InitializeDatabases()
     {
         InitializeDatabase(
-            "bison_observe_cli.db",
             """
-            CREATE TABLE IF NOT EXISTS bison_observe_cli_db (
-                obsID INTEGER PRIMARY KEY,
-                Author TEXT NOT NULL,
-                Observation TEXT NOT NULL,
-                Location TEXT NOT NULL,
-                Timestamp INTEGER NOT NULL
+            create table if not exists user (
+            user_id integer primary key autoincrement,
+            username string not null,
+            email string not null,
+            pw_hash string not null
             );
             """);
 
         InitializeDatabase(
-            "bison_comment_cli.db",
             """
-            CREATE TABLE IF NOT EXISTS bison_comment_cli_db (
-                obsID INTEGER NOT NULL,
-                Comment TEXT NOT NULL
+            create table if not exists observation (
+            observation_id integer primary key autoincrement,
+            author_id integer not null,
+            text string not null,
+            pub_date integer
             );
             """);
-
+        
         InitializeDatabase(
-            "bison_proposal_cli.db",
             """
-            CREATE TABLE IF NOT EXISTS bison_proposal_cli_db (
-                obsID INTEGER NOT NULL,
-                taxonID TEXT NOT NULL
-            );
+            create table if not exists comment (
+            obsID integer not null,
+            comment text not null);
             """);
-    }*/
-    
-    /*
-    private static void InitializeDatabase(string databaseFile, string commandText)
+        
+        InitializeDatabase(
+            """
+            create table if not exists proposal (
+            obsID integer not null,
+            comment text not null);
+            """);
+    }
+
+    public void InitializeDatabase(string commandText)
     {
         using var connection = new SqliteConnection(
-            $"Data Source={Path.Combine(DatabasePath, databaseFile)}");
+            $"Data Source={Path.Combine(DatabasePath)}");
 
         connection.Open();
 
@@ -64,7 +68,7 @@ public class DBFacade
         command.CommandText = commandText;
         command.ExecuteNonQuery();
         
-    }*/
+    }
 
     public List<Object[]> ReadComments()
     {
@@ -89,7 +93,7 @@ public class DBFacade
        
     }
 
-    public List<Object[]> ReadObservations() => ReadDatabase("bison_observe_cli.db", "bison_observe_cli_db");
+    public List<Object[]> ReadObservations() => ReadDatabase("observation");
 
     public List<Object[]> ReadObservations(int page, int pageSize)
     {
@@ -172,7 +176,7 @@ public class DBFacade
         
     }
 
-    private  List<object[]> ReadObservationDatabase(string commandText, Action<SqliteCommand> addParameters)
+    private List<object[]> ReadObservationDatabase(string commandText, Action<SqliteCommand> addParameters)
     {
         using var connection = new SqliteConnection($"Data Source={DatabasePath}");
 
@@ -185,10 +189,10 @@ public class DBFacade
         return ReadRows(command);
     }
 
-    private List<Object[]> ReadDatabase(string databaseFile, string tableName)
+    public List<Object[]> ReadDatabase(string tableName)
     {
         using var connection = new SqliteConnection(
-            $"Data Source={Path.Combine(DatabasePath, databaseFile)}");
+            $"Data Source={Path.Combine(DatabasePath)}");
         connection.Open();
 
         using var command = connection.CreateCommand();
@@ -206,7 +210,7 @@ public class DBFacade
 
         return returnedread;
     }
-    private static List<object[]> ReadRows(SqliteCommand command)
+    private List<object[]> ReadRows(SqliteCommand command)
     {
         List<object[]> rows = new();
         

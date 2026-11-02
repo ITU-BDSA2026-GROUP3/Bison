@@ -84,7 +84,8 @@ public class ObservationService : IObservationService
     public async Task<List<ObservationDto>> GetObservationsFromTaxon(int taxonId, int page = 1)
     {
         int validPage = Math.Max(page, 1);
-        Taxon taxon = await _TaxonRepository.getTaxon(taxonId);
+        var taxon = await _TaxonRepository.getTaxon(taxonId);
+        if(taxon == null) return null;
         var observations = await _PostRepository.ReadAllObservations();
         Observation[] observationsArray = observations.ToArray();
         var filt = filterChecked.__default.FilterByChecked(taxon, Dafny.Sequence<Observation>.FromArray(observationsArray));
@@ -156,7 +157,8 @@ public class ObservationService : IObservationService
                 AuthorName = proposal.Author.Name,
                 Text = proposal.Text,
                 Timestamp = DateTimeToString(proposal.TimeStamp),
-                TaxonName = proposal.Taxon.Name
+                TaxonName = proposal.Taxon.Name,
+                Id = observationId
             };
 
             proposals.Add(dto);
