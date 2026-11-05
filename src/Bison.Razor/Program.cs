@@ -16,24 +16,13 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorPages();
 
-        builder.Services
-            .AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme =
-                    CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme =
-                    CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = "GitHub";
-            })
-            .AddCookie()
+        builder.Services.AddAuthentication()
             .AddGitHub(options =>
-            {
-                options.ClientId =
-                    builder.Configuration["authentication:github:clientId"]!;
-                options.ClientSecret =
-                    builder.Configuration["authentication:github:clientSecret"]!;
-                options.CallbackPath = "/signin-github";
-            });
+        {
+        options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"]!;
+        options.ClientSecret =
+        builder.Configuration["Authentication:GitHub:ClientSecret"]!;
+        });
         builder.Services.AddScoped<IObservationService, ObservationService>();
         builder.Services.AddScoped<IPostRepository, PostRepository>();
         builder.Services.AddScoped<ITaxonRepository, TaxonRepository>();
@@ -69,7 +58,7 @@ public class Program
 
         app.UseRouting();
 
-        app.UseAuthentication();
+        //app.UseAuthentication();
         app.UseAuthorization();
 
         /*app.MapGet("/login", () =>
