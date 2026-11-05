@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
 using Bison.Razor.Repositories;
-using Bison.Razor.domain_model;
 
 namespace Bison.Razor.Pages;
 
@@ -32,13 +31,10 @@ public class UserTimelineModel : PageModel
 
     public async Task<ActionResult> OnGet([FromRoute] string authorId, [FromQuery] int page = 1)
     {
-        author = await _authorRepository.getAuthor(authorId);
-        if(author != null)
-        {
-            CurrentPage = Math.Max(page, 1);
+        AuthorId = authorId;
+        CurrentPage = Math.Max(page, 1);
 
-            Observations = await _observationService.GetObservationsFromAuthor(authorId, CurrentPage);
-        }
+        Observations = await _observationService.GetObservationsFromAuthor(AuthorId, CurrentPage);
 
         return Page();
     }
