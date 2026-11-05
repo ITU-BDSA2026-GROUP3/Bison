@@ -1,8 +1,11 @@
-using Bison.Razor.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Bison.Razor.domain_model;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Bison.Razor.Repositories;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using System;
+
 
 public class Program
 {
@@ -31,13 +34,14 @@ public class Program
                     builder.Configuration["authentication:github:clientSecret"]!;
                 options.CallbackPath = "/signin-github";
             });
-
         builder.Services.AddScoped<IObservationService, ObservationService>();
         builder.Services.AddScoped<IPostRepository, PostRepository>();
         builder.Services.AddScoped<ITaxonRepository, TaxonRepository>();
         builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
         string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         builder.Services.AddDbContext<BisonContext>(options => options.UseSqlite(connectionString));
+
+        builder.Services.AddDefaultIdentity<Author>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<BisonContext>();
 
 
         var app = builder.Build();
@@ -68,7 +72,7 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapGet("/login", () =>
+        /*app.MapGet("/login", () =>
         {
             var authenticationProperties = new AuthenticationProperties
             {
@@ -83,7 +87,7 @@ public class Program
             await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return Results.Redirect("/obs");
-        }).RequireAuthorization();
+        }).RequireAuthorization();*/
 
         app.MapRazorPages();
 

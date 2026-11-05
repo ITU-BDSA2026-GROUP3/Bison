@@ -20,7 +20,7 @@ namespace Bison.Razor.Repositories
             _bisonContext = bisonContext;
         }
 
-        public async Task<List<Observation>> ReadObservations(int authorID)
+        public async Task<List<Observation>> ReadObservations(string authorID)
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
             var query = _bisonContext.Observations

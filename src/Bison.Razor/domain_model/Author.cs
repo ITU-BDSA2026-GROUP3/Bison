@@ -1,10 +1,8 @@
-namespace Bison.Razor.domain_model;
-public class Author
-{
-    public int Id { get; set; }
+using Microsoft.AspNetCore.Identity;
 
-    public string Name { get; set; } = "";
-    public string Email { get; set; } = "";
+namespace Bison.Razor.domain_model;
+public class Author : IdentityUser
+{
 
     public List<Post> Posts { get; set; } = new();
 }

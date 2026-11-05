@@ -22,7 +22,7 @@ public class UserTimelineModel : PageModel
         _authorRepository = authorRepository;
     }
 
-    public Author? author {get; private set; }
+    public string AuthorId {get; private set; }
 
     public int CurrentPage { get; private set; } = 1;
 
@@ -30,7 +30,7 @@ public class UserTimelineModel : PageModel
 
     public bool HasNextPage => Observations.Count == PageSize;
 
-    public async Task<ActionResult> OnGet([FromRoute] int authorId, [FromQuery] int page = 1)
+    public async Task<ActionResult> OnGet([FromRoute] string authorId, [FromQuery] int page = 1)
     {
         author = await _authorRepository.getAuthor(authorId);
         if(author != null)
