@@ -11,17 +11,18 @@ public class UserTimelineModel : PageModel
 {
     private const int PageSize = 32;
     private readonly IObservationService _observationService;
-    private readonly IAuthorRepository _authorRepository;
 
     public List<ObservationDto> Observations { get; private set; } = new();
 
     public UserTimelineModel(IObservationService observationService, IAuthorRepository authorRepository)
     {
         _observationService = observationService;
-        _authorRepository = authorRepository;
     }
 
-    public string AuthorId {get; private set; }
+    public AuthorDto? author
+    {
+        get; private set;
+    }
 
     public int CurrentPage { get; private set; } = 1;
 
@@ -31,10 +32,13 @@ public class UserTimelineModel : PageModel
 
     public async Task<ActionResult> OnGet([FromRoute] string authorId, [FromQuery] int page = 1)
     {
-        AuthorId = authorId;
-        CurrentPage = Math.Max(page, 1);
+        author = await _observationService.GetAuthor(authorId);
+        if (author != null)
+        {
+            CurrentPage = Math.Max(page, 1);
 
-        Observations = await _observationService.GetObservationsFromAuthor(AuthorId, CurrentPage);
+            Observations = await _observationService.GetObservationsFromAuthor(authorId, CurrentPage);
+        }
 
         return Page();
     }

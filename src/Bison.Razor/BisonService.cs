@@ -1,6 +1,7 @@
 using Bison.Razor.domain_model;
 using Bison.Razor.DTOs;
 using Bison.Razor.Repositories;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -18,6 +19,7 @@ public interface IObservationService
     public Task<List<CommentDto>> GetComments(int observationId);
 
     public Task<List<ProposalDto>> GetProposals(int observationId);
+    public Task<AuthorDto?> GetAuthor(string authorId);
 }
 
 public class ObservationService : IObservationService
@@ -165,6 +167,24 @@ public class ObservationService : IObservationService
         }
 
         return proposals;
+    }
+
+    public async Task<AuthorDto?> GetAuthor(string authorId)
+    {
+
+        var repoQueryResult = await _AuthorRepository.getAuthor(authorId);
+        if (repoQueryResult == null)
+        {
+            return null;
+        }
+        AuthorDto dto = new AuthorDto
+        {
+            Id = repoQueryResult.Id,
+            Name = repoQueryResult.UserName,
+            Email = repoQueryResult.Email
+        };
+        return dto;
+
     }
 
     private static string UnixTimeStampToDateTimeString(double unixTimeStamp)
