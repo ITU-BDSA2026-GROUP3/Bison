@@ -16,13 +16,14 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorPages();
 
-        builder.Services.AddAuthentication()
-            .AddGitHub(options =>
-        {
-        options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"]!;
-        options.ClientSecret =
-        builder.Configuration["Authentication:GitHub:ClientSecret"]!;
-        });
+        builder.Services.AddAuthentication().AddGitHub(options =>
+            {
+                options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"]!;
+                options.ClientSecret =
+                builder.Configuration["Authentication:GitHub:ClientSecret"]!;
+            }
+        );
+
         builder.Services.AddScoped<IObservationService, ObservationService>();
         builder.Services.AddScoped<IPostRepository, PostRepository>();
         builder.Services.AddScoped<ITaxonRepository, TaxonRepository>();
@@ -77,7 +78,7 @@ public class Program
 
             return Results.Redirect("/obs");
         }).RequireAuthorization();*/
-
+        app.MapGet("/", () => { return Results.Redirect("/obs"); }); // sets public observations as default page.
         app.MapRazorPages();
 
         app.Run();
