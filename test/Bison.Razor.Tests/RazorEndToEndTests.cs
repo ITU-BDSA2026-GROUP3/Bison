@@ -26,8 +26,8 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
     public async Task ObservationsEndToEnd()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil", Email = "email@com.emil"};
-        Author author2 = new Author{Name = "Emil Smil", Email = "smil@com.emil"};
+        Author author1 = new Author{UserName = "Emil", Email = "email@com.emil"};
+        Author author2 = new Author{UserName = "Emil Smil", Email = "smil@com.emil"};
         Taxon taxon1 = new Taxon{Name = "Sej gut", Description = "Lololo"};
         Taxon taxon2 = new Taxon{Name = "Sej guttere", Description = "Lololoslos"};
         Observation obs1 = new Observation{Author = author1, Taxon = taxon1, Text = "I saw a Sej gut", TimeStamp = DateTime.Now};
@@ -65,9 +65,9 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
     public async Task ObservationDetailsEndToEnd()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil", Email = "email@com.emil"};
-        Author author2 = new Author{Name = "Emil Smil", Email = "smil@com.emil"};
-        Author author3 = new Author{Name = "Admin", Email = "admin@com.emil"};
+        Author author1 = new Author{UserName = "Emil", Email = "email@com.emil"};
+        Author author2 = new Author{UserName = "Emil Smil", Email = "smil@com.emil"};
+        Author author3 = new Author{UserName = "Admin", Email = "admin@com.emil"};
         Taxon taxon1 = new Taxon{Name = "Sej gut", Description = "Lololo"};
         Taxon taxon2 = new Taxon{Name = "Sej guttere", Description = "Lololoslos"};
         Observation obs1 = new Observation{Author = author1, Taxon = taxon1, Text = "I saw a Sej gut", TimeStamp = DateTime.Now};
@@ -101,7 +101,7 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
     public async Task NoObservationDetialsEndToEnd()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil", Email = "email@com.emil"};
+        Author author1 = new Author{UserName = "Emil", Email = "email@com.emil"};
         Taxon taxon1 = new Taxon{Name = "Sej gut", Description = "Lololo"};
         Observation obs1 = new Observation{Author = author1, Taxon = taxon1, Text = "I saw a Sej gut", TimeStamp = DateTime.Now};
 
@@ -126,8 +126,8 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
     public async Task ObservationsFromAuthorEndToEnd()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil", Email = "email@com.emil"};
-        Author author2 = new Author{Name = "Jonas", Email = "jonais@com.jonas"};
+        Author author1 = new Author{UserName = "Emil", Email = "email@com.emil"};
+        Author author2 = new Author{UserName = "Jonas", Email = "jonais@com.jonas"};
         Taxon taxon1 = new Taxon{Name = "Villads", Description = "Pepsi manden"};
         Taxon taxon2 = new Taxon{Name = "Rune", Description = "warhammer 41000 skaber"};
         Observation obs1 = new Observation{Author = author1, Taxon = taxon1, Text = "I saw a Villads", TimeStamp = DateTime.Now};
@@ -161,7 +161,7 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
     public async Task ZeroObservationsFromAuthorEndToEnd()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil", Email = "email@com.emil"};
+        Author author1 = new Author{UserName = "Emil", Email = "email@com.emil"};
 
         _context.AddRange(author1);
         _context.SaveChanges();
@@ -179,7 +179,7 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
     public async Task ObservationsFromNonExistingAuthorEndToEnd()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil", Email = "email@com.emil"};
+        Author author1 = new Author{UserName = "Emil", Email = "email@com.emil"};
         Taxon taxon1 = new Taxon{Name = "Sej gut", Description = "Lololo"};
         Observation obs1 = new Observation{Author = author1, Taxon = taxon1, Text = "I saw a Sej gut", TimeStamp = DateTime.Now};
 
@@ -202,8 +202,8 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
     public async Task ObservationsFromTaxonEndToEnd()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil"};
-        Author author2 = new Author{Name = "Stabil"};
+        Author author1 = new Author{UserName = "Emil"};
+        Author author2 = new Author{UserName = "Stabil"};
         Taxon taxon1 = new Taxon{Name = "top dawg"};
         Taxon taxon2 = new Taxon{Name = "middle dog", ancestor = taxon1};
         Taxon taxon3 = new Taxon{Name = "lonely dog"};
@@ -246,7 +246,7 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
     public async Task ZeroObservationsFromTaxonEndToEnd()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil", Email = "email@com.emil"};
+        Author author1 = new Author{UserName = "Emil", Email = "email@com.emil"};
         Taxon taxon1 = new Taxon{Name = "Sej gut", Description = "Lololo"};
         Taxon taxon2 = new Taxon{Name = "et dyr der ikke kan beskrive med danske ord (den er fra England)", Description = "Los lossos"};
         Observation obs1 = new Observation{Author = author1, Taxon = taxon1, Text = "I saw a Sej gut", TimeStamp = DateTime.Now};
@@ -269,7 +269,7 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
     public async Task ObservationsFromNonExistingTaxonEndToEnd()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil", Email = "email@com.emil"};
+        Author author1 = new Author{UserName = "Emil", Email = "email@com.emil"};
         Taxon taxon1 = new Taxon{Name = "Sej gut", Description = "Lololo"};
         Observation obs1 = new Observation{Author = author1, Taxon = taxon1, Text = "I saw a Sej gut", TimeStamp = DateTime.Now};
 

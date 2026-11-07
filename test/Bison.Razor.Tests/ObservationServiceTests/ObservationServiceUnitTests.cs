@@ -27,9 +27,9 @@ public class ObservationServiceUnitTests : IDisposable
     public async Task GetSingleObservationFromRepository()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Real Animal"};
-        Observation obs = new Observation{Id = 1, Author = author, Taxon = taxon, Text = "Sej and der var ægte", TimeStamp = DateTime.Now};
+        Observation obs = new Observation{Id = 1,Author = author, Taxon = taxon, Text = "Sej and der var ægte", TimeStamp = DateTime.Now};
 
         await _postRepository.CreateObservations([obs]);
 
@@ -49,7 +49,7 @@ public class ObservationServiceUnitTests : IDisposable
     public async Task GetMultipleObservationsFromRepository()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Real Animal"};
         Observation obs1 = new Observation{Id = 1, Author = author, Taxon = taxon, Text = "Sej and der var ægte", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Id = 2, Author = author, Taxon = taxon, Text = "Jeg så HC Andersen IN THE FLESH", TimeStamp = DateTime.Now};
@@ -86,8 +86,8 @@ public class ObservationServiceUnitTests : IDisposable
     public async Task GetObservationsFromAuthor()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil", Id = 0};
-        Author author2 = new Author{Name = "Kemil (The evil version of Emil that likes Chemestry (VERY DANGEROUS!!!))", Id = 1};
+        Author author1 = new Author{UserName = "Emil", Id = "0"};
+        Author author2 = new Author{UserName = "Kemil (The evil version of Emil that likes Chemestry (VERY DANGEROUS!!!))", Id = "1"};
         Taxon taxon = new Taxon{Name = "Real Animal"};
         Observation obs1 = new Observation{Id = 1, Author = author1, Taxon = taxon, Text = "Jeg hader kemi :(", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Id = 2, Author = author2, Taxon = taxon, Text = "Jeg ELSKER KEMI", TimeStamp = DateTime.Now};
@@ -96,7 +96,7 @@ public class ObservationServiceUnitTests : IDisposable
         await _postRepository.CreateObservations([obs1, obs2, obs3]);
 
         //Act
-        var records = await service.GetObservationsFromAuthor(0);
+        var records = await service.GetObservationsFromAuthor("0");
 
 
         //Assert
@@ -114,14 +114,14 @@ public class ObservationServiceUnitTests : IDisposable
     public async Task GetObservationsFromNonExistingAuthor()
     {
         //Arrange
-        Author author2 = new Author{Name = "Kemil (The evil version of Emil that likes Chemestry (VERY DANGEROUS!!!))", Id = 1};
+        Author author2 = new Author{UserName = "Kemil (The evil version of Emil that likes Chemestry (VERY DANGEROUS!!!))", Id = "1"};
         Taxon taxon = new Taxon{Name = "Real Animal"};
         Observation obs1 = new Observation{Id = 1, Author = author2, Taxon = taxon, Text = "Jeg ELSKER KEMI", TimeStamp = DateTime.Now};
 
         await _postRepository.CreateObservations([obs1]);
 
         //Act
-        var records = await service.GetObservationsFromAuthor(0);
+        var records = await service.GetObservationsFromAuthor("0");
 
         //Assert
         Assert.Empty(records);
@@ -131,7 +131,7 @@ public class ObservationServiceUnitTests : IDisposable
     public async Task GetObservationById()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Real Animal"};
         Observation obs1 = new Observation{Id = 1, Author = author, Taxon = taxon, Text = "jeg er den eneste der har observeret noget nogensinde", TimeStamp = DateTime.Now};
 
@@ -149,7 +149,7 @@ public class ObservationServiceUnitTests : IDisposable
     public async Task GetObservationByInvalidId()
     {
         //Arrange
-        Author author2 = new Author{Name = "Kemil (The evil version of Emil that likes Chemestry (VERY DANGEROUS!!!))", Id = 1};
+        Author author2 = new Author{UserName = "Kemil (The evil version of Emil that likes Chemestry (VERY DANGEROUS!!!))", Id = "11" };
         Taxon taxon = new Taxon{Name = "Real Animal"};
         Observation obs1 = new Observation{Id = 1, Author = author2, Taxon = taxon, Text = "Jeg ELSKER KEMI", TimeStamp = DateTime.Now};
 
@@ -166,8 +166,8 @@ public class ObservationServiceUnitTests : IDisposable
     public async Task GetObservationsByTaxon()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil", Id = 1};
-        Author author2 = new Author{Name = "Hemmelig mand", Id = 2};
+        Author author1 = new Author{UserName = "Emil", Id = "1" };
+        Author author2 = new Author{UserName = "Hemmelig mand", Id = "2"};
         Taxon taxon1 = new Taxon{Name = "Real Animal", Id = 0};
         Taxon taxon2 = new Taxon{Name = "Fake disgusting Animal", Id = 1};
         Observation obs1 = new Observation{Id = 1, Author = author1, Taxon = taxon1, Text = "Sejt ægte dyr", TimeStamp = DateTime.Now};
@@ -195,8 +195,8 @@ public class ObservationServiceUnitTests : IDisposable
     public async Task GetObservationsByAncestorTaxon()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil", Id = 1};
-        Author author2 = new Author{Name = "Hemmelig mand", Id = 2};
+        Author author1 = new Author{UserName = "Emil", Id = "1" };
+        Author author2 = new Author{UserName = "Hemmelig mand", Id = "2"};
         Taxon taxon1 = new Taxon{Name = "The father of all animals", Id = 0};
         Taxon taxon2 = new Taxon{Name = "the child of the father of all animals", Id = 1, ancestor = taxon1};
         Taxon taxon3 = new Taxon{Name = "rock pretending to be an animal to infiltrate the kingdom and weaken their forces from the inside", Id = 2};
@@ -229,8 +229,8 @@ public class ObservationServiceUnitTests : IDisposable
     public async Task GetSingleCommentOnObservation()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil"};
-        Author author2 = new Author{Name = "Jonas"};
+        Author author1 = new Author{UserName = "Emil"};
+        Author author2 = new Author{UserName = "Jonas"};
         Taxon taxon = new Taxon{Name = "Real Animal"};
         Observation obs1 = new Observation{Id = 0, Author = author1, Taxon = taxon, Text = "Prøv at se den her abe jeg lige så", TimeStamp = DateTime.Now};
         Comment com = new Comment{Author = author2, Id = 0, Observation = obs1, Text = "L abe + jeg framemogger dig + aben ligner dig + downvoter alle dine posts + sletter din account"};
@@ -270,8 +270,8 @@ public class ObservationServiceUnitTests : IDisposable
     public async Task GetMultipleCommentsOnObservation()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil"};
-        Author author2 = new Author{Name = "Jonas"};
+        Author author1 = new Author{UserName = "Emil"};
+        Author author2 = new Author{UserName = "Jonas"};
         Taxon taxon = new Taxon{Name = "Real Animal"};
         Observation obs1 = new Observation{Id = 0, Author = author1, Taxon = taxon, Text = "Prøv at se den her abe jeg lige så", TimeStamp = DateTime.Now};
         Comment com1 = new Comment{Author = author2, Id = 0, Observation = obs1, Text = "L abe + jeg framemogger dig + aben ligner dig + downvoter alle dine posts + sletter din account"};
@@ -299,7 +299,7 @@ public class ObservationServiceUnitTests : IDisposable
     public async Task GetSingleProposalsOnObservation()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Real Animal"};
         Observation obs1 = new Observation{Id = 0, Author = author, Taxon = taxon, Text = "Sej and der var ægte", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Id = 1, Author = author, Taxon = taxon, Text = "sikke en sjov tur på papmuseet", TimeStamp = DateTime.Now};
@@ -338,7 +338,7 @@ public class ObservationServiceUnitTests : IDisposable
     public async Task GetMultipleProposalsOnObservation()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Real Animal"};
         Observation obs1 = new Observation{Id = 0, Author = author, Taxon = taxon, Text = "Sej and der var ægte", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Id = 1, Author = author, Taxon = taxon, Text = "sikke en sjov tur på papmuseet", TimeStamp = DateTime.Now};
@@ -369,7 +369,7 @@ public class ObservationServiceUnitTests : IDisposable
         Assert.NotNull(obs2);
 
         Assert.Equal(obs1.Id, obs2.Id);
-        Assert.Equal(obs1.Author.Name, obs2.AuthorName);
+        Assert.Equal(obs1.Author.UserName, obs2.AuthorName);
         Assert.Equal(obs1.Text, obs2.Text);
         Assert.Equal(obs1.TimeStamp.ToString("MM/dd/yy H:mm:ss"), obs2.Timestamp);
         Assert.Equal(obs1.Taxon.Name, obs2.TaxonName);
@@ -381,7 +381,7 @@ public class ObservationServiceUnitTests : IDisposable
         Assert.NotNull(com2);
 
         Assert.Equal(com1.Text, com2.Text);
-        Assert.Equal(com1.Author.Name, com2.AuthorName);
+        Assert.Equal(com1.Author.UserName, com2.AuthorName);
         Assert.Equal(com1.TimeStamp.ToString("MM/dd/yy H:mm:ss"), com2.Timestamp);
     }
 
@@ -393,7 +393,7 @@ public class ObservationServiceUnitTests : IDisposable
         Assert.Equal(prop1.Observation.Id, prop2.Id);
         Assert.Equal(prop1.Taxon.Name, prop2.TaxonName);
         Assert.Equal(prop1.Text, prop2.Text);
-        Assert.Equal(prop1.Author.Name, prop2.AuthorName);
+        Assert.Equal(prop1.Author.UserName, prop2.AuthorName);
         Assert.Equal(prop1.TimeStamp.ToString("MM/dd/yy H:mm:ss"), prop2.Timestamp);
     }
 
@@ -433,7 +433,7 @@ public class ObservationServiceUnitTests : IDisposable
 
             return Task.FromResult(observation);
         }
-        public Task<List<Observation>> ReadObservations(int authorID)
+        public Task<List<Observation>> ReadObservations(string authorID)
         {
             List<Observation> authorvations = new List<Observation>();
             foreach(Observation observation in Observations)
@@ -494,16 +494,16 @@ public class ObservationServiceUnitTests : IDisposable
             Authors = new List<Author>();
         }
 
-        public Task<List<int>> CreateAuthors(List<Author> authors)
+        public Task<List<string>> CreateAuthors(List<Author> authors)
         {
             foreach(Author author in authors)
             {
                 Authors.Add(author);
             }
 
-            return Task.FromResult(new List<int>());
+            return Task.FromResult(new List<string>());
         }
-        public Task<Author?> getAuthor(int authorID)
+        public Task<Author?> getAuthor(string authorID)
         {
             var author = Authors.FirstOrDefault(o => o.Id == authorID);
 

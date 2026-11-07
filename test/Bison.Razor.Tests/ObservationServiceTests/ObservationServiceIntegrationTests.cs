@@ -40,7 +40,7 @@ public class ObservationServiceIntegrationTests : IDisposable
     public async Task GetObservationsFromDatabase()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Cool taxon"};
         Observation obs1 = new Observation{Author = author, Taxon = taxon, Text = "Wow", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author, Taxon = taxon, Text = "coolmand", TimeStamp = DateTime.Now};
@@ -78,7 +78,7 @@ public class ObservationServiceIntegrationTests : IDisposable
     public async Task GetObservationByValidId()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Cool taxon"};
         Observation obs1 = new Observation{Author = author, Taxon = taxon, Text = "Wow", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author, Taxon = taxon, Text = "coolmand", TimeStamp = DateTime.Now};
@@ -98,7 +98,7 @@ public class ObservationServiceIntegrationTests : IDisposable
     public async Task GetObservationByInvalidId()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Cool taxon"};
         Observation obs1 = new Observation{Author = author, Taxon = taxon, Text = "Wow", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author, Taxon = taxon, Text = "coolmand", TimeStamp = DateTime.Now};
@@ -116,8 +116,8 @@ public class ObservationServiceIntegrationTests : IDisposable
     public async Task GetObservationsByAuthor()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil"};
-        Author author2 = new Author{Name = "Stabil"};
+        Author author1 = new Author{UserName = "Emil"};
+        Author author2 = new Author{UserName = "Stabil"};
         Taxon taxon = new Taxon{Name = "Cool taxon"};
         Observation obs1 = new Observation{Author = author1, Taxon = taxon, Text = "Wow", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author1, Taxon = taxon, Text = "coolmand", TimeStamp = DateTime.Now};
@@ -143,8 +143,8 @@ public class ObservationServiceIntegrationTests : IDisposable
     public async Task GetObservationsByNonExistingAuthor()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil"};
-        Author author2 = new Author{Name = "Stabil"};
+        Author author1 = new Author{UserName = "Emil"};
+        Author author2 = new Author{UserName = "Stabil"};
         Taxon taxon = new Taxon{Name = "Cool taxon"};
         Observation obs1 = new Observation{Author = author1, Taxon = taxon, Text = "Wow", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author1, Taxon = taxon, Text = "coolmand", TimeStamp = DateTime.Now};
@@ -153,7 +153,7 @@ public class ObservationServiceIntegrationTests : IDisposable
         bc.SaveChanges();
 
         //Act
-        var records = await service.GetObservationsFromAuthor(-23);
+        var records = await service.GetObservationsFromAuthor("-23");
 
         //Assert
         Assert.Empty(records);
@@ -163,8 +163,8 @@ public class ObservationServiceIntegrationTests : IDisposable
     public async Task GetObservationsByTaxon()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil"};
-        Author author2 = new Author{Name = "Stabil"};
+        Author author1 = new Author{UserName = "Emil"};
+        Author author2 = new Author{UserName = "Stabil"};
         Taxon taxon1 = new Taxon{Name = "top dawg"};
         Taxon taxon2 = new Taxon{Name = "middle dog", ancestor = taxon1};
         Taxon taxon3 = new Taxon{Name = "lonely dog"};
@@ -199,8 +199,8 @@ public class ObservationServiceIntegrationTests : IDisposable
     public async Task GetObservationsByTaxonNeverUsed()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil"};
-        Author author2 = new Author{Name = "Stabil"};
+        Author author1 = new Author{UserName = "Emil"};
+        Author author2 = new Author{UserName = "Stabil"};
         Taxon taxon1 = new Taxon{Name = "top dawg"};
         Taxon taxon2 = new Taxon{Name = "lonely dog"};
         Observation obs1 = new Observation{Author = author1, Taxon = taxon1, Text = "Wow", TimeStamp = DateTime.Now};
@@ -220,8 +220,8 @@ public class ObservationServiceIntegrationTests : IDisposable
     public async Task GetObservationsByNonExistingTaxon()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil"};
-        Author author2 = new Author{Name = "Stabil"};
+        Author author1 = new Author{UserName = "Emil"};
+        Author author2 = new Author{UserName = "Stabil"};
         Taxon taxon1 = new Taxon{Name = "top dawg"};
         Taxon taxon2 = new Taxon{Name = "lonely dog"};
         Observation obs1 = new Observation{Author = author1, Taxon = taxon1, Text = "Wow", TimeStamp = DateTime.Now};
@@ -241,7 +241,7 @@ public class ObservationServiceIntegrationTests : IDisposable
     public async Task GetComments()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Cool taxon"};
         Observation obs1 = new Observation{Author = author, Taxon = taxon, Text = "Wow", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author, Taxon = taxon, Text = "coolmand", TimeStamp = DateTime.Now};
@@ -270,7 +270,7 @@ public class ObservationServiceIntegrationTests : IDisposable
     public async Task GetProposals()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Cool taxon"};
         Observation obs1 = new Observation{Author = author, Taxon = taxon, Text = "Wow", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author, Taxon = taxon, Text = "coolmand", TimeStamp = DateTime.Now};
@@ -301,7 +301,7 @@ public class ObservationServiceIntegrationTests : IDisposable
         Assert.NotNull(obs2);
 
         Assert.Equal(obs1.Id, obs2.Id);
-        Assert.Equal(obs1.Author.Name, obs2.AuthorName);
+        Assert.Equal(obs1.Author.UserName, obs2.AuthorName);
         Assert.Equal(obs1.Text, obs2.Text);
         Assert.Equal(obs1.TimeStamp.ToString("MM/dd/yy H:mm:ss"), obs2.Timestamp);
         Assert.Equal(obs1.Taxon.Name, obs2.TaxonName);
@@ -313,7 +313,7 @@ public class ObservationServiceIntegrationTests : IDisposable
         Assert.NotNull(com2);
 
         Assert.Equal(com1.Text, com2.Text);
-        Assert.Equal(com1.Author.Name, com2.AuthorName);
+        Assert.Equal(com1.Author.UserName, com2.AuthorName);
         Assert.Equal(com1.TimeStamp.ToString("MM/dd/yy H:mm:ss"), com2.Timestamp);
     }
 
@@ -325,7 +325,7 @@ public class ObservationServiceIntegrationTests : IDisposable
         Assert.Equal(prop1.Observation.Id, prop2.Id);
         Assert.Equal(prop1.Taxon.Name, prop2.TaxonName);
         Assert.Equal(prop1.Text, prop2.Text);
-        Assert.Equal(prop1.Author.Name, prop2.AuthorName);
+        Assert.Equal(prop1.Author.UserName, prop2.AuthorName);
         Assert.Equal(prop1.TimeStamp.ToString("MM/dd/yy H:mm:ss"), prop2.Timestamp);
     }
 

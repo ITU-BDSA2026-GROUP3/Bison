@@ -14,7 +14,7 @@ public class UserTimelineModel : PageModel
 
     public List<ObservationDto> Observations { get; private set; } = new();
 
-    public UserTimelineModel(IObservationService observationService, IAuthorRepository authorRepository)
+    public UserTimelineModel(IObservationService observationService)
     {
         _observationService = observationService;
     }

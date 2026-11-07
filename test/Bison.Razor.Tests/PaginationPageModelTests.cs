@@ -40,13 +40,13 @@ public class PaginationPageModelTests
     {
         FakeObservationService service = new();
         FakeAuthorRepository fakeAuthorRepository = new();
-        UserTimelineModel model = new(service, fakeAuthorRepository);
+        UserTimelineModel model = new(service);
 
-        await model.OnGet(1, 2);
+        await model.OnGet("1", 2);
 
-        Assert.Equal(1, model.author.Id);
+        Assert.Equal("1", model.author.Id);
         Assert.Equal(2, model.CurrentPage);
-        Assert.Equal(1, service.RequestedAuthor);
+        Assert.Equal("1", service.RequestedAuthor);
         Assert.Equal(2, service.RequestedPage);
     }
 
@@ -57,9 +57,9 @@ public class PaginationPageModelTests
     {
         FakeObservationService service = new();
         FakeAuthorRepository fakeAuthorRepository = new();
-        UserTimelineModel model = new(service, fakeAuthorRepository);
+        UserTimelineModel model = new(service);
 
-        await model.OnGet(1, page);
+        await model.OnGet("1", page);
 
         Assert.Equal(1, model.CurrentPage);
         Assert.Equal(1, service.RequestedPage);
@@ -69,7 +69,7 @@ public class PaginationPageModelTests
     {
         public int RequestedPublicPage { get; private set; }
 
-        public int RequestedAuthor { get; private set; }
+        public string RequestedAuthor { get; private set; }
 
         public int RequestedPage { get; private set; }
         public int RequestedTaxon { get; private set; }
@@ -81,7 +81,7 @@ public class PaginationPageModelTests
             return Task.FromResult(new List<ObservationDto>());
         }
 
-        public Task<List<ObservationDto>> GetObservationsFromAuthor(int authorId, int page = 1)
+        public Task<List<ObservationDto>> GetObservationsFromAuthor(string authorId, int page = 1)
         {
             RequestedAuthor = authorId;
             RequestedPage = page;
@@ -110,6 +110,11 @@ public class PaginationPageModelTests
         public Task<List<ProposalDto>> GetProposals(int observationId)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<AuthorDto?> GetAuthor(string authorId)
+        {
+            return Task.FromResult(new AuthorDto {Id = authorId});
         }
     }
 
@@ -144,21 +149,21 @@ public class PaginationPageModelTests
 
     private class FakeAuthorRepository : IAuthorRepository
     {
-        List<Author> fakeAuthors = new List<Author> {new Author{Id = 1}};
+        List<Author> fakeAuthors = new List<Author> {new Author{Id = "1" }};
         public FakeAuthorRepository()
         {
             
         }
-        public Task<List<int>> CreateAuthors(List<Author> authors)
+        public Task<List<string>> CreateAuthors(List<Author> authors)
         {
             foreach(Author author in authors)
             {
                 fakeAuthors.Add(author);
             }
-            return Task.FromResult(new List<int>());
+            return Task.FromResult(new List<string>());
         }
 
-        public Task<Author?> getAuthor(int id)
+        public Task<Author?> getAuthor(string id)
         {
             var author = fakeAuthors.FirstOrDefault(o => o.Id == id);
 

@@ -32,7 +32,7 @@ public class AuthenticationTests : IDisposable, IClassFixture<RazorServiceFactor
     {
         // Arrange
         var client = _factory.CreateClient();
-        Author author = new Author{Name = "Emil", Email = "email"};
+        Author author = new Author{UserName = "Emil", Email = "email"};
         Taxon taxon = new Taxon{Name = "Cool animal", Description = "Epic animal"};
         Observation obs = new Observation{Author = author, Taxon = taxon, Text = "sejt dyr jeg så", TimeStamp = DateTime.Now};
         
@@ -54,7 +54,7 @@ public class AuthenticationTests : IDisposable, IClassFixture<RazorServiceFactor
     {
         // Arrange
         var client = _factory.CreateClient(new WebApplicationFactoryClientOptions{AllowAutoRedirect = false});
-        Author author = new Author{Name = "Emil", Email = "email"};
+        Author author = new Author{UserName = "Emil", Email = "email"};
         Taxon taxon = new Taxon{Name = "Cool animal", Description = "Epic animal"};
         Observation obs = new Observation{Author = author, Taxon = taxon, Text = "sejt dyr jeg så", TimeStamp = DateTime.Now};
         
@@ -78,7 +78,7 @@ public class AuthenticationTests : IDisposable, IClassFixture<RazorServiceFactor
         // Arrange
         var client = _factory.CreateClient(new WebApplicationFactoryClientOptions{AllowAutoRedirect = false});
         client = AuthorizeClient(client);
-        Author author = new Author{Name = "Emil", Email = "email"};
+        Author author = new Author{UserName = "Emil", Email = "email"};
         Taxon taxon = new Taxon{Name = "Cool animal", Description = "Epic animal"};
         Observation obs = new Observation{Author = author, Taxon = taxon, Text = "sejt dyr jeg så", TimeStamp = DateTime.Now};
         
