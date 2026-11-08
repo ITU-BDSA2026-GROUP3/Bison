@@ -1,18 +1,17 @@
 @using Microsoft.AspNetCore.Identity
 @using Bison.Razor.domain_model
-@inject SignInManager<Author> SignInManager
 @inject UserManager<Author> UserManager
 
 <div class="navigation">
 
 
 
-@*This below checks wether the user is logged in,
-if it is true then we continue with this section*@
+	@*This below checks wether the user is logged in,
+	if it is true then we continue with this section*@
 
-@if (SignInManager.IsSignedIn(User))
-    {
-        <div>
+	@if (User.Identity?.IsAuthenticated == true)
+	{
+	<div>
             @*User.Identity.Name displays the username*@
               <a href="/obs/@(UserManager.GetUserId(User))">My Observations</a> |
 
