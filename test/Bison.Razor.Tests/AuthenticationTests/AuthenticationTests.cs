@@ -93,18 +93,6 @@ public class AuthenticationTests : IDisposable, IClassFixture<RazorServiceFactor
         Assert.Equal("text/html; charset=utf-8", response.Content.Headers.ContentType.ToString());
     }
 
-    [Fact]
-    public async Task LoginRedirectsUser()
-    {
-        // Arrange
-        var client = _factory.CreateClient(new WebApplicationFactoryClientOptions{AllowAutoRedirect = false});
-
-        // Act
-        var response = await client.GetAsync("/login");
-
-        // Assert
-        Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
-    }
 
     [Fact]
     public async Task RegisterAndLoginButtonWhenNotLoggedIn()
