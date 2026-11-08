@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net;
 using Bison.Razor.domain_model;
 using Bison.Razor.Repositories;
@@ -127,7 +128,7 @@ public class AuthenticationTests : IDisposable, IClassFixture<RazorServiceFactor
     private HttpClient AuthorizeClient(HttpClient client)
     {
         client.DefaultRequestHeaders.Add("Test-Authentication", "true");
-
+        
         return client;
     }
 

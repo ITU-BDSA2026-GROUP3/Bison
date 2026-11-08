@@ -126,8 +126,8 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
     public async Task ObservationsFromAuthorEndToEnd()
     {
         //Arrange
-        Author author1 = new Author{UserName = "Emil", Email = "email@com.emil"};
-        Author author2 = new Author{UserName = "Jonas", Email = "jonais@com.jonas"};
+        Author author1 = new Author{UserName = "Emil", Email = "email@com.emil",Id = "1"};
+        Author author2 = new Author{UserName = "Jonas", Email = "jonais@com.jonas", Id = "2" };
         Taxon taxon1 = new Taxon{Name = "Villads", Description = "Pepsi manden"};
         Taxon taxon2 = new Taxon{Name = "Rune", Description = "warhammer 41000 skaber"};
         Observation obs1 = new Observation{Author = author1, Taxon = taxon1, Text = "I saw a Villads", TimeStamp = DateTime.Now};
@@ -161,7 +161,7 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
     public async Task ZeroObservationsFromAuthorEndToEnd()
     {
         //Arrange
-        Author author1 = new Author{UserName = "Emil", Email = "email@com.emil"};
+        Author author1 = new Author{UserName = "Emil", Email = "email@com.emil", Id = "1"};
 
         _context.AddRange(author1);
         _context.SaveChanges();
