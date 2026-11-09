@@ -34,11 +34,12 @@ public class AuthorRepositoryIntegrationTests : IDisposable
     public async Task CreateSingleAuthor()
     {
         //Arrange
-        Author author = new Author{Name = "Emil", Email = "Email@email.email", Posts = new List<Post>()};
+        Author author = new Author{UserName = "Emil", Email = "Email@email.email", Posts = new List<Post>(), Id = "fakeGIDEmil"};
 
         //Act
         await _authorRepository.CreateAuthors([author]);
-        var records = await bc.Authors.ToListAsync();
+        var records = await bc.Users.ToListAsync();
+        
 
         //Assert
         Assert.NotEmpty(records);
@@ -51,12 +52,12 @@ public class AuthorRepositoryIntegrationTests : IDisposable
     public async Task CreateMultipleAuthors()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil", Email = "Email@email.email", Posts = new List<Post>()};
-        Author author2 = new Author{Name = "Villads", Email = "Villads@villads.villads", Posts = new List<Post>()};
+        Author author1 = new Author{UserName = "Emil", Email = "Email@email.email", Posts = new List<Post>()};
+        Author author2 = new Author{UserName = "Villads", Email = "Villads@villads.villads", Posts = new List<Post>()};
 
         //Act
         await _authorRepository.CreateAuthors([author1, author2]);
-        var records = await bc.Authors.ToListAsync();
+        var records = await bc.Users.ToListAsync();
 
         //Assert
         Assert.NotEmpty(records);
@@ -76,13 +77,13 @@ public class AuthorRepositoryIntegrationTests : IDisposable
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs1 = new Observation{Text = "Hej", Taxon = taxon};
         Observation obs2 = new Observation{Text = "WOW", Taxon = taxon};
-        Author author = new Author{Name = "Emil", Email = "Email@email.email", Posts = new List<Post>(){obs1, obs2}};
+        Author author = new Author{UserName = "Emil", Email = "Email@email.email", Posts = new List<Post>(){obs1, obs2}};
         obs1.Author = author;
         obs2.Author = author;
 
         //Act
         await _authorRepository.CreateAuthors([author]);
-        var records = await bc.Authors.ToListAsync();
+        var records = await bc.Users.ToListAsync();
 
         //Assert
         Assert.NotEmpty(records);
@@ -105,8 +106,8 @@ public class AuthorRepositoryIntegrationTests : IDisposable
     public async Task GetAuthorByValidId()
     {
         //Arrange
-        Author author1 = new Author{Name = "Waygal", Email = "Waygal@waygal.waygal", Posts = new List<Post>()};
-        Author author2 = new Author{Name = "Rune", Email = "Rune@rune.rune", Posts = new List<Post>()};
+        Author author1 = new Author{UserName = "Waygal", Email = "Waygal@waygal.waygal", Posts = new List<Post>()};
+        Author author2 = new Author{UserName = "Rune", Email = "Rune@rune.rune", Posts = new List<Post>()};
         await _authorRepository.CreateAuthors([author1, author2]);
 
         //Act
@@ -122,12 +123,12 @@ public class AuthorRepositoryIntegrationTests : IDisposable
     public async Task GetAuthorByInvalidId()
     {
         //Arrange
-        Author author1 = new Author{Name = "Emil", Email = "Jonas@villads.waygal", Posts = new List<Post>()};
-        Author author2 = new Author{Name = "Rune", Email = "Emil@jonas.villads", Posts = new List<Post>()};
+        Author author1 = new Author{UserName = "Emil", Email = "Jonas@villads.waygal", Posts = new List<Post>()};
+        Author author2 = new Author{UserName = "Rune", Email = "Emil@jonas.villads", Posts = new List<Post>()};
         await _authorRepository.CreateAuthors([author1, author2]);
 
         //Act
-        var record = await _authorRepository.getAuthor(-67);
+        var record = await _authorRepository.getAuthor("badUd");
 
         //Assert
         Assert.Null(record);
@@ -139,7 +140,7 @@ public class AuthorRepositoryIntegrationTests : IDisposable
         Assert.NotNull(author1);
 
         Assert.Equal(author1.Id, author2.Id);
-        Assert.Equal(author1.Name, author2.Name);
+        Assert.Equal(author1.UserName, author2.UserName);
         Assert.Equal(author1.Email, author2.Email);
     }
 

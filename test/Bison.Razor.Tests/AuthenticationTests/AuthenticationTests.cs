@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net;
 using Bison.Razor.domain_model;
 using Bison.Razor.Repositories;
@@ -32,7 +33,7 @@ public class AuthenticationTests : IDisposable, IClassFixture<RazorServiceFactor
     {
         // Arrange
         var client = _factory.CreateClient();
-        Author author = new Author{Name = "Emil", Email = "email"};
+        Author author = new Author{UserName = "Emil", Email = "email"};
         Taxon taxon = new Taxon{Name = "Cool animal", Description = "Epic animal"};
         Observation obs = new Observation{Author = author, Taxon = taxon, Text = "sejt dyr jeg så", TimeStamp = DateTime.Now};
         
@@ -54,7 +55,7 @@ public class AuthenticationTests : IDisposable, IClassFixture<RazorServiceFactor
     {
         // Arrange
         var client = _factory.CreateClient(new WebApplicationFactoryClientOptions{AllowAutoRedirect = false});
-        Author author = new Author{Name = "Emil", Email = "email"};
+        Author author = new Author{UserName = "Emil", Email = "email"};
         Taxon taxon = new Taxon{Name = "Cool animal", Description = "Epic animal"};
         Observation obs = new Observation{Author = author, Taxon = taxon, Text = "sejt dyr jeg så", TimeStamp = DateTime.Now};
         
@@ -78,7 +79,7 @@ public class AuthenticationTests : IDisposable, IClassFixture<RazorServiceFactor
         // Arrange
         var client = _factory.CreateClient(new WebApplicationFactoryClientOptions{AllowAutoRedirect = false});
         client = AuthorizeClient(client);
-        Author author = new Author{Name = "Emil", Email = "email"};
+        Author author = new Author{UserName = "Emil", Email = "email"};
         Taxon taxon = new Taxon{Name = "Cool animal", Description = "Epic animal"};
         Observation obs = new Observation{Author = author, Taxon = taxon, Text = "sejt dyr jeg så", TimeStamp = DateTime.Now};
         
@@ -93,18 +94,6 @@ public class AuthenticationTests : IDisposable, IClassFixture<RazorServiceFactor
         Assert.Equal("text/html; charset=utf-8", response.Content.Headers.ContentType.ToString());
     }
 
-    [Fact]
-    public async Task LoginRedirectsUser()
-    {
-        // Arrange
-        var client = _factory.CreateClient(new WebApplicationFactoryClientOptions{AllowAutoRedirect = false});
-
-        // Act
-        var response = await client.GetAsync("/login");
-
-        // Assert
-        Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
-    }
 
     [Fact]
     public async Task RegisterAndLoginButtonWhenNotLoggedIn()
@@ -139,7 +128,7 @@ public class AuthenticationTests : IDisposable, IClassFixture<RazorServiceFactor
     private HttpClient AuthorizeClient(HttpClient client)
     {
         client.DefaultRequestHeaders.Add("Test-Authentication", "true");
-
+        
         return client;
     }
 

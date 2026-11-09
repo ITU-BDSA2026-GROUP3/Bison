@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
 using Bison.Razor.Repositories;
-using Bison.Razor.domain_model;
 
 namespace Bison.Razor.Pages;
 
@@ -12,17 +11,18 @@ public class UserTimelineModel : PageModel
 {
     private const int PageSize = 32;
     private readonly IObservationService _observationService;
-    private readonly IAuthorRepository _authorRepository;
 
     public List<ObservationDto> Observations { get; private set; } = new();
 
-    public UserTimelineModel(IObservationService observationService, IAuthorRepository authorRepository)
+    public UserTimelineModel(IObservationService observationService)
     {
         _observationService = observationService;
-        _authorRepository = authorRepository;
     }
 
-    public Author? author {get; private set; }
+    public AuthorDto? author
+    {
+        get; private set;
+    }
 
     public int CurrentPage { get; private set; } = 1;
 
@@ -30,10 +30,10 @@ public class UserTimelineModel : PageModel
 
     public bool HasNextPage => Observations.Count == PageSize;
 
-    public async Task<ActionResult> OnGet([FromRoute] int authorId, [FromQuery] int page = 1)
+    public async Task<ActionResult> OnGet([FromRoute] string authorId, [FromQuery] int page = 1)
     {
-        author = await _authorRepository.getAuthor(authorId);
-        if(author != null)
+        author = await _observationService.GetAuthor(authorId);
+        if (author != null)
         {
             CurrentPage = Math.Max(page, 1);
 

@@ -1,8 +1,11 @@
-using Bison.Razor.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Bison.Razor.domain_model;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Bison.Razor.Repositories;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using System;
+
 
 public class Program
 {
@@ -13,24 +16,13 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorPages();
 
-        builder.Services
-            .AddAuthentication(options =>
+        builder.Services.AddAuthentication().AddGitHub(options =>
             {
-                options.DefaultAuthenticateScheme =
-                    CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme =
-                    CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = "GitHub";
-            })
-            .AddCookie()
-            .AddGitHub(options =>
-            {
-                options.ClientId =
-                    builder.Configuration["authentication:github:clientId"]!;
+                options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"]!;
                 options.ClientSecret =
-                    builder.Configuration["authentication:github:clientSecret"]!;
-                options.CallbackPath = "/signin-github";
-            });
+                builder.Configuration["Authentication:GitHub:ClientSecret"]!;
+            }
+        );
 
         builder.Services.AddScoped<IObservationService, ObservationService>();
         builder.Services.AddScoped<IPostRepository, PostRepository>();
@@ -38,6 +30,8 @@ public class Program
         builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
         string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
         builder.Services.AddDbContext<BisonContext>(options => options.UseSqlite(connectionString));
+
+        builder.Services.AddDefaultIdentity<Author>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<BisonContext>();
 
 
         var app = builder.Build();
@@ -65,10 +59,10 @@ public class Program
 
         app.UseRouting();
 
-        app.UseAuthentication();
+        //app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapGet("/login", () =>
+        /*app.MapGet("/login", () =>
         {
             var authenticationProperties = new AuthenticationProperties
             {
@@ -83,8 +77,8 @@ public class Program
             await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return Results.Redirect("/obs");
-        }).RequireAuthorization();
-
+        }).RequireAuthorization();*/
+        app.MapGet("/", () => { return Results.Redirect("/obs"); }); // sets public observations as default page.
         app.MapRazorPages();
 
         app.Run();

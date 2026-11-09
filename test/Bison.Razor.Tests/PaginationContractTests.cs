@@ -20,7 +20,7 @@ public class PaginationContractTests
     {
         MethodInfo? method = typeof(IObservationService).GetMethod(
             "GetObservationsFromAuthor",
-            new[] { typeof(int), typeof(int) });
+            new[] { typeof(string), typeof(int) });
 
         Assert.NotNull(method);
         Assert.Equal(

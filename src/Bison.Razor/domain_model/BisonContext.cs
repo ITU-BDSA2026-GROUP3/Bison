@@ -1,12 +1,9 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bison.Razor.domain_model;
-public class BisonContext : DbContext
+public class BisonContext : IdentityDbContext<Author>
 {
-    public DbSet<Author> Authors
-    {
-        get; set;
-    }
     public DbSet<Comment> Comments
     {
         get; set;

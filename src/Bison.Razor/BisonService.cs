@@ -1,6 +1,7 @@
 using Bison.Razor.domain_model;
 using Bison.Razor.DTOs;
 using Bison.Razor.Repositories;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -9,7 +10,7 @@ public record CommentViewModel(long obsID, string Comment);
 public interface IObservationService
 {
     public Task<List<ObservationDto>> GetObservations(int page = 1);
-    public Task<List<ObservationDto>> GetObservationsFromAuthor(int authorId, int page = 1);
+    public Task<List<ObservationDto>> GetObservationsFromAuthor(string authorId, int page = 1);
 
     public Task<ObservationDto> GetObservationFromId(int observationId, int page = 1);
 
@@ -18,6 +19,7 @@ public interface IObservationService
     public Task<List<CommentDto>> GetComments(int observationId);
 
     public Task<List<ProposalDto>> GetProposals(int observationId);
+    public Task<AuthorDto?> GetAuthor(string authorId);
 }
 
 public class ObservationService : IObservationService
@@ -47,7 +49,7 @@ public class ObservationService : IObservationService
             ObservationDto dto = new ObservationDto
             {
                 Id = obs.Id,
-                AuthorName = obs.Author.Name,
+                AuthorName = obs.Author.UserName,
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
                 TaxonName = obs.Taxon.Name
@@ -59,7 +61,7 @@ public class ObservationService : IObservationService
         return observations;
     }
 
-    public async Task<List<ObservationDto>> GetObservationsFromAuthor(int authorId, int page = 1)
+    public async Task<List<ObservationDto>> GetObservationsFromAuthor(string authorId, int page = 1)
     {
         int validPage = Math.Max(page, 1);
         List<ObservationDto> observations = new List<ObservationDto>();
@@ -69,7 +71,7 @@ public class ObservationService : IObservationService
             ObservationDto dto = new ObservationDto
             {
                 Id = obs.Id,
-                AuthorName = obs.Author.Name,
+                AuthorName = obs.Author.UserName,
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
                 TaxonName = obs.Taxon.Name
@@ -95,7 +97,7 @@ public class ObservationService : IObservationService
             ObservationDto dto = new ObservationDto
             {
                 Id = obs.Id,
-                AuthorName = obs.Author.Name,
+                AuthorName = obs.Author.UserName,
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
                 TaxonName = obs.Taxon.Name
@@ -114,7 +116,7 @@ public class ObservationService : IObservationService
         ObservationDto dto = new ObservationDto
         {
             Id = obs.Id,
-            AuthorName = obs.Author.Name,
+            AuthorName = obs.Author.UserName,
             Text = obs.Text,
             Timestamp = DateTimeToString(obs.TimeStamp),
             TaxonName = obs.Taxon.Name
@@ -132,7 +134,7 @@ public class ObservationService : IObservationService
         {
             CommentDto dto = new CommentDto
             {
-                AuthorName = comment.Author.Name,
+                AuthorName = comment.Author.UserName,
                 Text = comment.Text,
                 Timestamp = DateTimeToString(comment.TimeStamp)
             };
@@ -154,7 +156,7 @@ public class ObservationService : IObservationService
         {
             ProposalDto dto = new ProposalDto
             {
-                AuthorName = proposal.Author.Name,
+                AuthorName = proposal.Author.UserName,
                 Text = proposal.Text,
                 Timestamp = DateTimeToString(proposal.TimeStamp),
                 TaxonName = proposal.Taxon.Name,
@@ -165,6 +167,24 @@ public class ObservationService : IObservationService
         }
 
         return proposals;
+    }
+
+    public async Task<AuthorDto?> GetAuthor(string authorId)
+    {
+
+        var repoQueryResult = await _AuthorRepository.getAuthor(authorId);
+        if (repoQueryResult == null)
+        {
+            return null;
+        }
+        AuthorDto dto = new AuthorDto
+        {
+            Id = repoQueryResult.Id,
+            Name = repoQueryResult.UserName,
+            Email = repoQueryResult.Email
+        };
+        return dto;
+
     }
 
     private static string UnixTimeStampToDateTimeString(double unixTimeStamp)

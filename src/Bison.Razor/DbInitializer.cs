@@ -4,20 +4,20 @@ public static class DbInitializer
 {
     public static void Initialize(BisonContext context)
     {
-        if (context.Authors.Any())
+        if (context.Users.Any())
         {
             return;
         }
 
         var author1 = new Author
         {
-            Name = "Peter",
+            UserName = "Peter",
             Email = "peter@example.com"
         };
 
         var author2 = new Author
         {
-            Name = "Paul",
+            UserName = "Paul",
             Email = "paul@example.com"
         };
 
@@ -47,7 +47,7 @@ public static class DbInitializer
             ancestor = taxonAncestor2
         };
 
-        context.Authors.AddRange(author1, author2);
+        context.Users.AddRange(author1, author2);
         context.Taxons.AddRange(taxonAncestor1, taxonAncestor2, taxon1, taxon2);
 
         context.SaveChanges();
