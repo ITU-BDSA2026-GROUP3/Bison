@@ -28,7 +28,7 @@ public class UserTimelineModel : PageModel
         _taxonRepository = taxonRepository;
         }
 
-    public async Task<IActionResult> OnPostCreateASync(
+    public async Task<IActionResult> OnPostCreateAsync(
         [FromRoute] string authorId)
     {
         var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
