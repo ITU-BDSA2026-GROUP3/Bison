@@ -27,6 +27,41 @@ public class UserTimelineModel : PageModel
        { _observationService = observationService;
         _taxonRepository = taxonRepository;
         }
+
+    public async Task<IActionResult> OnPostCreateASync(
+        [FromRoute] string authorId)
+    {
+        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(currentUserId))
+        {
+            return Challenge();
+        }
+
+        if(currentUserId != authorId)
+        {
+            return Forbid();
+        }
+
+        if (!ModelState.IsValid)
+        {
+            await LoadPageDataAsync(authorId, 1);
+            return Page();
+        }
+
+        var taxons = await _taxonRepository.getAllTaxons();
+
+        if(!NewObservationTaxondId.HasValue || !taxons.Any(t => t.Id == NewObservationTaxondId.Value))
+        {
+            ModelState.AddModelError(nameof(NewObservationTaxondId),"Please select as valid animal.");
+
+            await LoadPageDataAsync(authorId,1);
+            return Page();
+        }
+
+        await _observationService.CreateObservation(NewObservationText,currentUserId,NewObservationTaxondId.Value);
+
+        return RedirectToPage("/UserTimeline", new {authorId = currentUserId});
     }
 
     public AuthorDto? author
@@ -65,4 +100,27 @@ public class UserTimelineModel : PageModel
 
         return Page();
     }
+
+    private async Task LoadPageDataAsync(string authorId, int page)
+    {
+        author = await _observationService.GetAuthor(authorId);
+
+        CurrentPage = Math.Max(page,1);
+
+        if(author != null)
+        {
+            Observations = await _observationService.GetObservationsFromAuthor(authorId,CurrentPage);
+        }
+        else
+        {
+            Observations = new List<ObservationDto>();
+
+            
+        }
+
+        var taxons = await _taxonRepository.getAllTaxons();
+
+        TaxonDropDown = new SelectList(taxons, "Id","Name", NewObservationTaxondId);
+    }
+    
 }
