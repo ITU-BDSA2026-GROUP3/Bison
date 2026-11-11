@@ -2,7 +2,9 @@
       asp-controller="Image"
       method="post"
       enctype="multipart/form-data">
-    
+      <input type="hidden"
+           name="observationId"
+           value="@ViewBag.ObservationId" />
     <input type="file" name="image" />
     <button type="submit">Upload</button>
 

@@ -16,6 +16,8 @@ public class ImageController : Controller
             await img.SaveAsJpegAsync(ms);
             Byte[] bytes = ms.ToArray();
             //make a new observation with the the bytes for the field Imagedata then grab the new observation id
+            int observationid = 0;// replace observationid with the actual value
+            ViewBag.observationid = observationid; //this will make ViewBag.observationid null if this method is never run
             return View(image.FileName);//this might not always be a consistent way to display the file name so futher checks might be needed
         }
         catch
