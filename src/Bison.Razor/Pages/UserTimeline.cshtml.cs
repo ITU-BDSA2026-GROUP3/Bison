@@ -21,9 +21,12 @@ public class UserTimelineModel : PageModel
 
     public List<ObservationDto> Observations { get; private set; } = new();
 
-    public UserTimelineModel(IObservationService observationService)
-    {
-        _observationService = observationService;
+    public UserTimelineModel(IObservationService observationService,ITaxonRepository taxonRepository)
+
+
+       { _observationService = observationService;
+        _taxonRepository = taxonRepository;
+        }
     }
 
     public AuthorDto? author
