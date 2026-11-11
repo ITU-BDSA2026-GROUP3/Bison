@@ -59,7 +59,7 @@ public class Program
 
         app.UseRouting();
 
-        //app.UseAuthentication();
+        app.UseAuthentication();
         app.UseAuthorization();
 
         /*app.MapGet("/login", () =>
