@@ -2,6 +2,8 @@ using Bison.Razor.domain_model;
 using Bison.Razor.DTOs;
 using Bison.Razor.Pages;
 using Bison.Razor.Repositories;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Bison.Razor.Tests;
 
@@ -67,6 +69,14 @@ public class PaginationPageModelTests
 
     private class FakeObservationService : IObservationService
     {
+        public Task<List<int>> CreateObservation(
+            string text, string authorID, int taxonID)
+        {
+            return Task.FromResult(new List<int>());
+            
+        }
+        
+
         public int RequestedPublicPage { get; private set; }
 
         public string RequestedAuthor { get; private set; }

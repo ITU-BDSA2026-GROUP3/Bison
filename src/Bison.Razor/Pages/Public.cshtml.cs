@@ -22,7 +22,7 @@ public class PublicModel : PageModel
     //The text that is entered by the user
     [BindProperty]
     [Required(ErrorMessage = "Please enter an observation")]
-    public string newObservationText{get; set;} = string.Empty;
+    public string NewObservationText{get; set;} = string.Empty;
 
 
     //the animal selected by user
@@ -45,7 +45,8 @@ public class PublicModel : PageModel
     [BindProperty(SupportsGet = true, Name = "taxonId")]
     public int TaxonFilter {get; set;} = 0;
 
-    public SelectList TaxonDropDown {get; set;}
+    public SelectList TaxonDropDown {get; private set;} 
+    = new SelectList(new List<Taxon>(), "Id", "Name");
 
     public async Task<IActionResult> OnPostCreateAsync()
     {
@@ -78,7 +79,7 @@ public class PublicModel : PageModel
             return Page();
         }
 
-        await _observationService.CreateObservation(newObservationText,authorID,NewObservationTaxonId.Value);
+        await _observationService.CreateObservation(NewObservationText,authorID,NewObservationTaxonId.Value);
 
         return RedirectToPage("/Public");
         
