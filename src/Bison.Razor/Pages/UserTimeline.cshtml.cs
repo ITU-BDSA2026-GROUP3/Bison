@@ -88,15 +88,10 @@ public class UserTimelineModel : PageModel
     public SelectList TaxonDropDown{get; private set;}
     = new SelectList(new List <Taxon>(), "Id", "Name");
 
-    public async Task<ActionResult> OnGet([FromRoute] string authorId, [FromQuery] int page = 1)
+    public async Task<ActionResult> OnGetAsync([FromRoute] string authorId, [FromQuery] int page = 1)
     {
-        author = await _observationService.GetAuthor(authorId);
-        if (author != null)
-        {
-            CurrentPage = Math.Max(page, 1);
-
-            Observations = await _observationService.GetObservationsFromAuthor(authorId, CurrentPage);
-        }
+    
+        await LoadPageDataAsync(authorId, page);
 
         return Page();
     }
