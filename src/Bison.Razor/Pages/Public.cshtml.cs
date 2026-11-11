@@ -26,7 +26,7 @@ public class PublicModel : PageModel
 
 
     //the animal selected by user
-    [BindProperty]
+    [BindProperty] //This attribute will connect the HTML form to these C# properties here
     [Required(ErrorMessage = "Please select an animal.")]
 
     public int? NewObservationTaxonId{get;set;}
@@ -47,6 +47,43 @@ public class PublicModel : PageModel
 
     public SelectList TaxonDropDown {get; set;}
 
+    public async Task<IActionResult> OnPostCreateAsync()
+    {
+        if(User.Identity?.IsAuthenticated != true)
+        {
+            return Challenge();
+        }
+
+        var authorID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(authorID))
+        {
+            return Challenge();
+        }
+
+        if (!ModelState.IsValid)
+        {
+            await LoadPageDataAsync(1);
+            return Page();
+        }
+
+        var taxons = await _taxonRepository.getAllTaxons();
+
+        if(!NewObservationTaxonId.HasValue || !taxons.Any(t => t.Id == NewObservationTaxonId.Value))
+        {
+            ModelState.AddModelError(nameof(NewObservationTaxonId),
+            "Please select a valid animal.");
+
+            await LoadPageDataAsync(1);
+            return Page();
+        }
+
+        await _observationService.CreateObservation(newObservationText,authorID,NewObservationTaxonId.Value);
+
+        return RedirectToPage("/Public");
+        
+    }
+
     public async Task<ActionResult> OnGetAsync([FromQuery] int page = 1)
     {
         CurrentPage = Math.Max(page, 1);
@@ -57,5 +94,31 @@ public class PublicModel : PageModel
         if(TaxonFilter != 0 && TaxonFilter < taxons.Count()+1) Observations = await _observationService.GetObservationsFromTaxon(TaxonFilter, CurrentPage);
         else Observations = await _observationService.GetObservations(CurrentPage);
         return Page();
+    }
+
+    private async Task LoadPageDataAsync(int page)
+    {
+        CurrentPage = Math.Max(page,1);
+
+        var taxons = await _taxonRepository.getAllTaxons();
+
+        TaxonFilter = Math.Max(TaxonFilter,0);
+
+        if(TaxonFilter !=0 && !taxons.Any(t => t.Id == TaxonFilter))
+        {
+            TaxonFilter = 0;
+        }
+
+        TaxonDropDown = new SelectList(taxons, "Id", "Name", TaxonFilter);
+
+        if(TaxonFilter != 0)
+        {
+            Observations = await _observationService.GetObservationsFromTaxon(TaxonFilter,CurrentPage);
+
+        }
+        else
+        {
+            Observations = await _observationService.GetObservations(CurrentPage);
+        }
     }
 }
