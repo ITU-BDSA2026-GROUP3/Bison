@@ -41,10 +41,10 @@ public class PaginationPageModelTests
     public async Task UserTimelinePassesAuthorAndPageToService()
     {
         FakeObservationService service = new();
-        FakeAuthorRepository fakeAuthorRepository = new();
-        UserTimelineModel model = new(service);
+        FakeTaxonRepository taxonRepository = new();
+        UserTimelineModel model = new(service, taxonRepository);
 
-        await model.OnGet("1", 2);
+        await model.OnGetAsync("1", 2);
 
         Assert.Equal("1", model.author.Id);
         Assert.Equal(2, model.CurrentPage);
@@ -58,10 +58,10 @@ public class PaginationPageModelTests
     public async Task UserTimelineNormalizesInvalidPageToOne(int page)
     {
         FakeObservationService service = new();
-        FakeAuthorRepository fakeAuthorRepository = new();
-        UserTimelineModel model = new(service);
+        FakeTaxonRepository taxonRepository = new();
+        UserTimelineModel model = new(service, taxonRepository);
 
-        await model.OnGet("1", page);
+        await model.OnGetAsync("1", page);
 
         Assert.Equal(1, model.CurrentPage);
         Assert.Equal(1, service.RequestedPage);
