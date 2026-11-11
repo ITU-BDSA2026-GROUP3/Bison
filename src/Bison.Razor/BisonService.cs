@@ -20,6 +20,8 @@ public interface IObservationService
 
     public Task<List<ProposalDto>> GetProposals(int observationId);
     public Task<AuthorDto?> GetAuthor(string authorId);
+
+    public Task<List<int>> CreateObservation(Observation observation);
 }
 
 public class ObservationService : IObservationService
@@ -34,6 +36,12 @@ public class ObservationService : IObservationService
         _AuthorRepository = authorRepository;
         _TaxonRepository = taxonRepository;
     }
+
+    public Task<List<int>> CreateObservation(Observation observation)
+    {
+        return _PostRepository.CreateObservations(new List<Observation> {observation});
+    }
+
     private const int PageSize = 32;
     // These would normally be loaded from a database for example
    
