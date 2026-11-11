@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Bison.Razor.domain_model;
 using Bison.Razor.Repositories;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Runtime.CompilerServices;
+using System.Diagnostics.CodeAnalysis;
+
 
 namespace Bison.Razor.Pages;
 
@@ -13,6 +18,18 @@ public class PublicModel : PageModel
     private readonly IObservationService _observationService;
     private readonly ITaxonRepository _taxonRepository;
     public List<ObservationDto> Observations { get; private set; } = new();
+
+    //The text that is entered by the user
+    [BindProperty]
+    [Required(ErrorMessage = "Please enter an observation")]
+    public string newObservationText{get; set;} = string.Empty;
+
+
+    //the animal selected by user
+    [BindProperty]
+    [Required(ErrorMessage = "Please select an animal.")]
+
+    public int? NewObservationTaxonId{get;set;}
 
     public PublicModel(IObservationService observationService, ITaxonRepository taxonRepository)
     {
