@@ -86,14 +86,17 @@ public class PublicModel : PageModel
 
     public async Task<ActionResult> OnGetAsync([FromQuery] int page = 1)
     {
-        CurrentPage = Math.Max(page, 1);
+        await LoadPageDataAsync(page);
+
+        return Page();
+       /* CurrentPage = Math.Max(page, 1);
         var taxons = await _taxonRepository.getAllTaxons();
         TaxonFilter = Math.Max(TaxonFilter, 0);
         TaxonDropDown = new SelectList(taxons, "Id", "Name", TaxonFilter);
 
         if(TaxonFilter != 0 && TaxonFilter < taxons.Count()+1) Observations = await _observationService.GetObservationsFromTaxon(TaxonFilter, CurrentPage);
         else Observations = await _observationService.GetObservations(CurrentPage);
-        return Page();
+        return Page();*/
     }
 
     private async Task LoadPageDataAsync(int page)
