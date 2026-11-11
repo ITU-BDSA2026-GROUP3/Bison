@@ -3,6 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
 using Bison.Razor.Repositories;
+using Bison.Razor.domain_model;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Runtime.CompilerServices;
+using System.Diagnostics.CodeAnalysis;
+
 
 namespace Bison.Razor.Pages;
 
@@ -29,6 +36,19 @@ public class UserTimelineModel : PageModel
     public bool HasPreviousPage => CurrentPage > 1;
 
     public bool HasNextPage => Observations.Count == PageSize;
+
+    private readonly ITaxonRepository _taxonRepository;
+
+    [BindProperty]
+    [Required(ErrorMessage = "Please enter an observation.")]
+    public string NewObservationText{get; set;} = string.Empty;
+
+    [BindProperty]
+    [Required(ErrorMessage ="Please select an animal.")]
+    public int? NewObservationTaxondId{get; set;}
+
+    public SelectList TaxonDropDown{get; private set;}
+    = new SelectList(new List <Taxon>(), "Id", "Name");
 
     public async Task<ActionResult> OnGet([FromRoute] string authorId, [FromQuery] int page = 1)
     {
