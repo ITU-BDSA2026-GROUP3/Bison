@@ -22,7 +22,7 @@ public interface IObservationService
     public Task<List<ProposalDto>> GetProposals(int observationId);
     public Task<AuthorDto?> GetAuthor(string authorId);
 
-    public Task<List<int>> CreateObservation(Observation observation);
+    public Task<List<int>> CreateObservation(string text, string authorID, int taxonID);
 }
 
 public class ObservationService : IObservationService
@@ -41,7 +41,7 @@ public class ObservationService : IObservationService
    
     public async Task<List<int>> CreateObservation(string text, string authorID, int taxonID)
     {
-        if (string.IsNullOrWhiteSpace(text){
+        if (string.IsNullOrWhiteSpace(text)){
             throw new ArgumentException("The Observation cannot be empty.");
         }
 
@@ -61,7 +61,17 @@ public class ObservationService : IObservationService
             throw new InvalidOperationException("Taxon not found");
         }
 
-        //return await _PostRepository.CreateObservations(new List<Observation> {observation});
+
+        //Creating the observation
+        var observation = new Observation
+        {
+            Text = text.Trim(),
+            TimeStamp = DateTime.UtcNow,
+            Author = author,
+            Taxon = taxon 
+        };
+
+        return await _PostRepository.CreateObservations(new List<Observation> {observation});
     }
 
     private const int PageSize = 32;
