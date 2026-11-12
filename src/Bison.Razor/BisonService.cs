@@ -24,6 +24,7 @@ public interface IObservationService
 
     public Task<List<int>> CreateObservation(string text, string authorID, int taxonID);
     public Task<List<int>> CreateComment(string text, string authorID, int observationID);
+    public Task<List<int>> CreateProposal(string text, string authorID, int observationID, int taxonID);
 }
 
 public class ObservationService : IObservationService
@@ -70,6 +71,11 @@ public class ObservationService : IObservationService
 
         return await _PostRepository.CreateComments(
             new List<Comment> { comment });
+    }
+
+    public Task<List<int>> CreateProposal(string text, string authorID, int observationID,int taxonID)
+    {
+        throw new NotImplementedException();
     }
     
     public async Task<List<int>> CreateObservation(string text, string authorID, int taxonID)
