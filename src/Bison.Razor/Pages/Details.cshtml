@@ -78,6 +78,39 @@
         }
 
         <h3>Proposals</h3>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <div class="observationbox">
+                <h4>Make a proposal</h4>
+
+                <form method="post" asp-page-handler="Proposal">
+                    <input type="hidden"
+                        name="id"
+                        value="@Model.Observation.Id" />
+
+                    <div>
+                        <input type="text"
+                            name="ProposalText"
+                            placeholder="Explain your proposal"
+                            aria-label="Proposal"
+                            required />
+                    </div>
+
+                    <div>
+                        <label for="proposalTaxonId">Proposed animal:</label>
+
+                        <select id="proposalTaxonId"
+                                name="ProposalTaxonId"
+                                asp-items="Model.TaxonDropDown"
+                                required>
+                            <option value="">-- Select an animal --</option>
+                        </select>
+                    </div>
+
+                    <input type="submit" value="Submit proposal" />
+                </form>
+            </div>
+        }
 
         @if (Model.Proposals.Any())
         {
