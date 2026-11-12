@@ -23,6 +23,7 @@ public interface IObservationService
     public Task<AuthorDto?> GetAuthor(string authorId);
 
     public Task<List<int>> CreateObservation(string text, string authorID, int taxonID);
+    public Task<List<int>> CreateComment(string text, string authorID, int observationID);
 }
 
 public class ObservationService : IObservationService
@@ -38,7 +39,14 @@ public class ObservationService : IObservationService
         _TaxonRepository = taxonRepository;
     }
 
-   
+    public Task<List<int>> CreateComment(
+        string text,
+        string authorID,
+        int observationID)
+    {
+        throw new NotImplementedException();
+    }
+    
     public async Task<List<int>> CreateObservation(string text, string authorID, int taxonID)
     {
         if (string.IsNullOrWhiteSpace(text)){

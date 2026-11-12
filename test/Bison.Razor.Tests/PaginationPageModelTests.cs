@@ -75,6 +75,14 @@ public class PaginationPageModelTests
             return Task.FromResult(new List<int>());
             
         }
+
+        public Task<List<int>> CreateComment(
+            string text,
+            string authorID,
+            int observationID)
+        {
+            return Task.FromResult(new List<int>());
+        }
         
 
         public int RequestedPublicPage { get; private set; }
