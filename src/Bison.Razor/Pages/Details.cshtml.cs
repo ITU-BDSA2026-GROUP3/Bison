@@ -84,4 +84,42 @@ public class DetailsModel : PageModel
         return true;
     }
 
+    public async Task<IActionResult> OnPostProposalAsync([FromRoute] int id, string proposalText, int? proposalTaxonId)
+    {
+        if (User.Identity?.IsAuthenticated != true)
+        {
+            return Challenge();
+        }
+        var authorID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(authorID))
+        {
+            return Challenge();
+        }
+        if (string.IsNullOrWhiteSpace(proposalText))
+        {
+            ModelState.AddModelError(nameof(proposalText), "The proposal cannot be empty.");
+        }
+        var taxons = await _taxonRepository.getAllTaxons();
+        if (!proposalTaxonId.HasValue ||
+            !taxons.Any(taxon => taxon.Id == proposalTaxonId.Value))
+        {
+            ModelState.AddModelError(nameof(proposalTaxonId), "Please select a valid animal.");
+        }
+        if (!ModelState.IsValid)
+        {
+            var observationExists = await LoadPageDataAsync(id);
+
+            if (!observationExists)
+            {
+                return NotFound();
+            }
+            return Page();
+        }
+        await _observationService.CreateProposal(
+            proposalText,
+            authorID,
+            id,
+            proposalTaxonId!.Value);
+        return RedirectToPage("/Details", new { id });
+    }
 }
