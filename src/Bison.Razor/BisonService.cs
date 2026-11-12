@@ -99,6 +99,7 @@ public class ObservationService : IObservationService
                 AuthorName = obs.Author.Name,
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
+                ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
                 TaxonName = obs.Taxon.Name
             };
 
@@ -118,6 +119,7 @@ public class ObservationService : IObservationService
             AuthorName = obs.Author.Name,
             Text = obs.Text,
             Timestamp = DateTimeToString(obs.TimeStamp),
+            ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
             TaxonName = obs.Taxon.Name
         };
         return dto;

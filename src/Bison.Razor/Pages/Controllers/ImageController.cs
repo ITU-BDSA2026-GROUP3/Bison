@@ -1,9 +1,19 @@
+using System.Threading.Tasks;
+using Bison.Razor.domain_model;
+using Bison.Razor.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 
 public class ImageController : Controller
 {
+    private readonly IObservationService _observationService;
+
+    public ImageController(IObservationService observationService)
+    {
+        _observationService = observationService;
+    }
+
     [HttpPost]
     public async Task<IActionResult> Upload(IFormFile image)
     {
@@ -24,5 +34,13 @@ public class ImageController : Controller
         {
             return BadRequest("File is not a valid image.");
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetImage(int id)
+    {
+        ObservationDto obs =  await _observationService.GetObservationFromId(id);
+        if (obs?.ImgBytes == null) return NotFound();
+        return File(obs.ImgBytes, "image/jpeg");
     }
 }
