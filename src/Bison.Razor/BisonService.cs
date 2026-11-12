@@ -3,6 +3,7 @@ using Bison.Razor.DTOs;
 using Bison.Razor.Repositories;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
+using System.Security.Cryptography.X509Certificates;
 using static System.Net.Mime.MediaTypeNames;
 
 public record ObservationViewModel(long obsID, string Author, string Message, string Location ,string Timestamp);
@@ -20,6 +21,8 @@ public interface IObservationService
 
     public Task<List<ProposalDto>> GetProposals(int observationId);
     public Task<AuthorDto?> GetAuthor(string authorId);
+
+    public Task<List<int>> CreateObservation(string text, string authorID, int taxonID);
 }
 
 public class ObservationService : IObservationService
@@ -34,6 +37,43 @@ public class ObservationService : IObservationService
         _AuthorRepository = authorRepository;
         _TaxonRepository = taxonRepository;
     }
+
+   
+    public async Task<List<int>> CreateObservation(string text, string authorID, int taxonID)
+    {
+        if (string.IsNullOrWhiteSpace(text)){
+            throw new ArgumentException("The Observation cannot be empty.");
+        }
+
+        //This retrieves the author of obs
+        var author= await _AuthorRepository.getAuthor(authorID);
+
+        if(author == null)
+        {
+            throw new InvalidOperationException("Author not found.");
+        }
+
+        //Retrieve the taxon
+        var taxon = await _TaxonRepository.getTaxon(taxonID);
+
+        if(taxon == null)
+        {
+            throw new InvalidOperationException("Taxon not found");
+        }
+
+
+        //Creating the observation
+        var observation = new Observation
+        {
+            Text = text.Trim(),
+            TimeStamp = DateTime.UtcNow,
+            Author = author,
+            Taxon = taxon 
+        };
+
+        return await _PostRepository.CreateObservations(new List<Observation> {observation});
+    }
+
     private const int PageSize = 32;
     // These would normally be loaded from a database for example
    
