@@ -3,7 +3,12 @@
 @{
     ViewData["Title"] = "Bison";
     Layout = "Shared/_Layout";
-    var routeName = HttpContext.GetRouteValue("author");
+
+    /*var currentUserID = User.Find
+    var routeName = HttpContext.GetRouteValue("author");*/
+    var currentUserID = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;     
+        
+    var isOwnTimeline = currentUserID != null && currentUserID == Model.author?.Id;
 }
 
 <div>
@@ -13,7 +18,51 @@
     }
     else
     {
-        <h2> @Model.author.Name's Observations </h2>
+      
+
+        @if (isOwnTimeline)
+        {
+            <h2>My Observations</h2>
+
+            <div class ="observationbox">
+                <h3>What did you see, @User.Identity?.Name?</h3>
+    
+                 <form method ="post"
+                asp-page-handler="Create"
+                asp-route-authorId="@Model.author.Id">
+                
+
+                <input type="text"
+                style="float: left"
+                asp-for ="NewObservationText"
+                placeholder="What did you observe"/>
+
+                <span asp-validation-for="NewObservationText"></span>
+
+                    <select asp-for="NewObservationTaxonId"
+                         asp-items= "Model.TaxonDropDown">
+                    
+                    
+                    <option value="">-- Select an animal --</option>
+
+
+                    </select>
+
+                    <span asp-validation-for="NewObservationTaxonId"></span>
+                       
+                        <input type="submit" value="Share" />
+                   
+                    </form>
+
+                </div>
+           
+            }
+        else
+                {
+                    <h2>@Model.author.Name's Observations</h2>
+                    
+                }
+     
 
         @if (Model.Observations.Any())
         {
@@ -25,7 +74,7 @@
                             <strong>
                                 <a asp-page="/UserTimeline"
                                     asp-route-author="@ob.AuthorName">
-                                    @ob.AuthorName
+                                    <strong>@ob.AuthorName</strong>
                                 </a>
                             </strong>
                             @ob.Text
