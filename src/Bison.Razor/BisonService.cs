@@ -39,12 +39,37 @@ public class ObservationService : IObservationService
         _TaxonRepository = taxonRepository;
     }
 
-    public Task<List<int>> CreateComment(
-        string text,
-        string authorID,
-        int observationID)
+    public async Task<List<int>> CreateComment(string text, string authorID, int observationID)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            throw new ArgumentException("The comment cannot be empty.");
+        }
+
+        var author = await _AuthorRepository.getAuthor(authorID);
+
+        if (author == null)
+        {
+            throw new InvalidOperationException("Author not found.");
+        }
+
+        var observation = await _PostRepository.ReadSingleObservation(observationID);
+
+        if (observation == null)
+        {
+            throw new InvalidOperationException("Observation not found.");
+        }
+
+        var comment = new Comment
+        {
+            Text = text.Trim(),
+            TimeStamp = DateTime.UtcNow,
+            Author = author,
+            Observation = observation
+        };
+
+        return await _PostRepository.CreateComments(
+            new List<Comment> { comment });
     }
     
     public async Task<List<int>> CreateObservation(string text, string authorID, int taxonID)
