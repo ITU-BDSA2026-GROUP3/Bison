@@ -73,9 +73,45 @@ public class ObservationService : IObservationService
             new List<Comment> { comment });
     }
 
-    public Task<List<int>> CreateProposal(string text, string authorID, int observationID,int taxonID)
+    public async Task<List<int>> CreateProposal(string text, string authorID, int observationID,int taxonID)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            throw new ArgumentException("The proposal cannot be empty.");
+        }
+
+        var author = await _AuthorRepository.getAuthor(authorID);
+
+        if (author == null)
+        {
+            throw new InvalidOperationException("Author not found.");
+        }
+
+        var observation = await _PostRepository.ReadSingleObservation(observationID);
+
+        if (observation == null)
+        {
+            throw new InvalidOperationException("Observation not found.");
+        }
+
+        var taxon = await _TaxonRepository.getTaxon(taxonID);
+
+        if (taxon == null)
+        {
+            throw new InvalidOperationException("Taxon not found.");
+        }
+
+        var proposal = new Proposal
+        {
+            Text = text.Trim(),
+            TimeStamp = DateTime.UtcNow,
+            Author = author,
+            Observation = observation,
+            Taxon = taxon
+        };
+
+        return await _PostRepository.CreateProposals(
+            new List<Proposal> { proposal });
     }
     
     public async Task<List<int>> CreateObservation(string text, string authorID, int taxonID)
