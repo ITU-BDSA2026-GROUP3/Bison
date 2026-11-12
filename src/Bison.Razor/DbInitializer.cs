@@ -1,4 +1,8 @@
 using Bison.Razor.domain_model;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Formats.Jpeg;
+
 
 public static class DbInitializer
 {
@@ -52,12 +56,33 @@ public static class DbInitializer
 
         context.SaveChanges();
 
+        using var image = new Image<Rgb24>(1280, 720);
+
+        image.ProcessPixelRows(accessor =>
+        {
+            for (int y = 0; y < accessor.Height; y++)
+            {
+                Span<Rgb24> row = accessor.GetRowSpan(y);
+
+                for (int x = 0; x < row.Length; x++)
+                {
+                    row[x] = new Rgb24(255, 0, 0);
+                }
+            }
+        });
+
+        using var ms = new MemoryStream();
+
+        image.SaveAsJpeg(ms);
+
+        byte[] jpegBytes = ms.ToArray();
         var observation1 = new Observation
         {
             Text = "I saw a heron near the lake",
             TimeStamp = DateTime.Now,
             Author = author1,
-            Taxon = taxon2
+            Taxon = taxon2,
+            ImgBytes = jpegBytes
         };
 
         var observation2 = new Observation
