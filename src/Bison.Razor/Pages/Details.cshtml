@@ -28,7 +28,29 @@
             @Model.Observation.Timestamp
        </p>
 
-       <h3>Comments</h3>
+        <h3>Comments</h3>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <div class="observationbox">
+                <h4>Write a comment</h4>
+
+                <form method="post" asp-page-handler="Comment">
+                    <input type="hidden"
+                        name="id"
+                        value="@Model.Observation.Id" />
+
+                    <input type="text"
+                        name="CommentText"
+                        placeholder="Write your comment"
+                        aria-label="Comment"
+                        required />
+
+                    <span asp-validation-for="CommentText"></span>
+
+                    <input type="submit" value="Comment" />
+                </form>
+            </div>
+        }
         @if (Model.Comments.Any())
         {
             <ul>
@@ -56,6 +78,41 @@
         }
 
         <h3>Proposals</h3>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <div class="observationbox">
+                <h4>Make a proposal</h4>
+
+                <form method="post" asp-page-handler="Proposal">
+                    <input type="hidden"
+                        name="id"
+                        value="@Model.Observation.Id" />
+
+                    <div>
+                        <input type="text"
+                            name="ProposalText"
+                            placeholder="Explain your proposal"
+                            aria-label="Proposal"
+                            required />
+                        @Html.ValidationMessage("proposalText")
+                    </div>
+
+                    <div>
+                        <label for="proposalTaxonId">Proposed animal:</label>
+
+                        <select id="proposalTaxonId"
+                                name="ProposalTaxonId"
+                                asp-items="Model.TaxonDropDown"
+                                required>
+                            <option value="">-- Select an animal --</option>
+                        </select>
+                        @Html.ValidationMessage("proposalTaxonId")
+                    </div>
+
+                    <input type="submit" value="Submit proposal" />
+                </form>
+            </div>
+        }
 
         @if (Model.Proposals.Any())
         {
