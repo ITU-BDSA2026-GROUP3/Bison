@@ -94,7 +94,7 @@
                             placeholder="Explain your proposal"
                             aria-label="Proposal"
                             required />
-                        <span asp-validation-for="ProposalText"></span>
+                        @Html.ValidationMessage("proposalText")
                     </div>
 
                     <div>
@@ -106,6 +106,7 @@
                                 required>
                             <option value="">-- Select an animal --</option>
                         </select>
+                        @Html.ValidationMessage("proposalTaxonId")
                     </div>
 
                     <input type="submit" value="Submit proposal" />
