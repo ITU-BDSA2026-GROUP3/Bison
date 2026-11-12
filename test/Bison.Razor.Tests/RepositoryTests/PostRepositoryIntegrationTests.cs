@@ -34,7 +34,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task CreateSingleObservation()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
 
@@ -53,7 +53,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task CreateMultipleObservations()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs1 = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author, Taxon = taxon, Text = "I observed", TimeStamp = DateTime.Now};
@@ -77,7 +77,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task GetObservationByValidId()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs1 = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author, Taxon = taxon, Text = "I observed", TimeStamp = DateTime.Now};
@@ -96,7 +96,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task GetObservationByInvalidId()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
         await _postRepository.CreateObservations([obs]);
@@ -112,7 +112,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task GetAllObservationsFromDatabase()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs1 = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author, Taxon = taxon, Text = "I observed", TimeStamp = DateTime.Now};
@@ -148,7 +148,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task CreateSingleComment()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
         Comment com = new Comment{Author = author, Observation = obs, Text = "I cant believe you just did that"};
@@ -168,7 +168,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task CreateMultipleComments()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
         Comment com1 = new Comment{Author = author, Observation = obs, Text = "I cant believe you just did that"};
@@ -193,7 +193,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task GetSingleCommentFromObservation()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs1 = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author, Taxon = taxon, Text = "I observe but again", TimeStamp = DateTime.Now};
@@ -215,7 +215,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task GetMultipleCommentsFromObservation()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs1 = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author, Taxon = taxon, Text = "I observe but again", TimeStamp = DateTime.Now};
@@ -243,7 +243,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task GetCommentsFromNonExistingObservation()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs1 = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author, Taxon = taxon, Text = "I observe but again", TimeStamp = DateTime.Now};
@@ -264,7 +264,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task CreateSingleProposal()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
         Proposal prop = new Proposal{Author = author, Observation = obs, Text = "Yes you did, and it was an animal", Taxon = taxon};
@@ -284,7 +284,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task CreateMultipleProposals()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
         Proposal prop1 = new Proposal{Author = author, Observation = obs, Text = "Yes you did, and it was an animal", Taxon = taxon};
@@ -309,7 +309,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task GetSingleProposalFromObservation()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs1 = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author, Taxon = taxon, Text = "I observed", TimeStamp = DateTime.Now};
@@ -331,7 +331,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task GetMultipleProposalsFromObservation()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs1 = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author, Taxon = taxon, Text = "I observed", TimeStamp = DateTime.Now};
@@ -359,7 +359,7 @@ public class PostRepositoryIntegrationTests : IDisposable
     public async Task GetProposalsFromNonExistingObservation()
     {
         //Arrange
-        Author author = new Author{Name = "Emil"};
+        Author author = new Author{UserName = "Emil"};
         Taxon taxon = new Taxon{Name = "Taxon"};
         Observation obs1 = new Observation{Author = author, Taxon = taxon, Text = "I observe", TimeStamp = DateTime.Now};
         Observation obs2 = new Observation{Author = author, Taxon = taxon, Text = "I observed", TimeStamp = DateTime.Now};
