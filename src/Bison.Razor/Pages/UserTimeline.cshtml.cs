@@ -51,15 +51,15 @@ public class UserTimelineModel : PageModel
 
         var taxons = await _taxonRepository.getAllTaxons();
 
-        if(!NewObservationTaxondId.HasValue || !taxons.Any(t => t.Id == NewObservationTaxondId.Value))
+        if(!NewObservationTaxonId.HasValue || !taxons.Any(t => t.Id == NewObservationTaxonId.Value))
         {
-            ModelState.AddModelError(nameof(NewObservationTaxondId),"Please select as valid animal.");
+            ModelState.AddModelError(nameof(NewObservationTaxonId),"Please select as valid animal.");
 
             await LoadPageDataAsync(authorId,1);
             return Page();
         }
 
-        await _observationService.CreateObservation(NewObservationText,currentUserId,NewObservationTaxondId.Value);
+        await _observationService.CreateObservation(NewObservationText,currentUserId,NewObservationTaxonId.Value);
 
         return RedirectToPage("/UserTimeline", new {authorId = currentUserId});
     }
@@ -83,7 +83,7 @@ public class UserTimelineModel : PageModel
 
     [BindProperty]
     [Required(ErrorMessage ="Please select an animal.")]
-    public int? NewObservationTaxondId{get; set;}
+    public int? NewObservationTaxonId{get; set;}
 
     public SelectList TaxonDropDown{get; private set;}
     = new SelectList(new List <Taxon>(), "Id", "Name");
@@ -115,7 +115,7 @@ public class UserTimelineModel : PageModel
 
         var taxons = await _taxonRepository.getAllTaxons();
 
-        TaxonDropDown = new SelectList(taxons, "Id","Name", NewObservationTaxondId);
+        TaxonDropDown = new SelectList(taxons, "Id","Name", NewObservationTaxonId);
     }
     
 }
