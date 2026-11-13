@@ -86,6 +86,8 @@ public class DetailsModel : PageModel
 
     public async Task<IActionResult> OnPostProposalAsync([FromRoute] int id, string proposalText, int? proposalTaxonId)
     {
+        ModelState.Remove(nameof(CommentText));
+        
         if (User.Identity?.IsAuthenticated != true)
         {
             return Challenge();
