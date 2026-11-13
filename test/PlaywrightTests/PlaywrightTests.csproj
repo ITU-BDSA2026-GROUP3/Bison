@@ -21,5 +21,10 @@
   <ItemGroup>
     <Using Include="NUnit.Framework" />
   </ItemGroup>
+	
+  <ItemGroup>
+	<ProjectReference Include="..\..\src\Bison.Razor\Bison.Razor.csproj" />
+	<ProjectReference Include="..\Bison.Razor.Tests\Bison.Razor.Tests.csproj" />
+  </ItemGroup>
 
 </Project>
