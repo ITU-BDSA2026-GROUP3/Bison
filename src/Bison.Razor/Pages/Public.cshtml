@@ -68,6 +68,11 @@
                         </strong>
                         @obs.Text
                         <small><em>&mdash; </em>@obs.Timestamp</small>
+
+                        <a asp-page="/Details"
+                            asp-route-id="@obs.Id">
+                            View details
+                        </a>
                     </p>
                 </li>
             }
