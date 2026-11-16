@@ -27,8 +27,8 @@ public class ImageController : Controller
             if (img.Width > 1280) img.Mutate(x => x.Resize(1280, img.Height));
             await img.SaveAsJpegAsync(ms);
             Byte[] bytes = ms.ToArray();
-            await _observationService.CreateObservation(null, null, 0, bytes); //0 acts as a null assignment here because auto increment starts at 1 from sql
-            int observationid = 0;// replace observationid with the actual value
+            List<int> list = await _observationService.CreateObservation(null, null, 0, bytes); //0 acts as a null assignment here because auto increment starts at 1 from sql
+            int observationid = list.First();// replace observationid with the actual value
             ViewBag.observationid = observationid; //this will make ViewBag.observationid null if this method is never run
             return View(image.FileName);//this might not always be a consistent way to display the file name so futher checks might be needed
         }
