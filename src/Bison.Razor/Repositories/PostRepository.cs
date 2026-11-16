@@ -43,7 +43,6 @@ namespace Bison.Razor.Repositories
 
             // Execute the query and store the results
             var result = await query.ToListAsync();
-
             return result;
         }
 

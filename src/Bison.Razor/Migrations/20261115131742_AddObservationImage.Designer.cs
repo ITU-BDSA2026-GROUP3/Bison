@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bison.Razor.Migrations
 {
     [DbContext(typeof(BisonContext))]
-    [Migration("20261113112804_pictureschema")]
-    partial class pictureschema
+    [Migration("20261115131742_AddObservationImage")]
+    partial class AddObservationImage
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -288,6 +288,9 @@ namespace Bison.Razor.Migrations
             modelBuilder.Entity("Bison.Razor.domain_model.Observation", b =>
                 {
                     b.HasBaseType("Bison.Razor.domain_model.Post");
+
+                    b.Property<byte[]>("ImgBytes")
+                        .HasColumnType("BLOB");
 
                     b.Property<int>("TaxonId")
                         .HasColumnType("INTEGER");

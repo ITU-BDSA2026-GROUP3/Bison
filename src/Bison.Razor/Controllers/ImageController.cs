@@ -4,16 +4,18 @@ using Bison.Razor.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-
+[ApiController]
+[Route("[controller]/[action]")]
 public class ImageController : Controller
 {
     private readonly IObservationService _observationService;
+    private readonly ILogger<ImageController> _logger;
 
-    public ImageController(IObservationService observationService)
+    public ImageController(IObservationService observationService, ILogger<ImageController> logger)
     {
+        _logger = logger;
         _observationService = observationService;
     }
-
     [HttpPost]
     public async Task<IActionResult> Upload(IFormFile image)
     {

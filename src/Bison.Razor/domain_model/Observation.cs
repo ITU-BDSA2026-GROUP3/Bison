@@ -1,7 +1,7 @@
 namespace Bison.Razor.domain_model;
 public class Observation : Post
 {
-    internal byte[]? ImgBytes { get; set; }
+    public byte[]? ImgBytes { get; set; }
 
     public Taxon Taxon { get; set; } = null!;
 

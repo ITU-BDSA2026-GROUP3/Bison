@@ -74,7 +74,6 @@ public static class DbInitializer
         using var ms = new MemoryStream();
 
         image.SaveAsJpeg(ms);
-
         byte[] jpegBytes = ms.ToArray();
         var observation1 = new Observation
         {

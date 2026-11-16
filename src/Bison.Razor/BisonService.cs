@@ -170,6 +170,8 @@ public class ObservationService : IObservationService
                 ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
                 TaxonName = obs.Taxon.Name
             };
+            if(obs.Id == 1 && obs.ImgBytes == null) throw new Exception("obs imgbytes is null");
+            if (dto.Id == 1) if(dto.ImgBytes == null || dto.ImgBytes.Length == 0) throw new Exception("dto imgbytes is null");
 
             observations.Add(dto);
         }
@@ -239,6 +241,11 @@ public class ObservationService : IObservationService
             ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
             TaxonName = obs.Taxon.Name
         };
+        if (obs.Id == 1)
+        {
+            if(obs.ImgBytes != null) throw new Exception("bytes is null");
+            if (obs.ImgBytes.Length == 0) throw new Exception("bytes is nothing");
+        }
         return dto;
     }
     public async Task<List<CommentDto>> GetComments(int observationId)
