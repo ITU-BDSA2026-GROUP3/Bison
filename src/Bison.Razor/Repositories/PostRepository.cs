@@ -65,7 +65,6 @@ namespace Bison.Razor.Repositories
              .Where(obs => obs.Id == observationID);
             // Execute the query and store the results
             var result = await query.SingleOrDefaultAsync();
-
             return result;
         }
 
