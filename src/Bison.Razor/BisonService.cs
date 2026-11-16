@@ -23,6 +23,7 @@ public interface IObservationService
     public Task<AuthorDto?> GetAuthor(string authorId);
 
     public Task<List<int>> CreateObservation(string text, string authorID, int taxonID);
+    public Task<List<int>> CreateObservation(string text, string authorID, int taxonID, Byte[] imgbytes);
     public Task<List<int>> CreateComment(string text, string authorID, int observationID);
     public Task<List<int>> CreateProposal(string text, string authorID, int observationID, int taxonID);
 }
@@ -144,6 +145,55 @@ public class ObservationService : IObservationService
             TimeStamp = DateTime.UtcNow,
             Author = author,
             Taxon = taxon 
+        };
+
+        return await _PostRepository.CreateObservations(new List<Observation> {observation});
+    }
+
+    //overload
+    public async Task<List<int>> CreateObservation(string text, string authorID, int taxonID, Byte[] imgbytes)
+    {
+        if (string.IsNullOrWhiteSpace(text)){
+            throw new ArgumentException("The Observation cannot be empty.");
+        }
+
+        //This retrieves the author of obs
+        var author= await _AuthorRepository.getAuthor(authorID);
+
+        if(author == null)
+        {
+            throw new InvalidOperationException("Author not found.");
+        }
+
+        //Retrieve the taxon
+        Taxon? taxon = null;
+        if (taxonID != 0) {
+            taxon = await _TaxonRepository.getTaxon(taxonID);
+            if(taxon == null)
+            {
+                throw new InvalidOperationException("Taxon not found");
+            }
+        }
+
+        
+        Observation observation;
+        if(imgbytes == null || imgbytes.Length == 0)
+        //Creating the observation
+        observation = new Observation
+        {
+            Text = text.Trim(),
+            TimeStamp = DateTime.UtcNow,
+            Author = author,
+            Taxon = taxon 
+        };
+        else
+        observation = new Observation
+        {
+            Text = text.Trim(),
+            TimeStamp = DateTime.UtcNow,
+            Author = author,
+            Taxon = taxon,
+            ImgBytes = imgbytes 
         };
 
         return await _PostRepository.CreateObservations(new List<Observation> {observation});
