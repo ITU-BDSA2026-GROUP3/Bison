@@ -28,7 +28,7 @@ public class ImageController : Controller
             await img.SaveAsJpegAsync(ms);
             Byte[] bytes = ms.ToArray();
             List<int> list = await _observationService.CreateObservation(null, null, 0, bytes); //0 acts as a null assignment here because auto increment starts at 1 from sql
-            int observationid = list.First();// replace observationid with the actual value
+            int observationid = list.First();//this might be kind of stupid since if we change createobservation in the future things might break but it works for now
             ViewBag.observationid = observationid; //this will make ViewBag.observationid null if this method is never run
             return View(image.FileName);//this might not always be a consistent way to display the file name so futher checks might be needed
         }
