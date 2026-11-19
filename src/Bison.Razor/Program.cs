@@ -15,6 +15,7 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddRazorPages();
+        builder.Services.AddControllers();
 
         var githubClientId = builder.Configuration["Authentication:GitHub:ClientId"];
 
@@ -92,7 +93,15 @@ public class Program
         }).RequireAuthorization();*/
         app.MapGet("/", () => { return Results.Redirect("/obs"); }); // sets public observations as default page.
         app.MapRazorPages();
+        app.MapControllers();
 
+        var endpoints = app.Services.GetRequiredService<
+    Microsoft.AspNetCore.Routing.EndpointDataSource>();
+
+foreach (var endpoint in endpoints.Endpoints)
+{
+    Console.WriteLine(endpoint.DisplayName);
+}
         app.Run();
     }
 }
