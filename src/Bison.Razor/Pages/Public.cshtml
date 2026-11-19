@@ -14,7 +14,7 @@
 
             <h3>Hello what did you see, @User.Identity.Name?</h3>
 
-            <form method= "post" asp-page-handler="Create">
+            <form method= "post" asp-page-handler="Create" enctype="multipart/form-data">
 
                 <div>
                     <input style="float: left"
@@ -29,18 +29,8 @@
                        <option value ="">-- Select an animal --</option>
                     </select>
                 </div>
-
-                <form asp-action="Upload"
-                    asp-controller="Image"
-                    method="post"
-                    enctype="multipart/form-data">
-                    <input type="hidden"
-                       name="observationId"
-                       value="@ViewBag.ObservationId" />
-                    <input type="file" name="image" />
-                    <button type="submit">Upload</button>
-                </form>
-
+                <input type="file" asp-for="IMAGE"/>
+                <br />
                 <button type ="submit">Share</button>
 
             </form>

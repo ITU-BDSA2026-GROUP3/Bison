@@ -16,28 +16,7 @@ public class ImageController : Controller
         _logger = logger;
         _observationService = observationService;
     }
-    [HttpPost]
-    public async Task<IActionResult> Upload(IFormFile image)
-    {
-        try
-        {
-            using var img = Image.Load(image.OpenReadStream());
-            using var ms = new MemoryStream();
-            if (img.Height > 720) img.Mutate(x => x.Resize(img.Width, 720));
-            if (img.Width > 1280) img.Mutate(x => x.Resize(1280, img.Height));
-            await img.SaveAsJpegAsync(ms);
-            Byte[] bytes = ms.ToArray();
-            List<int> list = await _observationService.CreateObservation(null, null, 0, bytes); //0 acts as a null assignment here because auto increment starts at 1 from sql
-            int observationid = list.First();//this might be kind of stupid since if we change createobservation in the future things might break but it works for now
-            ViewBag.observationid = observationid; //this will make ViewBag.observationid null if this method is never run
-            return View(image.FileName);//this might not always be a consistent way to display the file name so futher checks might be needed
-        }
-        catch
-        {
-            return BadRequest("File is not a valid image.");
-        }
-    }
-
+    
     [HttpGet]
     public async Task<IActionResult> GetImage(int id)
     {
