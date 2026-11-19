@@ -19,7 +19,7 @@ namespace Bison.Razor.Tests;
 public class RazorServiceFactory : WebApplicationFactory<Program>
 {
     public IHost? _host;
-    private string baseAddress = "http://localhost:5050";
+    private string baseAddress = "http://127.0.0.1:0";
     private bool useFakeAuthentication = false;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -115,7 +115,7 @@ public class RazorServiceFactory : WebApplicationFactory<Program>
         {
             using var _ = CreateDefaultClient();
         }
-        return baseAddress;
+        return ClientOptions.BaseAddress.ToString().TrimEnd('/');
     }
 
     public IServiceScope CreateScope()
