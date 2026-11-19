@@ -11,6 +11,13 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        var app = getApp(args);
+
+        app.Run();
+    }
+
+    public static WebApplication getApp(string[] args)
+    {
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
@@ -81,6 +88,6 @@ public class Program
         app.MapGet("/", () => { return Results.Redirect("/obs"); }); // sets public observations as default page.
         app.MapRazorPages();
 
-        app.Run();
+        return app;
     }
 }

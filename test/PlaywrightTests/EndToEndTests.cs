@@ -5,25 +5,56 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Playwright;
-using Microsoft.Playwright.NUnit;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
+using System;
+using System.Threading.Tasks;
+using Microsoft.Playwright.NUnit;
+using Microsoft.Extensions.Hosting;
 
 namespace PlaywrightTests
 {
     [TestFixture]
     public class EndToEndTests : PageTest
     {
+        RazorServiceFactory _factory;
+        BisonContext _context;
+        string uri;
+        
+        [OneTimeSetUp]
+        public async Task OneTimeSetUp()
+        {
+            _factory = new RazorServiceFactory();
+            uri = _factory.GetHostBaseAddress();
+        }
 
+        [SetUp]
+        public async Task SetUp()
+        {
+            var scope = _factory.CreateScope();
+            _context = scope.ServiceProvider.GetService<BisonContext>();
+            _context.Database.EnsureDeleted();
+            _context.Database.EnsureCreated();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _context.Dispose();
+        }
+
+        [OneTimeTearDown]
+        public async Task OneTimeTearDown()
+        {
+            _factory.Dispose();
+        }
 
         // WARNING requires that the test account is not already created
         [Test]
         public async Task RegistrationAndLoginTest()
         {
-
-            await Page.GotoAsync("http://localhost:5273/obs");
-
+            await Page.GotoAsync(uri+"/obs");
 
             // Expect that there is no My Observations link
             await Expect(Page.GetByRole(AriaRole.Link, new(){Name = "My Observations"})).ToHaveCountAsync(0);
