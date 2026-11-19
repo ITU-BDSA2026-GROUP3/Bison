@@ -1,17 +1,10 @@
-﻿using Bison.Razor;
-using Bison.Razor.domain_model;
+﻿using Bison.Razor.domain_model;
 using Bison.Razor.Tests;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Playwright;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using System.Security.Principal;
-using System.Text.RegularExpressions;
-using System;
-using System.Threading.Tasks;
 using Microsoft.Playwright.NUnit;
-using Microsoft.Extensions.Hosting;
+using System.Text.RegularExpressions;
+
 
 namespace PlaywrightTests
 {
@@ -112,7 +105,7 @@ namespace PlaywrightTests
         [Test]
         public async Task LoginPreventionTest()
         {
-            await Page.GotoAsync("http://localhost:5273/obs");
+            await Page.GotoAsync(uri +"/obs");
 
             // attempt to login without the account having been created
             await Page.GetByRole(AriaRole.Link, new(){Name = "Login"}).ClickAsync();
@@ -161,11 +154,59 @@ namespace PlaywrightTests
 
             await Expect(Page.GetByText("Invalid login attempt.")).ToHaveCountAsync(1);
         }
+
         // WARNING requires that the test account is not already created
         [Test]
         public async Task CreateObservationTest()
         {
+            // registration portion
+            await Page.GotoAsync(uri + "/obs");
+
+            await Page.GetByRole(AriaRole.Link, new(){Name = "Register"}).ClickAsync();
+
+            await Page.Locator("css=#Input_Email").FillAsync("test@testmail.mail");
+
+            await Page.Locator("css=#Input_Password").FillAsync("pAsSwOrD_123");
+
+            await Page.Locator("css=#Input_ConfirmPassword").FillAsync("pAsSwOrD_123");
+
+            await Page.GetByRole(AriaRole.Button, new(){Name = "Register"}).ClickAsync();
+            await Page.GetByRole(AriaRole.Link, new(){Name = "Click here to confirm your account"}).ClickAsync();
+
+
+            // Login portion
+            await Page.GetByRole(AriaRole.Link, new(){Name = "Login"}).ClickAsync();
+
+            await Page.Locator("css=#Input_Email").FillAsync("test@testmail.mail");
+
+            await Page.Locator("css=#Input_Password").FillAsync("pAsSwOrD_123");
+
+            await Page.GetByRole(AriaRole.Button, new(){Name = "Log in"}).ClickAsync();
+
+            // posting portion
+            // expect to be on public page
+            await Expect(Page).ToHaveURLAsync(new Regex(".*/obs"));
+            await Expect(Page.GetByText("Hello what did you see, test@testmail.mail?")).ToHaveCountAsync(1);
             
+            await Page.Locator("css=#NewObservationText").FillAsync("I saw mommy kissing Santa Claus");
+
+
+            // WHY DOES THIS CRASH EVERYTHING
+            await Page.Locator("css=#NewObservationTaxonId").SelectOptionAsync("Mammal");
+
+
+
+            await Page.GetByRole(AriaRole.Button, new(){Name = "Share"}).ClickAsync();
+
+            await Expect(Page.GetByText("I saw mommy kissing Santa Claus")).ToHaveCountAsync(1);
+
+            await Page.Locator("css=#taxonSelect").SelectOptionAsync("Mammal");
+
+            await Expect(Page.GetByText("I saw mommy kissing Santa Claus")).ToHaveCountAsync(1);
+
+            await Page.Locator("css=#taxonSelect").SelectOptionAsync("Bird");
+
+            await Expect(Page.GetByText("I saw mommy kissing Santa Claus")).ToHaveCountAsync(0);
         }
     }
 }
