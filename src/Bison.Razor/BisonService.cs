@@ -218,6 +218,7 @@ public class ObservationService : IObservationService
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
                 ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
+                Licence = obs.Licence,
                 TaxonName = obs.Taxon.Name
             };
             observations.Add(dto);
@@ -239,7 +240,9 @@ public class ObservationService : IObservationService
                 AuthorName = obs.Author.UserName,
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
-                TaxonName = obs.Taxon.Name
+                TaxonName = obs.Taxon.Name,
+                ImgBytes = obs.ImgBytes,
+                Licence = obs.Licence
             };
 
             observations.Add(dto);
@@ -266,7 +269,8 @@ public class ObservationService : IObservationService
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
                 ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
-                TaxonName = obs.Taxon.Name
+                TaxonName = obs.Taxon.Name,
+                Licence = obs.Licence
             };
 
             filteredObservations.Add(dto);
@@ -286,7 +290,8 @@ public class ObservationService : IObservationService
             Text = obs.Text,
             Timestamp = DateTimeToString(obs.TimeStamp),
             ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
-            TaxonName = obs.Taxon.Name
+            TaxonName = obs.Taxon.Name,
+            Licence = obs.Licence
         };
         return dto;
     }
