@@ -107,6 +107,66 @@ namespace PlaywrightTests
             await Expect(Page.GetByRole(AriaRole.Link, new(){Name = "My Observations"})).ToHaveCountAsync(0);
 
         }
+
+        // WARNING requires that the test account is not already created
+        [Test]
+        public async Task LoginPreventionTest()
+        {
+            await Page.GotoAsync("http://localhost:5273/obs");
+
+            // attempt to login without the account having been created
+            await Page.GetByRole(AriaRole.Link, new(){Name = "Login"}).ClickAsync();
+
+            await Expect(Page).ToHaveURLAsync(new Regex(".*Identity/Account/Login"));
+
+            await Page.Locator("css=#Input_Email").FillAsync("test@testmail.mail");
+
+            await Page.Locator("css=#Input_Password").FillAsync("pAsSwOrD_123");
+
+
+            // Expect to still be on the login page, but with a warning
+            await Page.GetByRole(AriaRole.Button, new(){Name = "Log in"}).ClickAsync();
+
+            await Expect(Page.GetByText("Invalid login attempt.")).ToHaveCountAsync(1);
+
+
+
+
+            // Click the Register link.
+            await Page.GetByRole(AriaRole.Link, new(){Name = "Register as a new user"}).ClickAsync();
+
+            await Page.Locator("css=#Input_Email").FillAsync("test@testmail.mail");
+
+            await Page.Locator("css=#Input_Password").FillAsync("pAsSwOrD_123");
+
+            await Page.Locator("css=#Input_ConfirmPassword").FillAsync("pAsSwOrD_123");
+
+            await Page.GetByRole(AriaRole.Button, new(){Name = "Register"}).ClickAsync();
+
+            await Page.GetByRole(AriaRole.Link, new(){Name = "Click here to confirm your account"}).ClickAsync();
+
+
+            //atempt to login to with false password
+
+            await Page.GetByRole(AriaRole.Link, new(){Name = "Login"}).ClickAsync();
+
+            await Expect(Page).ToHaveURLAsync(new Regex(".*Identity/Account/Login"));
+
+            await Page.Locator("css=#Input_Email").FillAsync("test@testmail.mail");
+
+            await Page.Locator("css=#Input_Password").FillAsync("321_DrOwSsAp");
+
+            // Expect to still be on the login page, but with a warning
+            await Page.GetByRole(AriaRole.Button, new(){Name = "Log in"}).ClickAsync();
+
+            await Expect(Page.GetByText("Invalid login attempt.")).ToHaveCountAsync(1);
+        }
+        // WARNING requires that the test account is not already created
+        [Test]
+        public async Task CreateObservationTest()
+        {
+            
+        }
     }
 }
 
