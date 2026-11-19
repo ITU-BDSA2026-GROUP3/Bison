@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 using System.Text.RegularExpressions;
+using static System.Formats.Asn1.AsnWriter;
 
 
 namespace PlaywrightTests
@@ -29,6 +30,7 @@ namespace PlaywrightTests
             _context = scope.ServiceProvider.GetService<BisonContext>();
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
+            DbInitializer.Initialize(_context);
         }
 
         [TearDown]
@@ -190,11 +192,7 @@ namespace PlaywrightTests
             
             await Page.Locator("css=#NewObservationText").FillAsync("I saw mommy kissing Santa Claus");
 
-
-            // WHY DOES THIS CRASH EVERYTHING
             await Page.Locator("css=#NewObservationTaxonId").SelectOptionAsync("Mammal");
-
-
 
             await Page.GetByRole(AriaRole.Button, new(){Name = "Share"}).ClickAsync();
 
