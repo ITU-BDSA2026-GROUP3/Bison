@@ -20,7 +20,21 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Install Playwright Browsers
+
+    - name: Cache Playwright
+      id: playwright-cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ hashFiles('**/*.csproj') }}
+
+    - name: Install Playwright Browsers (If not cached)
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
       run: pwsh test/PlaywrightTests/bin/Debug/net8.0/playwright.ps1 install --with-deps chromium
+
+    - name: Install Playwright Browsers (If cached)
+      if: steps.playwright-cache.outputs.cache-hit == 'true'
+      run: pwsh test/PlaywrightTests/bin/Debug/net8.0/playwright.ps1 install-deps chromium
+
     - name: Test
       run: dotnet test --no-build --verbosity normal
