@@ -35,6 +35,9 @@ public class PublicModel : PageModel
     [BindProperty]
     public IFormFile? IMAGE { get; set; }
 
+    [BindProperty]
+    public String? LICENCE { get; set;}
+
     public PublicModel(IObservationService observationService, ITaxonRepository taxonRepository)
     {
         _observationService = observationService;
@@ -90,7 +93,7 @@ public class PublicModel : PageModel
                 if (img.Width > 1280) img.Mutate(x => x.Resize(1280, img.Height));
                 await img.SaveAsJpegAsync(ms);
                 Byte[] bytes = ms.ToArray();
-                await _observationService.CreateObservation(NewObservationText,authorID,NewObservationTaxonId.Value, bytes);
+                await _observationService.CreateObservation(NewObservationText,authorID,NewObservationTaxonId.Value, bytes, LICENCE);
                 return RedirectToPage("/Public");
             }
             catch

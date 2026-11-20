@@ -3,7 +3,7 @@ public class Observation : Post
 {
     public byte[]? ImgBytes { get; set; }
 
-    public String? Licence { get; set; }
+    public string? Licence { get; set; }
 
     public Taxon Taxon { get; set; } = null!;
 
