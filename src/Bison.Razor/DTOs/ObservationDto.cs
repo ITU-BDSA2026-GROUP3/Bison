@@ -7,6 +7,7 @@ public class ObservationDto
     public string Text { get; set; } = "";
 
     public string Timestamp { get; set; } = "";
+    public byte[] ImgBytes { get; set; } = Array.Empty<byte>();
 
     public string AuthorName { get; set; } = "";
 

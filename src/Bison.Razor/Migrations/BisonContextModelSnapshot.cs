@@ -286,6 +286,9 @@ namespace Bison.Razor.Migrations
                 {
                     b.HasBaseType("Bison.Razor.domain_model.Post");
 
+                    b.Property<byte[]>("ImgBytes")
+                        .HasColumnType("BLOB");
+
                     b.Property<int>("TaxonId")
                         .HasColumnType("INTEGER");
 

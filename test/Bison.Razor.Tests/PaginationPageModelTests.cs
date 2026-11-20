@@ -143,6 +143,11 @@ public class PaginationPageModelTests
         {
             return Task.FromResult(new AuthorDto {Id = authorId});
         }
+
+        public Task<List<int>> CreateObservation(string text, string authorID, int taxonID, byte[] imgbytes)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     private class FakeTaxonRepository : ITaxonRepository

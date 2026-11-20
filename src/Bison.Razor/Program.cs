@@ -22,14 +22,27 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddRazorPages();
+        builder.Services.AddControllers();
 
-        builder.Services.AddAuthentication().AddGitHub(options =>
-            {
-                options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"]!;
-                options.ClientSecret =
-                builder.Configuration["Authentication:GitHub:ClientSecret"]!;
-            }
-        );
+        var githubClientId = builder.Configuration["Authentication:GitHub:ClientId"];
+
+        var githubClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"];
+
+        if (!string.IsNullOrWhiteSpace(githubClientId) && !string.IsNullOrWhiteSpace(githubClientSecret))
+        {
+            builder.Services.AddAuthentication().AddGitHub(options =>
+                {
+                    options.ClientId = githubClientId;
+                    options.ClientSecret = githubClientSecret;
+                }
+            );
+        }
+        else
+        {
+            Console.WriteLine(
+            "GitHub authentication is not configured. " +
+            "See README.md for User Secrets setup instructions.");
+        }
 
         builder.Services.AddScoped<IObservationService, ObservationService>();
         builder.Services.AddScoped<IPostRepository, PostRepository>();
@@ -87,6 +100,15 @@ public class Program
         }).RequireAuthorization();*/
         app.MapGet("/", () => { return Results.Redirect("/obs"); }); // sets public observations as default page.
         app.MapRazorPages();
+        app.MapControllers();
+
+        var endpoints = app.Services.GetRequiredService<
+        Microsoft.AspNetCore.Routing.EndpointDataSource>();
+
+        foreach (var endpoint in endpoints.Endpoints)
+        {
+            Console.WriteLine(endpoint.DisplayName);
+        }
 
         return app;
     }

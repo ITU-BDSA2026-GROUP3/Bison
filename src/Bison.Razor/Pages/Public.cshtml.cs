@@ -6,6 +6,8 @@ using Bison.Razor.Repositories;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using System.Runtime.CompilerServices;
 using System.Diagnostics.CodeAnalysis;
 
@@ -28,8 +30,10 @@ public class PublicModel : PageModel
     //the animal selected by user
     [BindProperty] //This attribute will connect the HTML form to these C# properties here
     [Required(ErrorMessage = "Please select an animal.")]
-
     public int? NewObservationTaxonId{get;set;}
+
+    [BindProperty]
+    public IFormFile? IMAGE { get; set; }
 
     public PublicModel(IObservationService observationService, ITaxonRepository taxonRepository)
     {
@@ -77,6 +81,22 @@ public class PublicModel : PageModel
 
             await LoadPageDataAsync(1);
             return Page();
+        }
+        if (IMAGE != null) {
+            try {
+                using var img = Image.Load(IMAGE.OpenReadStream());
+                using var ms = new MemoryStream();
+                if (img.Height > 720) img.Mutate(x => x.Resize(img.Width, 720));
+                if (img.Width > 1280) img.Mutate(x => x.Resize(1280, img.Height));
+                await img.SaveAsJpegAsync(ms);
+                Byte[] bytes = ms.ToArray();
+                await _observationService.CreateObservation(NewObservationText,authorID,NewObservationTaxonId.Value, bytes);
+                return RedirectToPage("/Public");
+            }
+            catch
+            {
+                return BadRequest("File is not a valid image.");
+            }
         }
 
         await _observationService.CreateObservation(NewObservationText,authorID,NewObservationTaxonId.Value);
