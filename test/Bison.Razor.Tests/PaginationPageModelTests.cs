@@ -144,6 +144,11 @@ public class PaginationPageModelTests
             return Task.FromResult(new AuthorDto {Id = authorId});
         }
 
+        public Task ForgetUser(string authorId, bool keepObservations)
+        {
+            return Task.CompletedTask;
+        }
+
         public Task<List<int>> CreateObservation(string text, string authorID, int taxonID, byte[] imgbytes)
         {
             throw new NotImplementedException();
@@ -198,8 +203,12 @@ public class PaginationPageModelTests
         public Task<Author?> getAuthor(string id)
         {
             var author = fakeAuthors.FirstOrDefault(o => o.Id == id);
-
             return Task.FromResult(author);
+        }
+    
+        public Task AnonymizeAuthor(string authorID)
+        {
+            return Task.CompletedTask;
         }
     }
 }

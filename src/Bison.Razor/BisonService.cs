@@ -43,6 +43,12 @@ public class ObservationService : IObservationService
         _TaxonRepository = taxonRepository;
     }
 
+    public async Task ForgetUser(string authorId, bool keepObservations)
+    {
+        await _AuthorRepository.AnonymizeAuthor(authorId);
+    }
+
+
     public async Task<List<int>> CreateComment(string text, string authorID, int observationID)
     {
         if (string.IsNullOrWhiteSpace(text))

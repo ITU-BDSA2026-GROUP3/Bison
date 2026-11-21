@@ -113,6 +113,10 @@ public class ObservationServiceTests
         {
             return Task.FromResult(new List<string>());
         }
+        public Task AnonymizeAuthor(string authorID)
+        {
+            return Task.CompletedTask;
+        }
     }
 
         //Fake TaxonRepo

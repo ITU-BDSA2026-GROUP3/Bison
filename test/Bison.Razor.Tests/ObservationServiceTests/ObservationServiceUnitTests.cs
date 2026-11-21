@@ -509,6 +509,10 @@ public class ObservationServiceUnitTests : IDisposable
 
             return Task.FromResult(author);
         }
+        public Task AnonymizeAuthor(string authorID)
+        {
+            return Task.CompletedTask;
+        }
     }
 
     private class FakeTaxonRepository : ITaxonRepository
