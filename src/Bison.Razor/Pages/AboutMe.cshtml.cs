@@ -1,5 +1,6 @@
 using Bison.Razor.domain_model;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,8 @@ namespace Bison.Razor.Pages;
 public class AboutMeModel: PageModel
 {
     private readonly BisonContext _context;
+    private readonly IObservationService _observationService;
+    private readonly SignInManager<Author> _signInManager;
 
     public Author? CurrentAuthor {get; private set;}
 
@@ -20,8 +23,10 @@ public class AboutMeModel: PageModel
 
     public List<Proposal> Proposals {get; private set;} = new();
 
-    public AboutMeModel(BisonContext context)    {
+    public AboutMeModel(BisonContext context, IObservationService observationService, SignInManager<Author> signInManager)    {
         _context = context;
+        _observationService = observationService;
+        _signInManager = signInManager;
     } 
 
     public async Task<IActionResult> OnGetAsync()
@@ -69,5 +74,24 @@ public class AboutMeModel: PageModel
 
         return Page();
 
+    }
+    public async Task<IActionResult> OnPostForgetMeAsync(
+        bool keepObservations)
+    {
+        var userId = User.FindFirstValue(
+            ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Challenge();
+        }
+
+        await _observationService.ForgetUser(
+            userId,
+            keepObservations);
+
+        await _signInManager.SignOutAsync();
+
+        return RedirectToPage("/Public");
     }
 }
