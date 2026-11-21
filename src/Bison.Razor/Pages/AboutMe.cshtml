@@ -1,0 +1,104 @@
+@page
+@model Bison.Razor.Pages.AboutMeModel
+
+@{
+    ViewData["Title"] = "About me";
+}
+
+<h1>About me</h1>
+
+<h2>My personal information</h2>
+
+<p>
+    <strong>User ID:</strong>
+    @Model.CurrentAuthor!.Id
+</p>
+
+<p>
+    <strong>Email:</strong>
+    @(Model.CurrentAuthor.Email ?? "Not provided")
+</p>
+
+<p>
+    <strong>Phone number:</strong>
+    @(Model.CurrentAuthor.PhoneNumber ?? "Not provided");
+
+</p>
+
+<hr />
+
+<h2>My current observations</h2>
+
+@if (Model.Observations.Any())
+{
+    @foreach (var observation in Model.Observations)
+    {
+        <div>
+
+            <p><strong>Observations:</strong> @observation.Text</p>
+
+            <p><strong>Animal:</strong> @observation.Taxon?.Name ?? "Not specified"</p>
+
+            <p><strong>Date:</strong> @observation.TimeStamp</p>
+        </div>
+
+        <hr />
+    }
+}
+
+else
+{
+    <p>You have not created any observations yet.</p>
+
+    <h2>My comments</h2>
+
+    @if (Model.Comments.Any())
+    {
+        @foreach (var comment in Model.Comments)
+        {
+            <div>
+                <p><strong>Comment:</strong> @comment.Text</p>
+
+                <p><strong>Original observation:</strong> @comment.Observation.Text</p>
+
+                <p><strong>Date:</strong> @comment.TimeStamp</p>
+            
+            </div>
+
+            <hr />
+        }
+    }
+
+    else
+    {
+        <p>You have not created any comments.</p>
+    }
+
+    <h2>My proposals</h2>
+
+    @if (Model.Proposals.Any())
+    {
+        @foreach(var proposal in Model.Proposals)
+        {
+            <div>
+                <p><strong>Proposal:</strong> @proposal.Text</p>
+
+                <p><strong>Suggested animal:</strong> @(proposal.Taxon?.Name ?? "Not specified")</p>
+
+                <p><strong>Original observation:</strong> @proposal.Observation.Text</p>
+
+                <p><strong>Date:</strong> @proposal.TimeStamp</p>
+
+
+                
+            </div>
+
+            <hr />
+            
+        }
+    }
+    else
+    {
+        <p>You have not created any proposals.</p>
+    }
+}
