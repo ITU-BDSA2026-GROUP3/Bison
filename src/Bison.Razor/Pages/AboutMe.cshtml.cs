@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 using System.Security.Claims;
 
 namespace Bison.Razor.Pages;
@@ -42,7 +43,31 @@ public class AboutMeModel: PageModel
         {
             return NotFound();
         }
-        
+
+        Observations = await _context.Observations
+        .AsNoTracking()
+        .Where(o => o.Author.Id == userId)
+        .Include(o => o.Taxon)
+        .OorderByDescending(o => o.TimeStamp)
+        .ToListAsync();
+
+
+        Comments = await _context.Comments
+        .AsNoTracking()
+        .Where(c => c.Author.Id == userId)
+        .Include(c => c.Observation)
+        .OorderByDescending(c => c.TimeStamp)
+        .ToListAsync();
+
+        Proposals = await _context.Proposals
+        .AsNoTracking()
+        .Where(p => p.Author.Id == userId)
+        .Include(p => p.Observation)
+        .Include(p => p.Taxon)
+        .OrderByDescending(p => p.TimeStamp)
+        .ToListAsync();
+
+        return Page();
 
     }
 }
