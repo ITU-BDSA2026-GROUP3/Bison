@@ -102,3 +102,56 @@ else
         <p>You have not created any proposals.</p>
     }
 }
+
+<hr />
+
+<section class="mt-4">
+    <h2>Delete my account</h2>
+
+    <p>
+        You can remove your personal information, comments, and proposals
+        from Bison.
+    </p>
+
+    <form method="post"
+          asp-page-handler="ForgetMe"
+          onsubmit="return confirm('Are you sure you want Bison to forget you? This action cannot be undone.');">
+
+        <fieldset class="mb-3">
+            <legend class="fs-6">
+                What should happen to your observations?
+            </legend>
+
+            <div class="form-check">
+                <input class="form-check-input"
+                       type="radio"
+                       id="keepObservations"
+                       name="KeepObservations"
+                       value="true"
+                       checked />
+
+                <label class="form-check-label"
+                       for="keepObservations">
+                    Keep my observations and display deleted user as the author
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input"
+                       type="radio"
+                       id="deleteObservations"
+                       name="KeepObservations"
+                       value="false" />
+
+                <label class="form-check-label"
+                       for="deleteObservations">
+                    Remove my observations
+                </label>
+            </div>
+        </fieldset>
+
+        <button type="submit" class="btn btn-danger">
+            Forget me!
+        </button>
+    </form>
+</section>
