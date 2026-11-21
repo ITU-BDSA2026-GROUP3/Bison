@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
 using System.Security.Claims;
 
 namespace Bison.Razor.Pages;
@@ -11,7 +10,7 @@ namespace Bison.Razor.Pages;
 [Authorize]
 public class AboutMeModel: PageModel
 {
-    private readonly BisonContext_context;
+    private readonly BisonContext _context;
 
     public Author? CurrentAuthor {get; private set;}
 
@@ -19,8 +18,9 @@ public class AboutMeModel: PageModel
 
     public List<Comment> Comments {get; private set;} = new();
 
-    public AboutMeModel(BisonContext_context);
-    {
+    public List<Proposal> Proposals {get; private set;} = new();
+
+    public AboutMeModel(BisonContext context)    {
         _context = context;
     } 
 
@@ -48,7 +48,7 @@ public class AboutMeModel: PageModel
         .AsNoTracking()
         .Where(o => o.Author.Id == userId)
         .Include(o => o.Taxon)
-        .OorderByDescending(o => o.TimeStamp)
+        .OrderByDescending(o => o.TimeStamp)
         .ToListAsync();
 
 
@@ -56,7 +56,7 @@ public class AboutMeModel: PageModel
         .AsNoTracking()
         .Where(c => c.Author.Id == userId)
         .Include(c => c.Observation)
-        .OorderByDescending(c => c.TimeStamp)
+        .OrderByDescending(c => c.TimeStamp)
         .ToListAsync();
 
         Proposals = await _context.Proposals
