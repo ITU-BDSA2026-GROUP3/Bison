@@ -45,6 +45,7 @@ public class ObservationService : IObservationService
 
     public async Task ForgetUser(string authorId, bool keepObservations)
     {
+        await _PostRepository.HandleForgottenUserObservations(authorId, keepObservations);
         await _AuthorRepository.AnonymizeAuthor(authorId);
     }
 

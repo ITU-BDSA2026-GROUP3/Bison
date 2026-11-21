@@ -46,6 +46,29 @@ namespace Bison.Razor.Repositories
             return result;
         }
 
+        public async Task HandleForgottenUserObservations(string authorID, bool keepObservations)
+        {
+            var observations = await _bisonContext.Observations
+                .Where(observation =>
+                    observation.Author != null &&
+                    observation.Author.Id == authorID)
+                .ToListAsync();
+
+            foreach (var observation in observations)
+            {
+                if (keepObservations)
+                {
+                    observation.Author = null;
+                }
+                else
+                {
+                    observation.IsDeleted = true;
+                }
+            }
+
+            await _bisonContext.SaveChangesAsync();
+        }
+
         public async Task<List<int>> CreateObservations(List<Observation> observations)
         {
             List<int> ids = new List<int>();
