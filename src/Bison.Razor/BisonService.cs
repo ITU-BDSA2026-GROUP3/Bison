@@ -223,7 +223,7 @@ public class ObservationService : IObservationService
             ObservationDto dto = new ObservationDto
             {
                 Id = obs.Id,
-                AuthorName = obs.Author.UserName,
+                AuthorName = obs.Author?.UserName ?? "deleted user",
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
                 ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
@@ -245,7 +245,7 @@ public class ObservationService : IObservationService
             ObservationDto dto = new ObservationDto
             {
                 Id = obs.Id,
-                AuthorName = obs.Author.UserName,
+                AuthorName = obs.Author?.UserName ?? "deleted user",
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
                 TaxonName = obs.Taxon.Name
@@ -271,7 +271,7 @@ public class ObservationService : IObservationService
             ObservationDto dto = new ObservationDto
             {
                 Id = obs.Id,
-                AuthorName = obs.Author.UserName,
+                AuthorName = obs.Author?.UserName ?? "deleted user",
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
                 ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
@@ -291,7 +291,7 @@ public class ObservationService : IObservationService
         ObservationDto dto = new ObservationDto
         {
             Id = obs.Id,
-            AuthorName = obs.Author.UserName,
+            AuthorName = obs.Author?.UserName ?? "deleted user",
             Text = obs.Text,
             Timestamp = DateTimeToString(obs.TimeStamp),
             ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 

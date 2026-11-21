@@ -51,7 +51,7 @@ public class AboutMeModel: PageModel
 
         Observations = await _context.Observations
         .AsNoTracking()
-        .Where(o => o.Author.Id == userId)
+        .Where(o => !o.IsDeleted && o.Author != null && o.Author.Id == userId)
         .Include(o => o.Taxon)
         .OrderByDescending(o => o.TimeStamp)
         .ToListAsync();
@@ -59,14 +59,14 @@ public class AboutMeModel: PageModel
 
         Comments = await _context.Comments
         .AsNoTracking()
-        .Where(c => c.Author.Id == userId)
+        .Where(c => !c.IsDeleted && c.Author != null && c.Author.Id == userId)
         .Include(c => c.Observation)
         .OrderByDescending(c => c.TimeStamp)
         .ToListAsync();
 
         Proposals = await _context.Proposals
         .AsNoTracking()
-        .Where(p => p.Author.Id == userId)
+        .Where(p => !p.IsDeleted && p.Author != null && p.Author.Id == userId)
         .Include(p => p.Observation)
         .Include(p => p.Taxon)
         .OrderByDescending(p => p.TimeStamp)
