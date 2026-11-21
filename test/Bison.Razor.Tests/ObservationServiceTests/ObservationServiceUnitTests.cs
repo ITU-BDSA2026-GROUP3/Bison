@@ -447,6 +447,23 @@ public class ObservationServiceUnitTests : IDisposable
             return Task.FromResult(Observations);
         }
 
+        public Task HandleForgottenUserObservations(string authorID, bool keepObservations)
+        {
+            foreach (var observation in Observations.Where(observation => observation.Author?.Id == authorID))
+            {
+                if (keepObservations)
+                {
+                    observation.Author = null;
+                }
+                else
+                {
+                    observation.IsDeleted = true;
+                }
+            }
+
+            return Task.CompletedTask;
+        }
+
         public Task<List<int>> CreateComments(List<Comment> comments)
         {
             foreach(Comment comment in comments)
@@ -508,6 +525,10 @@ public class ObservationServiceUnitTests : IDisposable
             var author = Authors.FirstOrDefault(o => o.Id == authorID);
 
             return Task.FromResult(author);
+        }
+        public Task AnonymizeAuthor(string authorID)
+        {
+            return Task.CompletedTask;
         }
     }
 
