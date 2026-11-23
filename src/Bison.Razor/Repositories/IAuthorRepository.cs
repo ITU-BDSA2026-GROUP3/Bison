@@ -11,6 +11,7 @@ namespace Bison.Razor.Repositories
     {
         public Task<List<string>> CreateAuthors(List<Author> authors);
         public Task<Author?> getAuthor(string authorID);
+        public Task AnonymizeAuthor(string authorID);
 
     }
 }

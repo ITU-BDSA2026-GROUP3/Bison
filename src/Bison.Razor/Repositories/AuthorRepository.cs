@@ -48,5 +48,45 @@ namespace Bison.Razor.Repositories
 
             return result;
         }
+
+        public async Task AnonymizeAuthor(string authorID)
+        {
+            var author = await _bisonContext.Users
+                .SingleOrDefaultAsync(author => author.Id == authorID);
+
+            if (author == null)
+            {
+                throw new InvalidOperationException("Author not found.");
+            }
+
+            var comments = await _bisonContext.Comments
+                .Where(comment => comment.Author != null &&
+                                  comment.Author.Id == authorID)
+                .ToListAsync();
+
+            var proposals = await _bisonContext.Proposals
+                .Where(proposal => proposal.Author != null &&
+                                   proposal.Author.Id == authorID)
+                .ToListAsync();
+
+            author.IsDeleted = true;
+            author.UserName = $"deleted-{author.Id}";
+            author.NormalizedUserName = $"DELETED-{author.Id}";
+            author.Email = null;
+            author.NormalizedEmail = null;
+            author.PhoneNumber = null;
+
+            foreach (var comment in comments)
+            {
+                comment.IsDeleted = true;
+            }
+
+            foreach (var proposal in proposals)
+            {
+                proposal.IsDeleted = true;
+            }
+
+            await _bisonContext.SaveChangesAsync();
+        }
     }
 }

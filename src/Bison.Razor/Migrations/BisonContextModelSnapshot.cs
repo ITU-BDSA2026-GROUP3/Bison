@@ -36,6 +36,9 @@ namespace Bison.Razor.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("INTEGER");
 
@@ -88,13 +91,15 @@ namespace Bison.Razor.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("AuthorId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasMaxLength(13)
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -327,9 +332,7 @@ namespace Bison.Razor.Migrations
                 {
                     b.HasOne("Bison.Razor.domain_model.Author", "Author")
                         .WithMany("Posts")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AuthorId");
 
                     b.Navigation("Author");
                 });
