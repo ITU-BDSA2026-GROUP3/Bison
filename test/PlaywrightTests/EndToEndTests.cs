@@ -1,5 +1,6 @@
 ﻿using Bison.Razor.domain_model;
 using Bison.Razor.Tests;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
@@ -45,7 +46,6 @@ namespace PlaywrightTests
             _factory.Dispose();
         }
 
-        // WARNING requires that the test account is not already created
         [Test]
         public async Task RegistrationAndLoginTest()
         {
@@ -103,7 +103,6 @@ namespace PlaywrightTests
 
         }
 
-        // WARNING requires that the test account is not already created
         [Test]
         public async Task LoginPreventionTest()
         {
@@ -157,7 +156,7 @@ namespace PlaywrightTests
             await Expect(Page.GetByText("Invalid login attempt.")).ToHaveCountAsync(1);
         }
 
-        // WARNING requires that the test account is not already created
+
         [Test]
         public async Task CreateObservationTest()
         {
@@ -206,6 +205,59 @@ namespace PlaywrightTests
 
             await Expect(Page.GetByText("I saw mommy kissing Santa Claus")).ToHaveCountAsync(0);
         }
+
+
+        [Test]
+        public async Task CreateCommentTest()
+        {
+            // registration portion
+            await Page.GotoAsync(uri + "/obs");
+
+            await Page.GetByRole(AriaRole.Link, new(){Name = "Register"}).ClickAsync();
+
+            await Page.Locator("css=#Input_Email").FillAsync("test@testmail.mail");
+
+            await Page.Locator("css=#Input_Password").FillAsync("pAsSwOrD_123");
+
+            await Page.Locator("css=#Input_ConfirmPassword").FillAsync("pAsSwOrD_123");
+
+            await Page.GetByRole(AriaRole.Button, new()
+            {
+                Name = "Register"
+            }).ClickAsync();
+            await Page.GetByRole(AriaRole.Link, new()
+            {
+                Name = "Click here to confirm your account"
+            }).ClickAsync();
+
+
+            // Login portion
+            await Page.GetByRole(AriaRole.Link, new(){Name = "Login"}).ClickAsync();
+
+            await Page.Locator("css=#Input_Email").FillAsync("test@testmail.mail");
+
+            await Page.Locator("css=#Input_Password").FillAsync("pAsSwOrD_123");
+
+            await Page.GetByRole(AriaRole.Button, new(){Name = "Log in"}).ClickAsync();
+
+            
+            // posting portion
+            // expect to be on public page
+            await Expect(Page).ToHaveURLAsync(new Regex(".*/obs"));
+
+            await Page.GetByRole(AriaRole.Link, new(){Name = "View details"}).First.ClickAsync();
+
+            await Expect(Page).ToHaveURLAsync(new Regex(".*/ob/1"));
+
+            await Page.GetByRole(AriaRole.Textbox, new(){Name = "Comment"}).FillAsync("this is a comment");
+
+            await Page.GetByRole(AriaRole.Button, new(){Name = "Comment"}).ClickAsync();
+
+            await Expect(Page.GetByText("this is a comment")).ToHaveCountAsync(1);
+        }
     }
 }
+
+
+
 
