@@ -56,7 +56,7 @@ public static class DbInitializer
 
         context.SaveChanges();
 
-        using var image = new Image<Rgb24>(1280, 720);
+        using var image = new Image<Rgb24>(668, 720);
 
         image.ProcessPixelRows(accessor =>
         {

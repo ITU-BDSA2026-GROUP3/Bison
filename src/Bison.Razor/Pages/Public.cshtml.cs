@@ -98,7 +98,7 @@ public class PublicModel : PageModel
                 using var img = Image.Load(IMAGE.OpenReadStream());
                 using var ms = new MemoryStream();
                 if (img.Height > 720) img.Mutate(x => x.Resize(img.Width, 720));
-                if (img.Width > 1280) img.Mutate(x => x.Resize(1280, img.Height));
+                if (img.Width > 668) img.Mutate(x => x.Resize(668, img.Height));
                 await img.SaveAsJpegAsync(ms);
                 Byte[] bytes = ms.ToArray();
                 await _observationService.CreateObservation(NewObservationText,authorID,NewObservationTaxonId.Value, bytes, LICENCE);
