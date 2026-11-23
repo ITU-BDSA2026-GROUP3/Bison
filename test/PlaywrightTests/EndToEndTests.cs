@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
+using NUnit.Framework.Internal;
 using System.Text.RegularExpressions;
 using static System.Formats.Asn1.AsnWriter;
 
@@ -254,6 +255,58 @@ namespace PlaywrightTests
             await Page.GetByRole(AriaRole.Button, new(){Name = "Comment"}).ClickAsync();
 
             await Expect(Page.GetByText("this is a comment")).ToHaveCountAsync(1);
+        }
+
+        [Test]
+        public async Task CreateProposalTest()
+        {
+            // registration portion
+            await Page.GotoAsync(uri + "/obs");
+
+            await Page.GetByRole(AriaRole.Link, new(){Name = "Register"}).ClickAsync();
+
+            await Page.Locator("css=#Input_Email").FillAsync("test@testmail.mail");
+
+            await Page.Locator("css=#Input_Password").FillAsync("pAsSwOrD_123");
+
+            await Page.Locator("css=#Input_ConfirmPassword").FillAsync("pAsSwOrD_123");
+
+            await Page.GetByRole(AriaRole.Button, new(){Name = "Register"}).ClickAsync();
+
+            await Page.GetByRole(AriaRole.Link, new(){Name = "Click here to confirm your account"}).ClickAsync();
+
+
+            // Login portion
+            await Page.GetByRole(AriaRole.Link, new(){Name = "Login"}).ClickAsync();
+
+            await Page.Locator("css=#Input_Email").FillAsync("test@testmail.mail");
+
+            await Page.Locator("css=#Input_Password").FillAsync("pAsSwOrD_123");
+
+            await Page.GetByRole(AriaRole.Button, new(){Name = "Log in"}).ClickAsync();
+
+
+            // posting portion
+            // expect to be on public page
+            await Expect(Page).ToHaveURLAsync(new Regex(".*/obs"));
+
+            await Page.GetByRole(AriaRole.Link, new(){Name = "View details"}).First.ClickAsync();
+
+            await Expect(Page).ToHaveURLAsync(new Regex(".*/ob/1"));
+
+            await Page.GetByRole(AriaRole.Textbox, new(){Name = "Proposal"}).FillAsync("This is a bird of some kind, but not a heron");
+
+            await Page.GetByLabel("Proposed animal:").SelectOptionAsync(new[] { "2" });
+
+            await Page.GetByRole(AriaRole.Button, new(){Name = "Submit proposal"}).ClickAsync();
+
+            //expect that there is a list element that somewhere has the following two pieces of text
+            await Expect(Page.GetByRole(AriaRole.Listitem).Filter(new(){
+                HasText = "test@testmail.mail Proposed: Bird"
+            }).Filter(new()
+            {
+                HasText = "This is a bird of some kind, but not a heron"
+            })).ToHaveCountAsync(1);
         }
     }
 }
