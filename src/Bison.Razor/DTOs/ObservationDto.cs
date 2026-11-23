@@ -9,7 +9,7 @@ public class ObservationDto
     public string Timestamp { get; set; } = "";
     public byte[] ImgBytes { get; set; } = Array.Empty<byte>();
 
-    public String Licence{ get; set; } = "";
+    public string Licence { get; set; } = "";
 
     public string AuthorName { get; set; } = "";
 

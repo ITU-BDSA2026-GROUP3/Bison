@@ -38,6 +38,14 @@ public class PublicModel : PageModel
     [BindProperty]
     public String? LICENCE { get; set;}
 
+    [BindProperty]
+    public List<SelectListItem> Licences { get; } = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "MX", Text = "Mexico" },
+        new SelectListItem { Value = "CA", Text = "Canada" },
+        new SelectListItem { Value = "US", Text = "USA"  },
+    };
+
     public PublicModel(IObservationService observationService, ITaxonRepository taxonRepository)
     {
         _observationService = observationService;

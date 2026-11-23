@@ -24,7 +24,7 @@ public interface IObservationService
     public Task<AuthorDto?> GetAuthor(string authorId);
 
     public Task<List<int>> CreateObservation(string text, string authorID, int taxonID);
-    public Task<List<int>> CreateObservation(string text, string authorID, int taxonID, Byte[] imgbytes, string licence);
+    public Task<List<int>> CreateObservation(string text, string authorID, int taxonID, byte[] imgbytes, string licence);
     public Task<List<int>> CreateComment(string text, string authorID, int observationID);
     public Task<List<int>> CreateProposal(string text, string authorID, int observationID, int taxonID);
 }
