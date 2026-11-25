@@ -530,6 +530,10 @@ public class ObservationServiceUnitTests : IDisposable
         {
             return Task.CompletedTask;
         }
+        public Task<List<Author>> SearchAuthors(string searchTerm)
+        {
+            return Task.FromResult(new List<Author>());
+        }
     }
 
     private class FakeTaxonRepository : ITaxonRepository

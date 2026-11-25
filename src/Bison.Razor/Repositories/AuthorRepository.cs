@@ -49,6 +49,25 @@ namespace Bison.Razor.Repositories
             return result;
         }
 
+        public async Task<List<Author>> SearchAuthors(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return new List<Author>();
+            }
+
+            var normalizedSearchTerm = searchTerm.Trim().ToUpper();
+
+            return await _bisonContext.Users
+                .Where(author =>
+                    !author.IsDeleted &&
+                    author.NormalizedUserName != null &&
+                    author.NormalizedUserName.Contains(normalizedSearchTerm))
+                .OrderBy(author => author.UserName)
+                .ToListAsync();
+        }
+
+
         public async Task AnonymizeAuthor(string authorID)
         {
             var author = await _bisonContext.Users
