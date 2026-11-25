@@ -1,4 +1,5 @@
-namespace Bison.Razor.domain_model;
+namespace Bison.Core.domain_model;
+
 public class Observation : Post
 {
     public byte[]? ImgBytes { get; set; }

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace Bison.Razor.domain_model;
+namespace Bison.Core.domain_model;
 public class Author : IdentityUser
 {
     public bool IsDeleted { get; set; }

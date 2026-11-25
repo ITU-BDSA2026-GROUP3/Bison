@@ -1,4 +1,4 @@
-namespace Bison.Razor.DTOs;
+namespace Bison.infrastructure.DTOs;
 
 public class CommentDto
 {

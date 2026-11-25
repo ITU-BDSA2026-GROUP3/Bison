@@ -1,4 +1,4 @@
-using Bison.Razor.domain_model;
+using Bison.domain_model;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Formats.Jpeg;

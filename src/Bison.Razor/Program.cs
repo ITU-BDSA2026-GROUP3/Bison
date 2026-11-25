@@ -1,7 +1,6 @@
-using Bison.Razor.domain_model;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using Bison.Razor.Repositories;
+using Bison.infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using System;
