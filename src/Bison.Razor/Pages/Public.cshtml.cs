@@ -1,8 +1,8 @@
-﻿using Bison.Razor.DTOs;
+﻿using Bison.infrastructure.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Bison.Razor.domain_model;
-using Bison.Razor.Repositories;
+using Bison.core.domain_model;
+using Bison.infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;

@@ -1,4 +1,4 @@
-using Bison.Razor.domain_model;
+using Bison.core.domain_model;
 using Bison.Razor.DTOs;
 using Bison.Razor.Repositories;
 using Microsoft.AspNetCore.Mvc.RazorPages;
