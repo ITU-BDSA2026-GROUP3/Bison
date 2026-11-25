@@ -26,13 +26,39 @@
     }
     else
     {
-        <ul class="list-group">
+        <ul class="list-group mb-4">
             @foreach (var author in Model.Authors)
             {
                 <li class="list-group-item">
-                    @author.UserName
+                    <a asp-page="./Search"
+                       asp-route-SearchTerm="@Model.SearchTerm"
+                       asp-route-AuthorId="@author.Id">
+                        @author.UserName
+                    </a>
                 </li>
             }
         </ul>
+    }
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.AuthorId))
+{
+    <h2>Post history</h2>
+
+    if (Model.Posts.Count == 0)
+    {
+        <p>This author has no posts.</p>
+    }
+    else
+    {
+        <div class="list-group">
+            @foreach (var post in Model.Posts)
+            {
+                <div class="list-group-item">
+                    <strong>@post.GetType().Name</strong>
+                    <p class="mb-0">@post.Text</p>
+                </div>
+            }
+        </div>
     }
 }
