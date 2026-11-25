@@ -171,7 +171,7 @@ private class FakePostRepository : IPostRepository
             return Task.FromResult<Observation?>(null);
         }
 
-    public Task<List<Observation>> ReadObservations(string authorID)
+        public Task<List<Observation>> ReadObservations(string authorID)
         {
             return Task.FromResult(new List<Observation>());
         }
@@ -199,26 +199,31 @@ private class FakePostRepository : IPostRepository
             return Task.CompletedTask;
         }             
     
-public Task<List<int>> CreateComments(List<Comment> comments)
-{
-    return Task.FromResult(new List<int>());
+        public Task<List<int>> CreateComments(List<Comment> comments)
+        {
+            return Task.FromResult(new List<int>());
 
-}
+        }
 
-public Task<List<Comment>> ReadComments(int obsID)
-    {
-        return Task.FromResult(new List<Comment>());
-    }
+        public Task<List<Comment>> ReadComments(int obsID)
+        {
+            return Task.FromResult(new List<Comment>());
+        }
 
-    public Task<List<int>> CreateProposals(List<Proposal> proposals)
-    {
-        return Task.FromResult(new List<int>());
-    }
+        public Task<List<int>> CreateProposals(List<Proposal> proposals)
+        {
+            return Task.FromResult(new List<int>());
+        }
 
-    public Task<List<Proposal>> ReadProposals(int obsID)
-    {
-        return Task.FromResult(new List<Proposal>());
-    }
+        public Task<List<Proposal>> ReadProposals(int obsID)
+        {
+            return Task.FromResult(new List<Proposal>());
+        }
+
+        public Task<List<Post>> ReadPostsByAuthor(string authorID)
+        {
+            return Task.FromResult(new List<Post>());
+        }
 
     }
 }

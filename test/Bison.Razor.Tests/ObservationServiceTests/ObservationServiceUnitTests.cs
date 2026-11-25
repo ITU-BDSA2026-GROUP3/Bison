@@ -447,6 +447,16 @@ public class ObservationServiceUnitTests : IDisposable
             return Task.FromResult(Observations);
         }
 
+        public Task<List<Post>> ReadPostsByAuthor(string authorID)
+        {
+            List<Post> posts = Observations
+                .Where(observation => observation.Author?.Id == authorID)
+                .Cast<Post>()
+                .ToList();
+
+            return Task.FromResult(posts);
+        }    
+
         public Task HandleForgottenUserObservations(string authorID, bool keepObservations)
         {
             foreach (var observation in Observations.Where(observation => observation.Author?.Id == authorID))
