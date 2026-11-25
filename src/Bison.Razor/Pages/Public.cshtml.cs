@@ -39,12 +39,15 @@ public class PublicModel : PageModel
     public String? LICENCE { get; set;}
 
     [BindProperty]
-    public List<SelectListItem> Licences { get; } = new List<SelectListItem>
-    {
-        new SelectListItem { Value = "MX", Text = "Mexico" },
-        new SelectListItem { Value = "CA", Text = "Canada" },
-        new SelectListItem { Value = "US", Text = "USA"  },
-    };
+        public List<SelectListItem> Licences { get; } = new List<SelectListItem>
+        {
+            new() { Value = "CC BY", Text = "CC BY" },
+            new() { Value = "CC BY-SA", Text = "CC BY-SA" },
+            new() { Value = "CC BY-ND", Text = "CC BY-ND" },
+            new() { Value = "CC BY-NC", Text = "CC BY-NC" },
+            new() { Value = "CC BY-NC-SA", Text = "CC BY-NC-SA" },
+            new() { Value = "CC BY-NC-ND", Text = "CC BY-NC-ND" }
+        };
 
     public PublicModel(IObservationService observationService, ITaxonRepository taxonRepository)
     {

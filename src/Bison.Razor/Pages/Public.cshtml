@@ -1,4 +1,5 @@
 ﻿@page "/obs"
+@using System.ComponentModel
 @model Bison.Razor.Pages.PublicModel
 @{
     ViewData["Title"] = "Bison";
@@ -31,9 +32,10 @@
                 </div>
                 <input type="file" asp-for="IMAGE"/>
                 <br />
-                <select asp-for="Licences" asp-items="Model.Licences">
+                <select asp-for="LICENCE" asp-items="Model.Licences">
                     <option value="">-- Select a Licence --</option>
-                </select> 
+                </select>
+                <br />
                 <button type ="submit">Share</button>
 
             </form>
@@ -72,7 +74,10 @@
                         <small><em>&mdash; </em>@obs.Timestamp</small>
                         <img src="/Image/GetImage?id=@obs.Id" alt="Observation image" onerror="this.style.display='none';" />
                         <br />
-                        protected under licence: @obs.Licence
+                        @if (@obs.Licence != null)
+                        {
+                            <text>Licence: @obs.Licence</text>
+                        }
                     </p>
                 </li>
             }
