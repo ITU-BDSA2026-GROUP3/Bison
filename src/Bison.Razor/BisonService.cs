@@ -23,6 +23,8 @@ public interface IObservationService
     public Task<List<ProposalDto>> GetProposals(int observationId);
     public Task<AuthorDto?> GetAuthor(string authorId);
 
+    public Task ForgetUser(string authorId, bool keepObservations);
+
     public Task<List<int>> CreateObservation(string text, string authorID, int taxonID);
     public Task<List<int>> CreateObservation(string text, string authorID, int taxonID, byte[] imgbytes, string licence);
     public Task<List<int>> CreateComment(string text, string authorID, int observationID);
@@ -41,6 +43,13 @@ public class ObservationService : IObservationService
         _AuthorRepository = authorRepository;
         _TaxonRepository = taxonRepository;
     }
+
+    public async Task ForgetUser(string authorId, bool keepObservations)
+    {
+        await _PostRepository.HandleForgottenUserObservations(authorId, keepObservations);
+        await _AuthorRepository.AnonymizeAuthor(authorId);
+    }
+
 
     public async Task<List<int>> CreateComment(string text, string authorID, int observationID)
     {
@@ -224,7 +233,7 @@ public class ObservationService : IObservationService
             ObservationDto dto = new ObservationDto
             {
                 Id = obs.Id,
-                AuthorName = obs.Author.UserName,
+                AuthorName = obs.Author?.UserName ?? "deleted user",
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
                 ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
@@ -247,7 +256,7 @@ public class ObservationService : IObservationService
             ObservationDto dto = new ObservationDto
             {
                 Id = obs.Id,
-                AuthorName = obs.Author.UserName,
+                AuthorName = obs.Author?.UserName ?? "deleted user",
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
                 TaxonName = obs.Taxon.Name,
@@ -275,7 +284,7 @@ public class ObservationService : IObservationService
             ObservationDto dto = new ObservationDto
             {
                 Id = obs.Id,
-                AuthorName = obs.Author.UserName,
+                AuthorName = obs.Author?.UserName ?? "deleted user",
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
                 ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
@@ -296,7 +305,7 @@ public class ObservationService : IObservationService
         ObservationDto dto = new ObservationDto
         {
             Id = obs.Id,
-            AuthorName = obs.Author.UserName,
+            AuthorName = obs.Author?.UserName ?? "deleted user",
             Text = obs.Text,
             Timestamp = DateTimeToString(obs.TimeStamp),
             ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 

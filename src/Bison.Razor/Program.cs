@@ -17,13 +17,25 @@ public class Program
         builder.Services.AddRazorPages();
         builder.Services.AddControllers();
 
-        builder.Services.AddAuthentication().AddGitHub(options =>
-            {
-                options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"]!;
-                options.ClientSecret =
-                builder.Configuration["Authentication:GitHub:ClientSecret"]!;
-            }
-        );
+        var githubClientId = builder.Configuration["Authentication:GitHub:ClientId"];
+
+        var githubClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"];
+
+        if (!string.IsNullOrWhiteSpace(githubClientId) && !string.IsNullOrWhiteSpace(githubClientSecret))
+        {
+            builder.Services.AddAuthentication().AddGitHub(options =>
+                {
+                    options.ClientId = githubClientId;
+                    options.ClientSecret = githubClientSecret;
+                }
+            );
+        }
+        else
+        {
+            Console.WriteLine(
+            "GitHub authentication is not configured. " +
+            "See README.md for User Secrets setup instructions.");
+        }
 
         builder.Services.AddScoped<IObservationService, ObservationService>();
         builder.Services.AddScoped<IPostRepository, PostRepository>();

@@ -78,6 +78,11 @@
                         {
                             <text>Licence: @obs.Licence</text>
                         }
+
+                        <a asp-page="/Details"
+                            asp-route-id="@obs.Id">
+                            View details
+                        </a>
                     </p>
                 </li>
             }
