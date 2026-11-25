@@ -1,10 +1,8 @@
-
-
-
-using Bison.Razor.domain_model;
+using 
+using Bison.Core.domain_model;
 using Microsoft.EntityFrameworkCore;
 
-namespace Bison.Razor.Repositories
+namespace Bison.infrastructure.Repositories
 {
 
     public class TaxonRepository : ITaxonRepository

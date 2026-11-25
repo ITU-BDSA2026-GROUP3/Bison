@@ -1,5 +1,5 @@
-using SQLitePCL;
-namespace Bison.Razor.domain_model;
+namespace Bison.Core.domain_model;
+
 public class Taxon
 {
     public int Id { get; set; }

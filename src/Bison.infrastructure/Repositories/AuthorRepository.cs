@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Bison.Razor.domain_model;
+using Bison.domain_model;
 
-namespace Bison.Razor.Repositories
+namespace Bison.infrastructure.Repositories
 {
 
 
