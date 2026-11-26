@@ -9,6 +9,8 @@ public class ObservationDto
     public string Timestamp { get; set; } = "";
     public byte[] ImgBytes { get; set; } = Array.Empty<byte>();
 
+    public string Licence { get; set; } = "";
+
     public string AuthorName { get; set; } = "";
 
     public string TaxonName { get; set; } = "";

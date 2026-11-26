@@ -35,6 +35,20 @@ public class PublicModel : PageModel
     [BindProperty]
     public IFormFile? IMAGE { get; set; }
 
+    [BindProperty]
+    public String? LICENCE { get; set;}
+
+    [BindProperty]
+        public List<SelectListItem> Licences { get; } = new List<SelectListItem>
+        {
+            new() { Value = "CC BY", Text = "CC BY" },
+            new() { Value = "CC BY-SA", Text = "CC BY-SA" },
+            new() { Value = "CC BY-ND", Text = "CC BY-ND" },
+            new() { Value = "CC BY-NC", Text = "CC BY-NC" },
+            new() { Value = "CC BY-NC-SA", Text = "CC BY-NC-SA" },
+            new() { Value = "CC BY-NC-ND", Text = "CC BY-NC-ND" }
+        };
+
     public PublicModel(IObservationService observationService, ITaxonRepository taxonRepository)
     {
         _observationService = observationService;
@@ -87,10 +101,10 @@ public class PublicModel : PageModel
                 using var img = Image.Load(IMAGE.OpenReadStream());
                 using var ms = new MemoryStream();
                 if (img.Height > 720) img.Mutate(x => x.Resize(img.Width, 720));
-                if (img.Width > 1280) img.Mutate(x => x.Resize(1280, img.Height));
+                if (img.Width > 668) img.Mutate(x => x.Resize(668, img.Height));
                 await img.SaveAsJpegAsync(ms);
                 Byte[] bytes = ms.ToArray();
-                await _observationService.CreateObservation(NewObservationText,authorID,NewObservationTaxonId.Value, bytes);
+                await _observationService.CreateObservation(NewObservationText,authorID,NewObservationTaxonId.Value, bytes, LICENCE);
                 return RedirectToPage("/Public");
             }
             catch

@@ -294,6 +294,9 @@ namespace Bison.Razor.Migrations
                     b.Property<byte[]>("ImgBytes")
                         .HasColumnType("BLOB");
 
+                    b.Property<string>("Licence")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("TaxonId")
                         .HasColumnType("INTEGER");
 

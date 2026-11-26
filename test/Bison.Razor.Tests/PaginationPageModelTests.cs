@@ -153,6 +153,11 @@ public class PaginationPageModelTests
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<int>> CreateObservation(string text, string authorID, int taxonID, byte[] imgbytes, string licence)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     private class FakeTaxonRepository : ITaxonRepository
