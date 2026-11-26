@@ -1,7 +1,7 @@
-using Bison.Razor.domain_model;
-using Bison.Razor.DTOs;
+using Bison.Core.domain_model;
+using Bison.infrastructure.DTOs;
 using Bison.Razor.Pages;
-using Bison.Razor.Repositories;
+using Bison.infrastructure.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

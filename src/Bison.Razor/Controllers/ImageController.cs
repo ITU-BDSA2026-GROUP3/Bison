@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using Bison.Razor.domain_model;
-using Bison.Razor.DTOs;
+using Bison.Core.domain_model;
+using Bison.infrastructure.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;

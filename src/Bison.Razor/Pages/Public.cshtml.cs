@@ -1,7 +1,7 @@
 ﻿using Bison.infrastructure.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Bison.core.domain_model;
+using Bison.Core.domain_model;
 using Bison.infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;

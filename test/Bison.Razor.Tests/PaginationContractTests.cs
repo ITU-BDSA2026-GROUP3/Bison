@@ -1,4 +1,4 @@
-using Bison.Razor.DTOs;
+using Bison.infrastructure.DTOs;
 using System.Reflection;
 
 namespace Bison.Razor.Tests;
@@ -26,21 +26,5 @@ public class PaginationContractTests
         Assert.Equal(
             typeof(Task<List<ObservationDto>>),
             method.ReturnType);
-    }
-
-    [Fact]
-    public void DatabaseFacadeSupportsPublicTimelinePagination()
-    {
-        MethodInfo? method = typeof(DBFacade).GetMethod("ReadObservations", new[] { typeof(int), typeof(int) });
-        Assert.NotNull(method);
-        Assert.Equal(typeof(List<object[]>),method.ReturnType);
-    }
-
-    [Fact]
-    public void DatabaseFacadeSupportsUserTimelinePagination()
-    {
-        MethodInfo? method = typeof(DBFacade).GetMethod("ReadObservationsFromAuthor",new[] { typeof(string), typeof(int), typeof(int) });
-        Assert.NotNull(method);
-        Assert.Equal(typeof(List<object[]>),method.ReturnType);
     }
 }

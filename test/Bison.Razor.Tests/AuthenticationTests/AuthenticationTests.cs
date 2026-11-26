@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Net;
-using Bison.Razor.domain_model;
-using Bison.Razor.Repositories;
+using Bison.Core.domain_model;
+using Bison.infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;

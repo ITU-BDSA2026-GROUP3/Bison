@@ -1,5 +1,5 @@
 using System.Data.Common;
-using Bison.Razor.domain_model;
+using Bison.Core.domain_model;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;

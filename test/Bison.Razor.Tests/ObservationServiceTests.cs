@@ -1,6 +1,6 @@
-using Bison.Razor.domain_model;
-using Bison.Razor.DTOs;
-using Bison.Razor.Repositories;
+using Bison.Core.domain_model;
+using Bison.infrastructure.DTOs;
+using Bison.infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
