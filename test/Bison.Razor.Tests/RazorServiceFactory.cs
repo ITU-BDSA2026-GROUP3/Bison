@@ -2,6 +2,9 @@ using System.Data.Common;
 using Bison.Razor.domain_model;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Data.Sqlite;
@@ -15,11 +18,9 @@ namespace Bison.Razor.Tests;
 
 public class RazorServiceFactory : WebApplicationFactory<Program>
 {
-    
-    public IServiceScope CreateScope()
-    {
-        return Services.CreateScope();
-    }
+    public IHost? _host;
+    private string baseAddress = "http://127.0.0.1:0";
+    private bool useFakeAuthentication = false;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -52,18 +53,21 @@ public class RazorServiceFactory : WebApplicationFactory<Program>
             });
         });
 
-        builder.ConfigureTestServices(services =>
+        if (useFakeAuthentication)
         {
-            services.AddAuthentication(options =>
+            builder.ConfigureTestServices(services =>
             {
-                options.DefaultAuthenticateScheme = "IntegrationTest";
-                options.DefaultChallengeScheme = "IntegrationTest";
-                options.DefaultScheme = "IntegrationTest";
-            })
-            .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
-                "IntegrationTest",
-                options => { });
-        });
+                services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = "IntegrationTest";
+                    options.DefaultChallengeScheme = "IntegrationTest";
+                    options.DefaultScheme = "IntegrationTest";
+                })
+                .AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
+                    "IntegrationTest",
+                    options => { });
+            });
+        }
 
         builder.ConfigureAppConfiguration((context, config) =>
         {
@@ -75,5 +79,56 @@ public class RazorServiceFactory : WebApplicationFactory<Program>
         });
 
         builder.UseEnvironment("Development");
+        builder.UseSetting("urls", baseAddress);
+    }
+
+    protected override IHost CreateHost(IHostBuilder builder)
+    {
+        var testHost = builder.Build();
+
+        // Configure and start a real Kestrel host on a dynamic free port
+        builder.ConfigureWebHost(webHostBuilder => webHostBuilder.UseKestrel());
+        _host = builder.Build();
+        _host.Start();
+
+        // Get the actual localhost URL/port Kestrel bound to
+        var server = _host.Services.GetRequiredService<IServer>();
+        var addresses = server.Features.Get<IServerAddressesFeature>();
+
+        ClientOptions.BaseAddress = addresses!.Addresses
+            .Select(x => new Uri(x))
+            .Last();
+
+        testHost.Start();
+        return testHost;
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        _host?.Dispose();
+        base.Dispose(disposing);
+    }
+
+    public string GetHostBaseAddress()
+    {
+        if (_host is null)
+        {
+            using var _ = CreateDefaultClient();
+        }
+        return ClientOptions.BaseAddress.ToString().TrimEnd('/');
+    }
+
+    public IServiceScope CreateScope()
+    {
+        if (_host is null)
+        {
+            using var _ = CreateDefaultClient();
+        }
+        return _host!.Services.CreateScope();
+    }
+
+    public void UseFakeAuthentication()
+    {
+        useFakeAuthentication = true;
     }
 }

@@ -11,6 +11,13 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        var app = getApp(args);
+
+        app.Run();
+    }
+
+    public static WebApplication getApp(string[] args)
+    {
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
@@ -96,12 +103,13 @@ public class Program
         app.MapControllers();
 
         var endpoints = app.Services.GetRequiredService<
-    Microsoft.AspNetCore.Routing.EndpointDataSource>();
+        Microsoft.AspNetCore.Routing.EndpointDataSource>();
 
-foreach (var endpoint in endpoints.Endpoints)
-{
-    Console.WriteLine(endpoint.DisplayName);
-}
-        app.Run();
+        foreach (var endpoint in endpoints.Endpoints)
+        {
+            Console.WriteLine(endpoint.DisplayName);
+        }
+
+        return app;
     }
 }

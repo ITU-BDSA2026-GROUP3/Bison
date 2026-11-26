@@ -19,7 +19,8 @@ public class AuthenticationTests : IDisposable, IClassFixture<RazorServiceFactor
     public AuthenticationTests(RazorServiceFactory factory)
     {
         _factory = factory;
-        var scope = _factory.CreateScope();
+        _factory.UseFakeAuthentication();
+        var scope = _factory.Services.CreateScope();
         _context = scope.ServiceProvider.GetService<BisonContext>();
         _context.Database.EnsureDeleted();
         _context.Database.EnsureCreated();
