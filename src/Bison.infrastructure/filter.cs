@@ -86,22 +86,22 @@ namespace Bison.Razor.domain_model {
 namespace filter {
 
   public partial class __default {
-    public static Dafny.ISequence<Bison.Razor.domain_model.Observation> FilterBy(Bison.Razor.domain_model.Taxon root, Dafny.ISequence<Bison.Razor.domain_model.Observation> obs)
+    public static Dafny.ISequence<Bison.Core.domain_model.Observation> FilterBy(Bison.Core.domain_model.Taxon root, Dafny.ISequence<Bison.Core.domain_model.Observation> obs)
     {
-      Dafny.ISequence<Bison.Razor.domain_model.Observation> _0___accumulator = Dafny.Sequence<Bison.Razor.domain_model.Observation>.FromElements();
+      Dafny.ISequence<Bison.Core.domain_model.Observation> _0___accumulator = Dafny.Sequence<Bison.Core.domain_model.Observation>.FromElements();
     TAIL_CALL_START: ;
       if ((new BigInteger((obs).Count)).Sign == 0) {
-        return Dafny.Sequence<Bison.Razor.domain_model.Observation>.Concat(Dafny.Sequence<Bison.Razor.domain_model.Observation>.FromElements(), _0___accumulator);
+        return Dafny.Sequence<Bison.Core.domain_model.Observation>.Concat(Dafny.Sequence<Bison.Core.domain_model.Observation>.FromElements(), _0___accumulator);
       } else if (((((obs).Select(BigInteger.Zero)).getTaxon()) == (object) (root)) || ((((obs).Select(BigInteger.Zero)).getTaxon()).isSubTaxon(root))) {
-        _0___accumulator = Dafny.Sequence<Bison.Razor.domain_model.Observation>.Concat(Dafny.Sequence<Bison.Razor.domain_model.Observation>.FromElements((obs).Select(BigInteger.Zero)), _0___accumulator);
-        Bison.Razor.domain_model.Taxon _in0 = root;
-        Dafny.ISequence<Bison.Razor.domain_model.Observation> _in1 = (obs).Drop(BigInteger.One);
+        _0___accumulator = Dafny.Sequence<Bison.Core.domain_model.Observation>.Concat(Dafny.Sequence<Bison.Core.domain_model.Observation>.FromElements((obs).Select(BigInteger.Zero)), _0___accumulator);
+        Bison.Core.domain_model.Taxon _in0 = root;
+        Dafny.ISequence<Bison.Core.domain_model.Observation> _in1 = (obs).Drop(BigInteger.One);
         root = _in0;
         obs = _in1;
         goto TAIL_CALL_START;
       } else {
-        Bison.Razor.domain_model.Taxon _in2 = root;
-        Dafny.ISequence<Bison.Razor.domain_model.Observation> _in3 = (obs).Drop(BigInteger.One);
+        Bison.Core.domain_model.Taxon _in2 = root;
+        Dafny.ISequence<Bison.Core.domain_model.Observation> _in3 = (obs).Drop(BigInteger.One);
         root = _in2;
         obs = _in3;
         goto TAIL_CALL_START;
@@ -112,10 +112,10 @@ namespace filter {
 namespace filterChecked {
 
   public partial class __default {
-    public static Dafny.ISequence<Bison.Razor.domain_model.Observation> FilterByChecked(Bison.Razor.domain_model.Taxon root, Dafny.ISequence<Bison.Razor.domain_model.Observation> obs)
+    public static Dafny.ISequence<Bison.Core.domain_model.Observation> FilterByChecked(Bison.Core.domain_model.Taxon root, Dafny.ISequence<Bison.Core.domain_model.Observation> obs)
     {
-      Dafny.ISequence<Bison.Razor.domain_model.Observation> result = Dafny.Sequence<Bison.Razor.domain_model.Observation>.Empty;
-      if (!((root) != (object) ((Bison.Razor.domain_model.Taxon)null))) {
+      Dafny.ISequence<Bison.Core.domain_model.Observation> result = Dafny.Sequence<Bison.Core.domain_model.Observation>.Empty;
+      if (!((root) != (object) ((Bison.Core.domain_model.Taxon)null))) {
         throw new Dafny.HaltException("filter.dfy(31,4): " + Dafny.Sequence<Dafny.Rune>.UnicodeFromString("root must not be null").ToVerbatimString(false));}
       result = filter.__default.FilterBy(root, obs);
       return result;
