@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Bison.Razor.Migrations
+namespace Bison.infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class AddLicence : Migration

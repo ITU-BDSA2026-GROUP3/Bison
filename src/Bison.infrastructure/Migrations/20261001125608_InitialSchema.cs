@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Bison.Razor.domain_model;
+using Bison.Core.domain_model;
 
 #nullable disable
 
-namespace Bison.Razor.Migrations
+namespace Bison.infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialSchema : Migration
