@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Bison.Razor.domain_model;
+using Bison.Core.domain_model;
 
 #nullable disable
 
-namespace Bison.Razor.Migrations
+namespace Bison.infrastructure.Migrations
 {
     [DbContext(typeof(BisonContext))]
     [Migration("20261001125608_InitialSchema")]

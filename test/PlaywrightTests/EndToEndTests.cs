@@ -1,4 +1,4 @@
-﻿using Bison.Razor.domain_model;
+﻿using Bison.Core.domain_model;
 using Bison.Razor.Tests;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
