@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Bison.Razor.domain_model;
+namespace Bison.Core.domain_model;
 public class BisonContext : IdentityDbContext<Author>
 {
     public DbSet<Comment> Comments
