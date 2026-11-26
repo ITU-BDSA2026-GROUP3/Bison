@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Bison.domain_model;
+using Bison.Core.domain_model;
 
 namespace Bison.infrastructure.Repositories
 {
@@ -15,6 +15,10 @@ namespace Bison.infrastructure.Repositories
 
     public class AuthorRepository : IAuthorRepository
     {
+        public static Type getAuthor()
+        {
+            return typeof(Author);
+        }
         private readonly BisonContext _bisonContext;
         public AuthorRepository(BisonContext bisonContext)
         {

@@ -1,5 +1,4 @@
-using 
-using Bison.Core.domain_model;
+ using Bison.Core.domain_model;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bison.infrastructure.Repositories
