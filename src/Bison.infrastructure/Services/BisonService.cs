@@ -176,7 +176,7 @@ public class ObservationService : IObservationService
         }
 
         //Retrieve the taxon
-        Taxon? taxon = null;
+        TaxonDto? taxon = null;
         if (taxonID != 0) {
             taxon = await _TaxonRepository.getTaxon(taxonID);
             if(taxon == null)
