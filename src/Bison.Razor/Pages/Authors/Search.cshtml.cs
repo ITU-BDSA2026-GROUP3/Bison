@@ -7,15 +7,11 @@ namespace Bison.Razor.Pages.Authors;
 
 public class SearchModel : PageModel
 {
-    private readonly IAuthorRepository _authorRepository;
-    private readonly IPostRepository _postRepository;
+    private readonly IObservationService _observationService;
 
-    public SearchModel(
-        IAuthorRepository authorRepository,
-        IPostRepository postRepository)
+    public SearchModel(IObservationService observationService)
     {
-        _authorRepository = authorRepository;
-        _postRepository = postRepository;
+        _observationService = observationService;
     }
 
     [BindProperty(SupportsGet = true)]
