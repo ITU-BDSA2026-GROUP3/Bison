@@ -154,6 +154,13 @@ public class PaginationPageModelTests
             throw new NotImplementedException();
         }
 
+        public Task<List<int>> CreateObservation(
+            string text, string authorID, int taxonID, byte[] imgbytes, string license)
+        {
+            return Task.FromResult(new List<int>());
+            
+        }
+
         public Task<List<CommentDto>> GetCommentsFromAuthor(string authorId)
         {
             return Task.FromResult(new List<CommentDto>());

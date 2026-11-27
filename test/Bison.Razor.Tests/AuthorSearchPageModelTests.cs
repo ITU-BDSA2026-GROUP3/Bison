@@ -51,9 +51,16 @@ public class AuthorSearchPageModelTests
                     Name = "Emil"
                 }
             ];
-        
+
         public Task<List<int>> CreateObservation(
             string text, string authorID, int taxonID)
+        {
+            return Task.FromResult(new List<int>());
+            
+        }
+        
+        public Task<List<int>> CreateObservation(
+            string text, string authorID, int taxonID, byte[] imgbytes, string license)
         {
             return Task.FromResult(new List<int>());
             
