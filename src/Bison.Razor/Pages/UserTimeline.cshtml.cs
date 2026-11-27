@@ -106,7 +106,7 @@ public class UserTimelineModel : PageModel
 
         if(author != null)
         {
-            Observations = await _observationService.GetObservationsFromAuthor(authorId);
+            Observations = await _observationService.GetObservationsFromAuthor(authorId, CurrentPage);
             Comments = await _observationService.GetCommentsFromAuthor(authorId);
             Proposals = await _observationService.GetProposalsFromAuthor(authorId);
         }

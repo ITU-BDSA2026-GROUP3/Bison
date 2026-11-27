@@ -153,6 +153,21 @@ public class PaginationPageModelTests
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<CommentDto>> GetCommentsFromAuthor(string authorId)
+        {
+            return Task.FromResult(new List<CommentDto>());
+        }
+
+        public Task<List<ProposalDto>> GetProposalsFromAuthor(string authorId)
+        {
+            return Task.FromResult(new List<ProposalDto>());
+        }
+
+        public Task<List<AuthorDto?>> GetAuthorsFromSearch(string search)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     private class FakeTaxonRepository : ITaxonRepository

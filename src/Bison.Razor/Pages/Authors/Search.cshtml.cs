@@ -31,7 +31,7 @@ public class SearchModel : PageModel
         if (!string.IsNullOrWhiteSpace(SearchTerm))
         {
             HasSearched = true;
-            Authors = await _observationService.GetAuthorFromSearch(SearchTerm);
+            Authors = await _observationService.GetAuthorsFromSearch(SearchTerm);
         }
     }
 }

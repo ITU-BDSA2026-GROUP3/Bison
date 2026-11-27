@@ -23,7 +23,7 @@ public interface IObservationService
     public Task<List<ProposalDto>> GetProposals(int observationId);
     public Task<List<ProposalDto>> GetProposalsFromAuthor(string authorId);
     public Task<AuthorDto?> GetAuthor(string authorId);
-    public Task<List<AuthorDto?>> GetAuthorFromSearch(string search);
+    public Task<List<AuthorDto?>> GetAuthorsFromSearch(string search);
 
     public Task ForgetUser(string authorId, bool keepObservations);
 
@@ -425,7 +425,7 @@ public class ObservationService : IObservationService
 
     }
 
-    public async Task<List<AuthorDto?>> GetAuthorFromSearch(string search)
+    public async Task<List<AuthorDto?>> GetAuthorsFromSearch(string search)
     {
         List<AuthorDto?> authors = new List<AuthorDto?>();
 

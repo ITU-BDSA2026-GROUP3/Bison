@@ -1,4 +1,5 @@
 using Bison.Razor.domain_model;
+using Bison.Razor.DTOs;
 using Bison.Razor.Pages.Authors;
 using Bison.Razor.Repositories;
 
@@ -9,9 +10,8 @@ public class AuthorSearchPageModelTests
     [Fact]
     public async Task AuthorSearchReturnsMatchingAuthors()
     {
-        FakeAuthorRepository authorRepository = new();
-        FakePostRepository postRepository = new();
-        SearchModel model = new(authorRepository, postRepository)
+        FakeObservationService fakeObservationService = new FakeObservationService();
+        SearchModel model = new(fakeObservationService)
         {
             SearchTerm = "Emil"
         };
@@ -20,16 +20,15 @@ public class AuthorSearchPageModelTests
 
         Assert.True(model.HasSearched);
         Assert.Single(model.Authors);
-        Assert.Equal("Emil", model.Authors[0].UserName);
-        Assert.Equal("Emil", authorRepository.ReceivedSearchTerm);
+        Assert.Equal("Emil", model.Authors[0].Name);
+        Assert.Equal("Emil", fakeObservationService.ReceivedSearchTerm);
     }
 
     [Fact]
     public async Task EmptySearchDoesNotSearchRepository()
     {
-        FakeAuthorRepository authorRepository = new();
-        FakePostRepository postRepository = new();
-        SearchModel model = new(authorRepository, postRepository)
+        FakeObservationService fakeObservationService = new FakeObservationService();
+        SearchModel model = new(fakeObservationService)
         {
             SearchTerm = " "
         };
@@ -38,127 +37,120 @@ public class AuthorSearchPageModelTests
 
         Assert.False(model.HasSearched);
         Assert.Empty(model.Authors);
-        Assert.Null(authorRepository.ReceivedSearchTerm);
+        Assert.Null(fakeObservationService.ReceivedSearchTerm);
     }
 
-    [Fact]
-    public async Task SelectedAuthorReturnsPostHistory()
+    private class FakeObservationService : IObservationService
     {
-        FakeAuthorRepository authorRepository = new();
-        FakePostRepository postRepository = new();
-        SearchModel model = new(authorRepository, postRepository)
-        {
-            AuthorId = "author-1"
-        };
-
-        await model.OnGetAsync();
-
-        Assert.Single(model.Posts);
-        Assert.Equal("Test observation", model.Posts[0].Text);
-        Assert.Equal("author-1", postRepository.ReceivedAuthorId);
-    }
-
-    private class FakeAuthorRepository : IAuthorRepository
-    {
-        public string? ReceivedSearchTerm { get; private set; }
-
-        public Task<List<Author>> SearchAuthors(string searchTerm)
-        {
-            ReceivedSearchTerm = searchTerm;
-
-            List<Author> authors =
+        public string ReceivedSearchTerm;
+        List<AuthorDto> authors =
             [
-                new Author
+                new AuthorDto
                 {
                     Id = "author-1",
-                    UserName = "Emil"
+                    Name = "Emil"
                 }
             ];
-
-            return Task.FromResult(authors);
-        }
-
-        public Task<List<string>> CreateAuthors(List<Author> authors)
-        {
-            return Task.FromResult(new List<string>());
-        }
-
-        public Task<Author?> getAuthor(string authorID)
-        {
-            return Task.FromResult<Author?>(null);
-        }
-
-        public Task AnonymizeAuthor(string authorID)
-        {
-            return Task.CompletedTask;
-        }
-    }
-
-    private class FakePostRepository : IPostRepository
-    {
-        public string? ReceivedAuthorId { get; private set; }
-
-        public Task<List<Post>> ReadPostsByAuthor(string authorID)
-        {
-            ReceivedAuthorId = authorID;
-
-            List<Post> posts =
-            [
-                new Observation
-                {
-                    Text = "Test observation"
-                }
-            ];
-
-            return Task.FromResult(posts);
-        }
-
-        public Task<List<int>> CreateObservations(
-            List<Observation> observations)
+        
+        public Task<List<int>> CreateObservation(
+            string text, string authorID, int taxonID)
         {
             return Task.FromResult(new List<int>());
+            
         }
 
-        public Task<Observation?> ReadSingleObservation(int observationID)
-        {
-            return Task.FromResult<Observation?>(null);
-        }
-
-        public Task<List<Observation>> ReadObservations(string authorID)
-        {
-            return Task.FromResult(new List<Observation>());
-        }
-
-        public Task<List<Observation>> ReadAllObservations()
-        {
-            return Task.FromResult(new List<Observation>());
-        }
-
-        public Task HandleForgottenUserObservations(
+        public Task<List<int>> CreateComment(
+            string text,
             string authorID,
-            bool keepObservations)
+            int observationID)
+        {
+            return Task.FromResult(new List<int>());
+        }
+
+        public Task<List<int>> CreateProposal(
+            string text,
+            string authorID,
+            int observationID,
+            int taxonID)
+        {
+            return Task.FromResult(new List<int>());
+        }
+        
+
+        public int RequestedPublicPage { get; private set; }
+
+        public string RequestedAuthor { get; private set; }
+
+        public int RequestedPage { get; private set; }
+        public int RequestedTaxon { get; private set; }
+
+        public Task<List<ObservationDto>> GetObservations(int page = 1)
+        {
+            RequestedPublicPage = page;
+
+            return Task.FromResult(new List<ObservationDto>());
+        }
+
+        public Task<List<ObservationDto>> GetObservationsFromAuthor(string authorId, int page = 1)
+        {
+            RequestedAuthor = authorId;
+            RequestedPage = page;
+
+            return Task.FromResult(new List<ObservationDto>());
+        }
+
+        public Task<List<CommentDto>> GetComments(int observationId)
+        {
+            return Task.FromResult(new List<CommentDto>());
+        }
+
+        public Task<List<ObservationDto>> GetObservationsFromTaxon(int taxonId, int page = 1)
+        {
+            RequestedTaxon = taxonId;
+            RequestedPage = page;
+
+            return Task.FromResult(new List<ObservationDto>());
+        }
+
+        public Task<ObservationDto> GetObservationFromId(int observationId, int page = 1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<ProposalDto>> GetProposals(int observationId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AuthorDto?> GetAuthor(string authorId)
+        {
+            return Task.FromResult(new AuthorDto {Id = authorId});
+        }
+
+        public Task ForgetUser(string authorId, bool keepObservations)
         {
             return Task.CompletedTask;
         }
 
-        public Task<List<int>> CreateComments(List<Comment> comments)
+        public Task<List<int>> CreateObservation(string text, string authorID, int taxonID, byte[] imgbytes)
         {
-            return Task.FromResult(new List<int>());
+            throw new NotImplementedException();
         }
 
-        public Task<List<Comment>> ReadComments(int obsID)
+        public Task<List<CommentDto>> GetCommentsFromAuthor(string authorId)
         {
-            return Task.FromResult(new List<Comment>());
+            throw new NotImplementedException();
         }
 
-        public Task<List<int>> CreateProposals(List<Proposal> proposals)
+        public Task<List<ProposalDto>> GetProposalsFromAuthor(string authorId)
         {
-            return Task.FromResult(new List<int>());
+            throw new NotImplementedException();
         }
 
-        public Task<List<Proposal>> ReadProposals(int obsID)
+        public Task<List<AuthorDto?>> GetAuthorsFromSearch(string search)
         {
-            return Task.FromResult(new List<Proposal>());
+            ReceivedSearchTerm = search;
+            return Task.FromResult(authors);
         }
     }
 }
