@@ -58,7 +58,7 @@ public class ObservationService : IObservationService
             throw new ArgumentException("The comment cannot be empty.");
         }
 
-        var author = await _AuthorRepository.getAuthor(authorID);
+        AuthorDto author = await _AuthorRepository.getAuthor(authorID);
 
         if (author == null)
         {
@@ -72,16 +72,17 @@ public class ObservationService : IObservationService
             throw new InvalidOperationException("Observation not found.");
         }
 
-        var comment = new Comment
+        var comment = new CommentDto
         {
+            obsId = observationID,
             Text = text.Trim(),
-            TimeStamp = DateTime.UtcNow,
-            Author = author,
-            Observation = observation
+            AuthorId =authorID,
+            AuthorName = author.Name
+            
         };
 
         return await _PostRepository.CreateComments(
-            new List<Comment> { comment });
+            new List<CommentDto> { comment });
     }
 
     public async Task<List<int>> CreateProposal(string text, string authorID, int observationID,int taxonID)
@@ -112,17 +113,17 @@ public class ObservationService : IObservationService
             throw new InvalidOperationException("Taxon not found.");
         }
 
-        var proposal = new Proposal
+        var proposal = new ProposalDto
         {
+            obsId = observationID,
             Text = text.Trim(),
-            TimeStamp = DateTime.UtcNow,
-            Author = author,
-            Observation = observation,
-            Taxon = taxon
+            AuthorName = author.Name,
+            AuthorId = authorID,
+            TaxonName = taxon.Name
         };
 
         return await _PostRepository.CreateProposals(
-            new List<Proposal> { proposal });
+            new List<ProposalDto> { proposal });
     }
     
     public async Task<List<int>> CreateObservation(string text, string authorID, int taxonID)
@@ -132,7 +133,7 @@ public class ObservationService : IObservationService
         }
 
         //This retrieves the author of obs
-        var author= await _AuthorRepository.getAuthor(authorID);
+        AuthorDto author= await _AuthorRepository.getAuthor(authorID);
 
         if(author == null)
         {
@@ -149,15 +150,14 @@ public class ObservationService : IObservationService
 
 
         //Creating the observation
-        var observation = new Observation
+        var observation = new ObservationDto
         {
             Text = text.Trim(),
-            TimeStamp = DateTime.UtcNow,
-            Author = author,
-            Taxon = taxon 
+            AuthorName = author.Name,
+            TaxonName = taxon.Name,
         };
 
-        return await _PostRepository.CreateObservations(new List<Observation> {observation});
+        return await _PostRepository.CreateObservations(new List<ObservationDto> {observation});
     }
 
     //overload
@@ -168,7 +168,7 @@ public class ObservationService : IObservationService
         }
 
         //This retrieves the author of obs
-        var author= await _AuthorRepository.getAuthor(authorID);
+        AuthorDto author= await _AuthorRepository.getAuthor(authorID);
 
         if(author == null)
         {
@@ -186,36 +186,33 @@ public class ObservationService : IObservationService
         }
 
         
-        Observation observation;
+        ObservationDto observation;
         if(imgbytes == null || imgbytes.Length == 0)
         //Creating the observation
-        observation = new Observation
+        observation = new ObservationDto
         {
             Text = text.Trim(),
-            TimeStamp = DateTime.UtcNow,
-            Author = author,
-            Taxon = taxon 
+            AuthorName = author.Name,
+            TaxonName = taxon.Name,
         };
         else if(licence != null) 
-        observation = new Observation
+        observation = new ObservationDto
         {
             Text = text.Trim(),
-            TimeStamp = DateTime.UtcNow,
-            Author = author,
-            Taxon = taxon,
+            AuthorName = author.Name,
+            TaxonName = taxon.Name,
             ImgBytes = imgbytes,
-            Licence = licence 
+            Licence = licence    
         };
-        else observation = new Observation
+        else observation = new ObservationDto
         {
             Text = text.Trim(),
-            TimeStamp = DateTime.UtcNow,
-            Author = author,
-            Taxon = taxon,
+            AuthorName = author.Name,
+            TaxonName = taxon.Name,
             ImgBytes = imgbytes
         };
 
-        return await _PostRepository.CreateObservations(new List<Observation> {observation});
+        return await _PostRepository.CreateObservations(new List<ObservationDto> {observation});
     }
 
     private const int PageSize = 32;
@@ -228,22 +225,8 @@ public class ObservationService : IObservationService
         int validPage = Math.Max(page, 1);
         List<ObservationDto> observations = new List<ObservationDto>();
         var repoQueryResult = await _PostRepository.ReadAllObservations();
-        foreach (var obs in repoQueryResult)
-        {
-            ObservationDto dto = new ObservationDto
-            {
-                Id = obs.Id,
-                AuthorName = obs.Author?.UserName ?? "deleted user",
-                Text = obs.Text,
-                Timestamp = DateTimeToString(obs.TimeStamp),
-                ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
-                Licence = obs.Licence,
-                TaxonName = obs.Taxon.Name
-            };
-            observations.Add(dto);
-        }
-    
-        return observations;
+        
+        return repoQueryResult;
     }
 
     public async Task<List<ObservationDto>> GetObservationsFromAuthor(string authorId, int page = 1)
@@ -251,23 +234,8 @@ public class ObservationService : IObservationService
         int validPage = Math.Max(page, 1);
         List<ObservationDto> observations = new List<ObservationDto>();
         var repoQueryResult = await _PostRepository.ReadObservations(authorId);
-        foreach (var obs in repoQueryResult)
-        {
-            ObservationDto dto = new ObservationDto
-            {
-                Id = obs.Id,
-                AuthorName = obs.Author?.UserName ?? "deleted user",
-                Text = obs.Text,
-                Timestamp = DateTimeToString(obs.TimeStamp),
-                TaxonName = obs.Taxon.Name,
-                ImgBytes = obs.ImgBytes,
-                Licence = obs.Licence
-            };
 
-            observations.Add(dto);
-        }
-
-        return observations;
+        return repoQueryResult;
     }
 
     public async Task<List<ObservationDto>> GetObservationsFromTaxon(int taxonId, int page = 1)
@@ -278,7 +246,7 @@ public class ObservationService : IObservationService
         var observations = await _PostRepository.ReadAllObservations();
         Observation[] observationsArray = observations.ToArray();
         var filt = filterChecked.__default.FilterByChecked(taxon, Dafny.Sequence<Observation>.FromArray(observationsArray));
-        List<ObservationDto> filteredObservations = new List<ObservationDto>();
+        List<Observation> filteredObservations = new List<Observation>();
         foreach (var obs in filt)
         {
             ObservationDto dto = new ObservationDto
@@ -300,70 +268,33 @@ public class ObservationService : IObservationService
     public async Task<ObservationDto> GetObservationFromId(int observationId, int page = 1)
     {
         var obs = await _PostRepository.ReadSingleObservation(observationId);
-        if (obs is null)
-            return null; //temp solution
-        ObservationDto dto = new ObservationDto
+        if (obs == null)
         {
-            Id = obs.Id,
-            AuthorName = obs.Author?.UserName ?? "deleted user",
-            Text = obs.Text,
-            Timestamp = DateTimeToString(obs.TimeStamp),
-            ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
-            TaxonName = obs.Taxon.Name,
-            Licence = obs.Licence
-        };
-        return dto;
+            throw new InvalidOperationException("Observation not found.");
+        }
+        return obs;
     }
     public async Task<List<CommentDto>> GetComments(int observationId)
     {
-        List<CommentDto> comments = new List<CommentDto>();
-
         var repoQueryResult =
             await _PostRepository.ReadComments(observationId);
 
-        foreach (var comment in repoQueryResult)
-        {
-            CommentDto dto = new CommentDto
-            {
-                AuthorName = comment.Author.UserName,
-                Text = comment.Text,
-                Timestamp = DateTimeToString(comment.TimeStamp)
-            };
 
-            comments.Add(dto);
-        }
-
-        return comments;
+        return repoQueryResult;
     }
 
     public async Task<List<ProposalDto>> GetProposals(int observationId)
     {
-        List<ProposalDto> proposals = new List<ProposalDto>();
 
         var repoQueryResult =
             await _PostRepository.ReadProposals(observationId);
-
-        foreach (var proposal in repoQueryResult)
-        {
-            ProposalDto dto = new ProposalDto
-            {
-                AuthorName = proposal.Author.UserName,
-                Text = proposal.Text,
-                Timestamp = DateTimeToString(proposal.TimeStamp),
-                TaxonName = proposal.Taxon.Name,
-                Id = observationId
-            };
-
-            proposals.Add(dto);
-        }
-
-        return proposals;
+        return repoQueryResult;
     }
 
     public async Task<AuthorDto?> GetAuthor(string authorId)
     {
 
-        var repoQueryResult = await _AuthorRepository.getAuthor(authorId);
+        AuthorDto repoQueryResult = await _AuthorRepository.getAuthor(authorId);
         if (repoQueryResult == null)
         {
             return null;
@@ -371,7 +302,7 @@ public class ObservationService : IObservationService
         AuthorDto dto = new AuthorDto
         {
             Id = repoQueryResult.Id,
-            Name = repoQueryResult.UserName,
+            Name = repoQueryResult.Name,
             Email = repoQueryResult.Email
         };
         return dto;

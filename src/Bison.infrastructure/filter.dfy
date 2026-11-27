@@ -1,4 +1,4 @@
-module {:extern "Bison.Razor.domain_model"} DomainModel {
+module {:extern "Bison.Core.domain_model"} DomainModel {
   class {:extern "Taxon"} Taxon {
     function {:extern} isSubTaxon(ancestor: Taxon): bool
   }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Bison.Core.domain_model;
+using Bison.infrastructure.DTOs;
 
 namespace Bison.infrastructure.Repositories
 {
@@ -25,32 +26,44 @@ namespace Bison.infrastructure.Repositories
             _bisonContext = bisonContext;
         }
 
-        public async Task<List<string>> CreateAuthors(List<Author> authors)
+        public async Task<List<string>> CreateAuthors(List<AuthorDto> authors)
         {
-            foreach(Author author in authors)
+            foreach(AuthorDto dto in authors)
             {
+                Author author = new Author
+                {
+                    Id = dto.Id,
+                    UserName = dto.Name,
+                    Email = dto.Email,
+                };
                 var queryResult = await _bisonContext.Users.AddAsync(author); // does not write to the database!
             }
             await _bisonContext.SaveChangesAsync(); // persist the changes in the database
 
             // count the ideas after the db has been updated
             List<string> ids = new List<string>();
-            foreach (Author author in authors)
+            foreach (AuthorDto dto in authors)
             {
-                ids.Add(author.Id);
+                if (dto.Id != null)
+                    ids.Add(dto.Id);
             }
             return ids;
         }
 
-        public async Task<Author?> getAuthor(string authorID)
+        public async Task<AuthorDto?> getAuthor(string authorID)
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background
             var query = _bisonContext.Users
              .Where(author => author.Id == authorID);
             // Execute the query and store the results
             var result = await query.SingleOrDefaultAsync(); //Temporary change to fix bug when calling the function with an ID that doesn't exist. Can now return null
-
-            return result;
+            AuthorDto dto = new AuthorDto
+            {
+                Id = result.Id,
+                Name = result.UserName ?? "deleted user",
+                Email = result.Email
+            };
+            return dto;
         }
 
         public async Task AnonymizeAuthor(string authorID)
