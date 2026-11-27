@@ -56,7 +56,7 @@ public static class DbInitializer
 
         context.SaveChanges();
 
-        using var image = new Image<Rgb24>(1280, 720);
+        using var image = new Image<Rgb24>(668, 720);
 
         image.ProcessPixelRows(accessor =>
         {
@@ -81,7 +81,8 @@ public static class DbInitializer
             TimeStamp = DateTime.Now,
             Author = author1,
             Taxon = taxon2,
-            ImgBytes = jpegBytes
+            ImgBytes = jpegBytes,
+            Licence = "test"
         };
 
         var observation2 = new Observation
@@ -89,7 +90,8 @@ public static class DbInitializer
             Text = "There is a bison in the field",
             TimeStamp = DateTime.Now,
             Author = author2,
-            Taxon = taxon1
+            Taxon = taxon1,
+            Licence = "test"
         };
 
         context.Observations.AddRange(

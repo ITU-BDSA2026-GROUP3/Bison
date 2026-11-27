@@ -2,6 +2,7 @@ using Bison.Razor.domain_model;
 using Bison.Razor.DTOs;
 using Bison.Razor.Repositories;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel;
 using System.Data;
 using System.Security.Cryptography.X509Certificates;
 using static System.Net.Mime.MediaTypeNames;
@@ -28,7 +29,7 @@ public interface IObservationService
     public Task ForgetUser(string authorId, bool keepObservations);
 
     public Task<List<int>> CreateObservation(string text, string authorID, int taxonID);
-    public Task<List<int>> CreateObservation(string text, string authorID, int taxonID, Byte[] imgbytes);
+    public Task<List<int>> CreateObservation(string text, string authorID, int taxonID, byte[] imgbytes, string licence);
     public Task<List<int>> CreateComment(string text, string authorID, int observationID);
     public Task<List<int>> CreateProposal(string text, string authorID, int observationID, int taxonID);
 }
@@ -163,7 +164,7 @@ public class ObservationService : IObservationService
     }
 
     //overload
-    public async Task<List<int>> CreateObservation(string text, string authorID, int taxonID, Byte[] imgbytes)
+    public async Task<List<int>> CreateObservation(string text, string authorID, int taxonID, byte[] imgbytes, string licence)
     {
         if (string.IsNullOrWhiteSpace(text)){
             throw new ArgumentException("The Observation cannot be empty.");
@@ -198,14 +199,23 @@ public class ObservationService : IObservationService
             Author = author,
             Taxon = taxon 
         };
-        else
+        else if(licence != null) 
         observation = new Observation
         {
             Text = text.Trim(),
             TimeStamp = DateTime.UtcNow,
             Author = author,
             Taxon = taxon,
-            ImgBytes = imgbytes 
+            ImgBytes = imgbytes,
+            Licence = licence 
+        };
+        else observation = new Observation
+        {
+            Text = text.Trim(),
+            TimeStamp = DateTime.UtcNow,
+            Author = author,
+            Taxon = taxon,
+            ImgBytes = imgbytes
         };
 
         return await _PostRepository.CreateObservations(new List<Observation> {observation});
@@ -230,6 +240,7 @@ public class ObservationService : IObservationService
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
                 ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
+                Licence = obs.Licence,
                 TaxonName = obs.Taxon.Name
             };
             observations.Add(dto);
@@ -251,7 +262,9 @@ public class ObservationService : IObservationService
                 AuthorName = obs.Author?.UserName ?? "deleted user",
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
-                TaxonName = obs.Taxon.Name
+                TaxonName = obs.Taxon.Name,
+                ImgBytes = obs.ImgBytes,
+                Licence = obs.Licence
             };
 
             observations.Add(dto);
@@ -278,7 +291,8 @@ public class ObservationService : IObservationService
                 Text = obs.Text,
                 Timestamp = DateTimeToString(obs.TimeStamp),
                 ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
-                TaxonName = obs.Taxon.Name
+                TaxonName = obs.Taxon.Name,
+                Licence = obs.Licence
             };
 
             filteredObservations.Add(dto);
@@ -298,7 +312,8 @@ public class ObservationService : IObservationService
             Text = obs.Text,
             Timestamp = DateTimeToString(obs.TimeStamp),
             ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
-            TaxonName = obs.Taxon.Name
+            TaxonName = obs.Taxon.Name,
+            Licence = obs.Licence
         };
         return dto;
     }

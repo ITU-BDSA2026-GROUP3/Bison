@@ -14,7 +14,8 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
     public RazorEndToEndTests(RazorServiceFactory factory)
     {
         _factory = factory;
-        var scope = _factory.CreateScope();
+        _factory.UseFakeAuthentication();
+        var scope = _factory.Services.CreateScope();
         _context = scope.ServiceProvider.GetService<BisonContext>();
         _context.Database.EnsureDeleted();
         _context.Database.EnsureCreated();
@@ -39,7 +40,6 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
         //Act
         var response = await Client.GetAsync("/obs");
         var content = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(content);
 
         //Assert
         Assert.Contains("Emil", content); // Observation 1 author

@@ -3,6 +3,8 @@ public class Observation : Post
 {
     public byte[]? ImgBytes { get; set; }
 
+    public string? Licence { get; set; }
+
     public Taxon Taxon { get; set; } = null!;
 
     public List<Comment> Comments { get; set; } = new();

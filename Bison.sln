@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bison.Razor", "src\Bison.Ra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bison.Razor.Tests", "test\Bison.Razor.Tests\Bison.Razor.Tests.csproj", "{8BB77C9C-BB29-4ECF-828B-FF7BBC97EB28}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaywrightTests", "test\PlaywrightTests\PlaywrightTests.csproj", "{CB8B97E3-A4D7-4A2A-9748-758A38B5B8EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,18 @@ Global
 		{8BB77C9C-BB29-4ECF-828B-FF7BBC97EB28}.Release|x64.Build.0 = Release|Any CPU
 		{8BB77C9C-BB29-4ECF-828B-FF7BBC97EB28}.Release|x86.ActiveCfg = Release|Any CPU
 		{8BB77C9C-BB29-4ECF-828B-FF7BBC97EB28}.Release|x86.Build.0 = Release|Any CPU
+		{CB8B97E3-A4D7-4A2A-9748-758A38B5B8EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB8B97E3-A4D7-4A2A-9748-758A38B5B8EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB8B97E3-A4D7-4A2A-9748-758A38B5B8EC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CB8B97E3-A4D7-4A2A-9748-758A38B5B8EC}.Debug|x64.Build.0 = Debug|Any CPU
+		{CB8B97E3-A4D7-4A2A-9748-758A38B5B8EC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CB8B97E3-A4D7-4A2A-9748-758A38B5B8EC}.Debug|x86.Build.0 = Debug|Any CPU
+		{CB8B97E3-A4D7-4A2A-9748-758A38B5B8EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB8B97E3-A4D7-4A2A-9748-758A38B5B8EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB8B97E3-A4D7-4A2A-9748-758A38B5B8EC}.Release|x64.ActiveCfg = Release|Any CPU
+		{CB8B97E3-A4D7-4A2A-9748-758A38B5B8EC}.Release|x64.Build.0 = Release|Any CPU
+		{CB8B97E3-A4D7-4A2A-9748-758A38B5B8EC}.Release|x86.ActiveCfg = Release|Any CPU
+		{CB8B97E3-A4D7-4A2A-9748-758A38B5B8EC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,5 +66,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{E513874B-B3E8-5DC4-64AC-A53C44D67AD6} = {5476485F-9A1D-4BC8-A6FB-72CDE61B4452}
 		{8BB77C9C-BB29-4ECF-828B-FF7BBC97EB28} = {24FBF01A-FA1D-4D88-A3A0-854B20FF3F2F}
+		{CB8B97E3-A4D7-4A2A-9748-758A38B5B8EC} = {24FBF01A-FA1D-4D88-A3A0-854B20FF3F2F}
 	EndGlobalSection
 EndGlobal
