@@ -22,7 +22,7 @@
 
         @if (isOwnTimeline)
         {
-            <h2>My Observations</h2>
+            <h2>My Timeline</h2>
 
             <div class ="observationbox">
                 <h3>What did you see, @User.Identity?.Name?</h3>
@@ -59,11 +59,11 @@
             }
         else
                 {
-                    <h2>@Model.author.Name's Observations</h2>
+                    <h2>@Model.author.Name's Timeline</h2>
                     
                 }
      
-
+        <strong>Observations</strong>
         @if (Model.Observations.Any())
         {
             <ul id="messagelist" class="observations">
@@ -90,7 +90,79 @@
         }
         else
         {
-            <em>There are no Observations so far.</em>
+            <p>There are no Observations so far.</p>
+        }
+
+        <strong>Comments</strong>
+        if (Model.Comments.Count == 0)
+        {
+            <p>There are no comments so far.</p>
+        }
+        else
+        {
+            <ul id="messagelist" class="comments">
+                @foreach (var com in Model.Comments)
+                {
+                    <li>
+                        <p>
+                            <strong>
+                                <a asp-page="/UserTimeline"
+                                    asp-route-author="@com.AuthorName">
+                                    <strong>@com.AuthorName</strong>
+                                </a>
+                            </strong>
+                            @com.Text
+                            <small><em>&mdash; </em>@com.Timestamp</small>
+                            <a asp-page="/Details"
+                                asp-route-id="@com.ObservationId">
+                                View details
+                            </a>
+                        </p>
+                    </li>
+                }
+            </ul>
+        }
+
+        <strong>Proposals</strong>
+        if (Model.Proposals.Count == 0)
+        {
+            <p>There are no proposals so far.</p>
+        }
+        else
+        {
+            <ul id="messagelist" class="proposals">
+                @foreach (var prop in Model.Proposals)
+                {
+                    <li>
+                        <p>
+                            <strong>
+                                <a asp-page="/UserTimeline"
+                                    asp-route-author="@prop.AuthorName">
+                                    <strong>@prop.AuthorName</strong>
+                                </a>
+                            </strong>
+                            Proposed:
+                            <strong>
+                                @prop.TaxonName
+                            </strong>
+                            @prop.Text
+                            <small><em>&mdash; </em>@prop.Timestamp</small>
+                            <a asp-page="/Details"
+                                asp-route-id="@prop.ObservationId">
+                                View details
+                            </a>
+                        </p>
+                    </li>
+                }
+            </ul>
+            <div class="list-group">
+                @foreach (var post in Model.Proposals)
+                {
+                    <div class="list-group-item">
+                        <p class="mb-0">@post.Text</p>
+                    </div>
+                }
+            </div>
         }
         <nav aria-label="User timeline pagination">
             @if (Model.HasPreviousPage)

@@ -33,6 +33,16 @@ namespace Bison.Razor.Repositories
             var result = await query.ToListAsync();
             return result;
         }
+        public async Task<List<Post>> ReadPostsByAuthor(string authorID)
+        {
+            return await _bisonContext.Set<Post>()
+                .Include(post => post.Author)
+                .Include(post => (post as Proposal).Observation)
+                .Include(post => (post as Comment).Observation)
+                .Where(post => !post.IsDeleted && post.Author != null && !post.Author.IsDeleted && post.Author.Id == authorID)
+                .OrderByDescending(post => post.TimeStamp)
+                .ToListAsync();
+        }
         public async Task<List<Observation>> ReadAllObservations()
         {
             // Define the query - with our setup, EF Core translates this to an SQLite query in the background

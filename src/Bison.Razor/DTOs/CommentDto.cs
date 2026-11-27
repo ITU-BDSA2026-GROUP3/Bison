@@ -8,4 +8,5 @@ public class CommentDto
 
     public string AuthorName { get; set; } = "";
 
+    public int ObservationId { get; set; }
 }

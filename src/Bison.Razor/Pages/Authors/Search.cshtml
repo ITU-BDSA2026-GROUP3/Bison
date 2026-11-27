@@ -1,0 +1,42 @@
+@page
+@model Bison.Razor.Pages.Authors.SearchModel
+@{
+    ViewData["Title"] = "Search authors";
+    Layout = "Shared/_Layout";
+}
+
+<h1>Search authors</h1>
+
+<form method="get">
+    <div class="input-group mb-3">
+        <input asp-for="SearchTerm"
+               class="form-control"
+               placeholder="Enter an author name" />
+
+        <button type="submit" class="btn btn-primary">
+            Search
+        </button>
+    </div>
+</form>
+
+@if (Model.HasSearched)
+{
+    if (Model.Authors.Count == 0)
+    {
+        <p>No authors were found.</p>
+    }
+    else
+    {
+        <ul class="list-group mb-4">
+            @foreach (var author in Model.Authors)
+            {
+                <li class="list-group-item">
+                    <a asp-page="../Usertimeline"
+                       asp-route-authorId="@author.Id">
+                        @author.Name
+                    </a>
+                </li>
+            }
+        </ul>
+    }
+}

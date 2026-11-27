@@ -20,6 +20,7 @@ namespace Bison.Razor.Repositories
 
         public Task<Observation?> ReadSingleObservation(int observationID);
         public Task<List<Observation>> ReadObservations(string authorID);
+        public Task<List<Post>> ReadPostsByAuthor(string authorID);
         public Task<List<Observation>> ReadAllObservations();
         public Task HandleForgottenUserObservations(string authorID, bool keepObservations);
         public Task<List<int>> CreateComments(List<Comment> comments);

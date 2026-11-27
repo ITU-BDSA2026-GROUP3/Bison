@@ -154,7 +154,24 @@ public class PaginationPageModelTests
             throw new NotImplementedException();
         }
 
-        public Task<List<int>> CreateObservation(string text, string authorID, int taxonID, byte[] imgbytes, string licence)
+        public Task<List<int>> CreateObservation(
+            string text, string authorID, int taxonID, byte[] imgbytes, string license)
+        {
+            return Task.FromResult(new List<int>());
+            
+        }
+
+        public Task<List<CommentDto>> GetCommentsFromAuthor(string authorId)
+        {
+            return Task.FromResult(new List<CommentDto>());
+        }
+
+        public Task<List<ProposalDto>> GetProposalsFromAuthor(string authorId)
+        {
+            return Task.FromResult(new List<ProposalDto>());
+        }
+
+        public Task<List<AuthorDto?>> GetAuthorsFromSearch(string search)
         {
             throw new NotImplementedException();
         }
@@ -214,6 +231,10 @@ public class PaginationPageModelTests
         public Task AnonymizeAuthor(string authorID)
         {
             return Task.CompletedTask;
+        }
+        public Task<List<Author>> SearchAuthors(string searchTerm)
+        {
+            return Task.FromResult(new List<Author>());
         }
     }
 }

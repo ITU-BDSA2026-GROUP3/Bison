@@ -20,6 +20,8 @@ public class UserTimelineModel : PageModel
     private readonly IObservationService _observationService;
 
     public List<ObservationDto> Observations { get; private set; } = new();
+    public List<CommentDto> Comments { get; private set; } = new();
+    public List<ProposalDto> Proposals { get; private set; } = new();
 
     public UserTimelineModel(IObservationService observationService,ITaxonRepository taxonRepository)
 
@@ -104,13 +106,9 @@ public class UserTimelineModel : PageModel
 
         if(author != null)
         {
-            Observations = await _observationService.GetObservationsFromAuthor(authorId,CurrentPage);
-        }
-        else
-        {
-            Observations = new List<ObservationDto>();
-
-            
+            Observations = await _observationService.GetObservationsFromAuthor(authorId, CurrentPage);
+            Comments = await _observationService.GetCommentsFromAuthor(authorId);
+            Proposals = await _observationService.GetProposalsFromAuthor(authorId);
         }
 
         var taxons = await _taxonRepository.getAllTaxons();

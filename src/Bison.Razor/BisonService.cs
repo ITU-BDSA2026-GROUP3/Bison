@@ -19,9 +19,12 @@ public interface IObservationService
     public Task<List<ObservationDto>> GetObservationsFromTaxon(int taxonId, int page = 1);
 
     public Task<List<CommentDto>> GetComments(int observationId);
+    public Task<List<CommentDto>> GetCommentsFromAuthor(string authorId);
 
     public Task<List<ProposalDto>> GetProposals(int observationId);
+    public Task<List<ProposalDto>> GetProposalsFromAuthor(string authorId);
     public Task<AuthorDto?> GetAuthor(string authorId);
+    public Task<List<AuthorDto?>> GetAuthorsFromSearch(string search);
 
     public Task ForgetUser(string authorId, bool keepObservations);
 
@@ -327,10 +330,38 @@ public class ObservationService : IObservationService
             {
                 AuthorName = comment.Author.UserName,
                 Text = comment.Text,
-                Timestamp = DateTimeToString(comment.TimeStamp)
+                Timestamp = DateTimeToString(comment.TimeStamp),
+                ObservationId = comment.Observation.Id
             };
 
             comments.Add(dto);
+        }
+
+        return comments;
+    }
+
+    public async Task<List<CommentDto>> GetCommentsFromAuthor(string authorId)
+    {
+        List<CommentDto> comments = new List<CommentDto>();
+
+        var repoQueryResult =
+            await _PostRepository.ReadPostsByAuthor(authorId);
+
+        foreach (var post in repoQueryResult)
+        {
+            if(post.GetType() == typeof(Comment))
+            {
+                var comment = (Comment)post;
+                CommentDto dto = new CommentDto
+                {
+                    AuthorName = comment.Author.UserName,
+                    Text = comment.Text,
+                    Timestamp = DateTimeToString(comment.TimeStamp),
+                    ObservationId = comment.Observation.Id
+                };
+
+                comments.Add(dto);
+            }
         }
 
         return comments;
@@ -351,10 +382,41 @@ public class ObservationService : IObservationService
                 Text = proposal.Text,
                 Timestamp = DateTimeToString(proposal.TimeStamp),
                 TaxonName = proposal.Taxon.Name,
-                Id = observationId
+                Id = observationId,
+                ObservationId = proposal.Observation.Id
             };
 
             proposals.Add(dto);
+        }
+
+        return proposals;
+    }
+
+    public async Task<List<ProposalDto>> GetProposalsFromAuthor(string authorId)
+    {
+        List<ProposalDto> proposals = new List<ProposalDto>();
+
+        var repoQueryResult =
+            await _PostRepository.ReadPostsByAuthor(authorId);
+
+        foreach (var post in repoQueryResult)
+        {
+            if(post.GetType() == typeof(Proposal))
+            {
+                var proposal = (Proposal)post;
+                Console.WriteLine("Obs id: "+proposal.Observation.Id);
+                ProposalDto dto = new ProposalDto
+                {
+                    AuthorName = proposal.Author.UserName,
+                    Text = proposal.Text,
+                    Timestamp = DateTimeToString(proposal.TimeStamp),
+                    TaxonName = proposal.Taxon.Name,
+                    Id = proposal.Id,
+                    ObservationId = proposal.Observation.Id
+                };
+
+                proposals.Add(dto);
+            }
         }
 
         return proposals;
@@ -376,6 +438,26 @@ public class ObservationService : IObservationService
         };
         return dto;
 
+    }
+
+    public async Task<List<AuthorDto?>> GetAuthorsFromSearch(string search)
+    {
+        List<AuthorDto?> authors = new List<AuthorDto?>();
+
+        var repoQueryResult = await _AuthorRepository.SearchAuthors(search);
+        Console.WriteLine("Authors from repo: "+repoQueryResult.Count);
+        foreach(var author in repoQueryResult)
+        {
+            AuthorDto dto = new AuthorDto
+            {
+                Id = author.Id,
+                Name = author.UserName,
+                Email = author.Email
+            };
+
+            authors.Add(dto);
+        }
+        return authors;
     }
 
     private static string UnixTimeStampToDateTimeString(double unixTimeStamp)

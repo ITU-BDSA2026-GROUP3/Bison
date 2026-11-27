@@ -142,7 +142,7 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
         var content = await response.Content.ReadAsStringAsync();
 
         //Assert
-        Assert.Contains("Emil's Observations", content);
+        Assert.Contains("Emil's Timeline", content);
 
         //First observation
         Assert.Contains("Emil", content);
@@ -171,8 +171,8 @@ public class RazorEndToEndTests : IDisposable, IClassFixture<RazorServiceFactory
         var content = await response.Content.ReadAsStringAsync();
 
         //Assert
-        Assert.Contains("Emil's Observations", content);
-        Assert.Contains("<em>There are no Observations so far.</em>", content);
+        Assert.Contains("Emil's Timeline", content);
+        Assert.Contains("<p>There are no Observations so far.</p>", content);
     }
 
     [Fact]
