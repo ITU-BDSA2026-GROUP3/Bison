@@ -18,9 +18,6 @@ public class SearchModel : PageModel
     [BindProperty(SupportsGet = true)]
     public string? SearchTerm { get; set; }
 
-    [BindProperty(SupportsGet = true)]
-    public string? AuthorId { get; set; }
-
     public List<AuthorDto> Authors { get; private set; } = new();
 
     public List<ObservationDto> Observations { get; private set; } = new();
@@ -35,14 +32,6 @@ public class SearchModel : PageModel
         {
             HasSearched = true;
             Authors = await _observationService.GetAuthorFromSearch(SearchTerm);
-            Console.WriteLine("Authors: "+Authors.Count);
-        }
-
-        if (!string.IsNullOrWhiteSpace(AuthorId))
-        {
-            Observations = await _observationService.GetObservationsFromAuthor(AuthorId);
-            Comments = await _observationService.GetCommentsFromAuthor(AuthorId);
-            Proposals = await _observationService.GetProposalsFromAuthor(AuthorId);
         }
     }
 }

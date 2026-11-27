@@ -37,6 +37,8 @@ namespace Bison.Razor.Repositories
         {
             return await _bisonContext.Set<Post>()
                 .Include(post => post.Author)
+                .Include(post => (post as Proposal).Observation)
+                .Include(post => (post as Comment).Observation)
                 .Where(post => !post.IsDeleted && post.Author != null && !post.Author.IsDeleted && post.Author.Id == authorID)
                 .OrderByDescending(post => post.TimeStamp)
                 .ToListAsync();

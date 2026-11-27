@@ -315,7 +315,8 @@ public class ObservationService : IObservationService
             {
                 AuthorName = comment.Author.UserName,
                 Text = comment.Text,
-                Timestamp = DateTimeToString(comment.TimeStamp)
+                Timestamp = DateTimeToString(comment.TimeStamp),
+                ObservationId = comment.Observation.Id
             };
 
             comments.Add(dto);
@@ -340,7 +341,8 @@ public class ObservationService : IObservationService
                 {
                     AuthorName = comment.Author.UserName,
                     Text = comment.Text,
-                    Timestamp = DateTimeToString(comment.TimeStamp)
+                    Timestamp = DateTimeToString(comment.TimeStamp),
+                    ObservationId = comment.Observation.Id
                 };
 
                 comments.Add(dto);
@@ -365,7 +367,8 @@ public class ObservationService : IObservationService
                 Text = proposal.Text,
                 Timestamp = DateTimeToString(proposal.TimeStamp),
                 TaxonName = proposal.Taxon.Name,
-                Id = observationId
+                Id = observationId,
+                ObservationId = proposal.Observation.Id
             };
 
             proposals.Add(dto);
@@ -386,13 +389,15 @@ public class ObservationService : IObservationService
             if(post.GetType() == typeof(Proposal))
             {
                 var proposal = (Proposal)post;
+                Console.WriteLine("Obs id: "+proposal.Observation.Id);
                 ProposalDto dto = new ProposalDto
                 {
                     AuthorName = proposal.Author.UserName,
                     Text = proposal.Text,
                     Timestamp = DateTimeToString(proposal.TimeStamp),
                     TaxonName = proposal.Taxon.Name,
-                    Id = proposal.Id
+                    Id = proposal.Id,
+                    ObservationId = proposal.Observation.Id
                 };
 
                 proposals.Add(dto);
