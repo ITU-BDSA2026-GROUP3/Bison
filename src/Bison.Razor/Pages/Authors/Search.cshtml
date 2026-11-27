@@ -34,7 +34,7 @@
                     <a asp-page="./Search"
                        asp-route-SearchTerm="@Model.SearchTerm"
                        asp-route-AuthorId="@author.Id">
-                        @author.UserName
+                        @author.Name
                     </a>
                 </li>
             }
@@ -46,17 +46,51 @@
 {
     <h2>Post history</h2>
 
-    if (Model.Posts.Count == 0)
+    if (Model.Observations.Count == 0)
     {
-        <p>This author has no posts.</p>
+        <p>This author has no observations.</p>
     }
     else
     {
         <div class="list-group">
-            @foreach (var post in Model.Posts)
+            <strong>Observations</strong>
+            @foreach (var post in Model.Observations)
             {
                 <div class="list-group-item">
-                    <strong>@post.GetType().Name</strong>
+                    <p class="mb-0">@post.Text</p>
+                </div>
+            }
+        </div>
+    }
+
+    if (Model.Comments.Count == 0)
+    {
+        <p>This author has no comments.</p>
+    }
+    else
+    {
+        <div class="list-group">
+            <strong>Comments</strong>
+            @foreach (var post in Model.Comments)
+            {
+                <div class="list-group-item">
+                    <p class="mb-0">@post.Text</p>
+                </div>
+            }
+        </div>
+    }
+
+    if (Model.Proposals.Count == 0)
+    {
+        <p>This author has no observations.</p>
+    }
+    else
+    {
+        <div class="list-group">
+            <strong>Proposals</strong>
+            @foreach (var post in Model.Proposals)
+            {
+                <div class="list-group-item">
                     <p class="mb-0">@post.Text</p>
                 </div>
             }

@@ -422,9 +422,10 @@ public class ObservationService : IObservationService
 
     public async Task<List<AuthorDto?>> GetAuthorFromSearch(string search)
     {
-        List<AuthorDto> authors = new List<AuthorDto>();
+        List<AuthorDto?> authors = new List<AuthorDto?>();
 
         var repoQueryResult = await _AuthorRepository.SearchAuthors(search);
+        Console.WriteLine("Authors from repo: "+repoQueryResult.Count);
         foreach(var author in repoQueryResult)
         {
             AuthorDto dto = new AuthorDto
@@ -433,6 +434,8 @@ public class ObservationService : IObservationService
                 Name = author.UserName,
                 Email = author.Email
             };
+
+            authors.Add(dto);
         }
         return authors;
     }
