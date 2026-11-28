@@ -241,28 +241,9 @@ public class ObservationService : IObservationService
     public async Task<List<ObservationDto>> GetObservationsFromTaxon(int taxonId, int page = 1)
     {
         int validPage = Math.Max(page, 1);
-        var taxon = await _TaxonRepository.getTaxon(taxonId);
-        if(taxon == null) return null;
-        var observations = await _PostRepository.ReadAllObservations();
-        Observation[] observationsArray = observations.ToArray();
-        var filt = filterChecked.__default.FilterByChecked(taxon, Dafny.Sequence<Observation>.FromArray(observationsArray));
-        List<Observation> filteredObservations = new List<Observation>();
-        foreach (var obs in filt)
-        {
-            ObservationDto dto = new ObservationDto
-            {
-                Id = obs.Id,
-                AuthorName = obs.Author?.UserName ?? "deleted user",
-                Text = obs.Text,
-                Timestamp = DateTimeToString(obs.TimeStamp),
-                ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
-                TaxonName = obs.Taxon.Name,
-                Licence = obs.Licence
-            };
+        var repoQueryResult = await _PostRepository.ReadObservationsFromTaxon(taxonId);
 
-            filteredObservations.Add(dto);
-        }
-        return filteredObservations;
+        return repoQueryResult;
     }
 
     public async Task<ObservationDto> GetObservationFromId(int observationId, int page = 1)

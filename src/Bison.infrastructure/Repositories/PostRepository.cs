@@ -261,5 +261,39 @@ namespace Bison.infrastructure.Repositories
             }
             return proposals;
         }
+
+        public async Task<List<ObservationDto>> ReadObservationsFromTaxon(int taxonID)
+        {
+            var query = _bisonContext.Observations
+             .Include(obs => obs.Author)
+             .Include(obs => obs.Taxon) // eager loading, connects the foreign keys in the database to the corresponding entity, otherwise the returning field would be null.
+             .Where(obs => !obs.IsDeleted); // filter out deleted observations
+            var QueryResult = await query.ToListAsync();
+
+            var taxon = await _bisonContext.Taxons.Where(taxon => taxon.Id == taxonID).FirstOrDefaultAsync();
+            List<ObservationDto> filteredObservations = new List<ObservationDto>();
+            if (QueryResult.Count != 0 && taxon != null)
+            {
+                Observation[] observationsArray = QueryResult.ToArray();
+                var filt = filterChecked.__default.FilterByChecked(taxon, Dafny.Sequence<Observation>.FromArray(observationsArray));
+
+                foreach (var obs in filt)
+                {
+                    ObservationDto dto = new ObservationDto
+                    {
+                        Id = obs.Id,
+                        AuthorName = obs.Author?.UserName ?? "deleted user",
+                        Text = obs.Text,
+                        Timestamp = obs.TimeStamp.ToString("MM/dd/yy H:mm:ss"),
+                        ImgBytes = obs.ImgBytes, //imgbytes can be null in that case handle it the same as if there is no bytes(very unlikely to ever happen) 
+                        TaxonName = obs.Taxon.Name,
+                        Licence = obs.Licence
+                    };
+
+                    filteredObservations.Add(dto);
+                }
+            }
+            return filteredObservations;
+        }
     }
 }
